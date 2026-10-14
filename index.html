@@ -1018,7 +1018,10 @@
         save();
       }
       render();
-      if (state.apiUrl) fetchCloud();
+      if (state.apiUrl) {
+        fetchCloud();
+        startAutoRefresh();
+      }
     }
 
     function save() {
@@ -1230,7 +1233,10 @@
         localStorage.setItem('API_URL', state.apiUrl);
         closeModal(sModal);
         showToast('URL Sheet Tersimpan');
-        if (state.apiUrl) fetchCloud();
+        if (state.apiUrl) {
+          fetchCloud();
+          startAutoRefresh();
+        }
       };
 
       document.getElementById('testApiBtn').onclick = testCloud;
@@ -1887,20 +1893,34 @@
     }
 
     // ================= CLOUD SYNC =================
+    let _isFetching = false;
+    let _autoRefreshTimer = null;
+
     async function postCloud(payload) {
       updateDot(true);
       try {
-        await fetch(state.apiUrl, {
+        const res = await fetch(state.apiUrl, {
           method: 'POST',
           mode: 'cors',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(payload)
         });
+        const json = await res.json();
+        if (json.status === 'success') {
+          // Re-fetch cloud after write to sync with other devices
+          await fetchCloud();
+        } else {
+          updateDot(false);
+        }
+      } catch (e) {
         updateDot(false);
-      } catch (e) { updateDot(false); }
+        showToast('⚠️ Gagal sinkron, cek koneksi');
+      }
     }
 
     async function fetchCloud() {
+      if (_isFetching) return;
+      _isFetching = true;
       updateDot(true);
       try {
         const res = await fetch(`${state.apiUrl}?action=get_init_data&year=${state.year}&month=${state.month}&_t=${Date.now()}`);
@@ -1911,7 +1931,20 @@
           render();
         }
         updateDot(false);
-      } catch (e) { updateDot(false); }
+      } catch (e) {
+        updateDot(false);
+      } finally {
+        _isFetching = false;
+      }
+    }
+
+    function startAutoRefresh() {
+      if (_autoRefreshTimer) clearInterval(_autoRefreshTimer);
+      if (!state.apiUrl) return;
+      // Auto-refresh setiap 30 detik agar semua HP selalu sinkron
+      _autoRefreshTimer = setInterval(() => {
+        if (state.apiUrl) fetchCloud();
+      }, 30000);
     }
 
     async function testCloud() {
@@ -1950,3 +1983,4 @@
 </body>
 
 </html>
+
