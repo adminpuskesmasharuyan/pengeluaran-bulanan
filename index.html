@@ -4,86 +4,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
-  <title>Finance Kita — Apple Voice Edition PWA</title>
+  <title>Finance Kita</title>
 
-  <!-- Apple iOS Native PWA Meta Tags -->
+  <!-- Apple iOS PWA Meta -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Finance Kita">
-  <meta name="format-detection" content="telephone=no">
-  <meta name="mobile-web-app-capable" content="yes">
-  
-  <!-- Apple Touch Icon (Vector SVG Icon) -->
   <link rel="apple-touch-icon" href="icon.svg">
   <link rel="icon" type="image/svg+xml" href="icon.svg">
-
-  <!-- Manifest PWA -->
-  <link rel="manifest" href="manifest.json" id="manifestLink">
-
-  <!-- Google Fonts: Inter / Apple SF Fallback -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
 
   <style>
-    /* ==========================================================================
-       APPLE DESIGN SYSTEM - HUMAN INTERFACE GUIDELINES (DARK / OBSIDIAN LUXURY)
-       ========================================================================== */
+    /* ================= APPLE ULTRA-CLEAN DESIGN SYSTEM ================= */
     :root {
-      --bg-primary: #000000;
-      --bg-secondary: #121214;
-      --bg-card: rgba(28, 28, 30, 0.75);
-      --bg-card-hover: rgba(44, 44, 46, 0.85);
-      --bg-input: #1C1C1E;
-      --bg-sheet: #1C1C1E;
-      
-      --text-primary: #FFFFFF;
-      --text-secondary: #8E8E93;
-      --text-tertiary: #636366;
-      
-      --apple-blue: #0A84FF;
-      --apple-green: #30D158;
-      --apple-red: #FF453A;
-      --apple-orange: #FF9F0A;
-      --apple-purple: #BF5AF2;
-      --apple-indigo: #5E5CE6;
-      --apple-teal: #64D2FF;
-
-      --border-subtle: rgba(255, 255, 255, 0.12);
-      --border-focus: rgba(10, 132, 255, 0.5);
-      
-      --blur-glass: blur(28px) saturate(190%);
-      --radius-sm: 10px;
-      --radius-md: 16px;
-      --radius-lg: 24px;
-      --radius-xl: 32px;
-      
-      --shadow-card: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-      --shadow-apple: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-
+      --bg: #000000;
+      --card: #1C1C1E;
+      --card-subtle: #141416;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #FFFFFF;
+      --text-muted: #8E8E93;
+      --text-dim: #636366;
+      --blue: #0A84FF;
+      --green: #30D158;
+      --red: #FF453A;
       --safe-top: env(safe-area-inset-top, 20px);
       --safe-bottom: env(safe-area-inset-bottom, 20px);
     }
 
     [data-theme="light"] {
-      --bg-primary: #F2F2F7;
-      --bg-secondary: #FFFFFF;
-      --bg-card: rgba(255, 255, 255, 0.85);
-      --bg-card-hover: rgba(242, 242, 247, 0.95);
-      --bg-input: #E5E5EA;
-      --bg-sheet: #FFFFFF;
-      
-      --text-primary: #000000;
-      --text-secondary: #8E8E93;
-      --text-tertiary: #AEAEB2;
-
-      --apple-blue: #007AFF;
-      --apple-green: #34C759;
-      --apple-red: #FF3B30;
-      --apple-orange: #FF9500;
-
-      --border-subtle: rgba(0, 0, 0, 0.08);
-      --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.06);
+      --bg: #F2F2F7;
+      --card: #FFFFFF;
+      --card-subtle: #F9F9FB;
+      --border: rgba(0, 0, 0, 0.06);
+      --text: #000000;
+      --text-muted: #8E8E93;
+      --text-dim: #AEAEB2;
+      --blue: #007AFF;
+      --green: #34C759;
+      --red: #FF3B30;
     }
 
     * {
@@ -95,1654 +53,629 @@
       -webkit-user-select: none;
     }
 
-    input, textarea, select {
-      user-select: auto;
-      -webkit-user-select: auto;
-    }
-
     body {
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      font-family: -apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "SF Pro Text", "SF Pro Display", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
       min-height: 100vh;
-      min-height: 100dvh;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      overflow-x: hidden;
+      justify-content: center;
+      transition: background 0.25s ease;
       letter-spacing: -0.015em;
-      transition: background-color 0.3s ease;
     }
 
-    /* ================= APP CONTAINER ================= */
-    .app-viewport {
+    .container {
       width: 100%;
-      max-width: 520px;
-      min-height: 100vh;
-      min-height: 100dvh;
+      max-width: 480px;
+      padding: calc(var(--safe-top) + 14px) 20px calc(80px + var(--safe-bottom)) 20px;
       display: flex;
       flex-direction: column;
-      position: relative;
-      padding-bottom: calc(90px + var(--safe-bottom));
-      box-shadow: 0 0 60px rgba(0,0,0,0.5);
     }
 
-    @media (min-width: 900px) {
-      .app-viewport {
-        max-width: 860px;
-      }
-      .dashboard-grid {
-        display: grid;
-        grid-template-columns: 1.15fr 0.85fr;
-        gap: 20px;
-        align-items: start;
-      }
-    }
-
-    /* ================= STATUS / TOP HEADER ================= */
-    .app-header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      backdrop-filter: var(--blur-glass);
-      -webkit-backdrop-filter: var(--blur-glass);
-      background-color: rgba(0, 0, 0, 0.75);
-      border-bottom: 0.5px solid var(--border-subtle);
-      padding: calc(var(--safe-top) + 12px) 20px 14px 20px;
+    /* ================= TOP BAR ================= */
+    .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: background 0.3s;
+      margin-bottom: 24px;
     }
 
-    [data-theme="light"] .app-header {
-      background-color: rgba(242, 242, 247, 0.85);
-    }
-
-    .brand-group {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .app-logo-badge {
-      width: 38px;
-      height: 38px;
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 14px rgba(10, 132, 255, 0.4);
-      background: #181920;
-    }
-
-    .app-logo-badge img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
     }
 
     .brand-title {
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--text-primary);
+      font-size: 18px;
+      font-weight: 700;
       letter-spacing: -0.02em;
-      line-height: 1.1;
     }
 
-    .brand-subtitle {
-      font-size: 11px;
-      color: var(--text-secondary);
-      font-weight: 500;
+    .top-actions {
       display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background-color: var(--apple-green);
-      box-shadow: 0 0 8px var(--apple-green);
-      display: inline-block;
-    }
-    .status-dot.syncing {
-      background-color: var(--apple-orange);
-      box-shadow: 0 0 8px var(--apple-orange);
-      animation: pulse 1s infinite alternate;
-    }
-    .status-dot.offline {
-      background-color: var(--text-tertiary);
-      box-shadow: none;
-    }
-
-    @keyframes pulse {
-      from { opacity: 0.4; }
-      to { opacity: 1; }
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
       gap: 8px;
     }
 
-    .icon-btn {
-      width: 38px;
-      height: 38px;
+    .btn-icon {
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      background: var(--bg-card);
-      border: 0.5px solid var(--border-subtle);
-      color: var(--text-primary);
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      color: var(--text);
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
       font-size: 15px;
-      transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+      cursor: pointer;
     }
-    .icon-btn:active {
-      transform: scale(0.92);
-      background: var(--bg-card-hover);
-    }
-    .icon-btn.voice-pulse {
-      background: linear-gradient(135deg, rgba(10, 132, 255, 0.25), rgba(191, 90, 242, 0.25));
-      border-color: var(--apple-blue);
-      color: var(--apple-blue);
-    }
+    .btn-icon:active { transform: scale(0.92); }
 
-    /* ================= MONTH / FILTER SELECTOR ================= */
-    .filter-bar {
-      padding: 16px 20px 8px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
+    /* ================= MONTH SELECTOR ================= */
     .month-pill {
+      align-self: center;
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: var(--bg-card);
-      backdrop-filter: var(--blur-glass);
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: 0.5px solid var(--border-subtle);
+      gap: 14px;
+      background: var(--card);
+      padding: 6px 16px;
+      border-radius: 30px;
+      border: 0.5px solid var(--border);
       font-size: 14px;
       font-weight: 600;
-      color: var(--text-primary);
-      cursor: pointer;
+      margin-bottom: 24px;
     }
 
-    .month-nav-btn {
+    .month-nav {
       background: none;
       border: none;
-      color: var(--apple-blue);
-      font-size: 16px;
+      color: var(--blue);
+      font-size: 18px;
       font-weight: 700;
-      padding: 4px 6px;
       cursor: pointer;
       display: flex;
       align-items: center;
     }
 
-    /* ================= APPLE WALLET / HERO CARD ================= */
-    .hero-card-container {
-      padding: 10px 20px 18px 20px;
-    }
-
-    .apple-finance-card {
-      position: relative;
-      background: linear-gradient(135deg, rgba(28, 28, 30, 0.95) 0%, rgba(18, 18, 20, 0.98) 100%);
-      border-radius: var(--radius-xl);
-      padding: 24px;
-      overflow: hidden;
-      border: 0.5px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.6);
-      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-
-    [data-theme="light"] .apple-finance-card {
-      background: linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%);
-      color: #FFFFFF;
-    }
-
-    .card-glass-glow {
-      position: absolute;
-      top: -40px;
-      right: -40px;
-      width: 180px;
-      height: 180px;
-      background: radial-gradient(circle, rgba(10, 132, 255, 0.35) 0%, rgba(48, 209, 88, 0.15) 60%, transparent 80%);
-      pointer-events: none;
-      filter: blur(20px);
-    }
-
-    .card-top-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 12px;
+    /* ================= HERO BALANCE ================= */
+    .hero-balance {
+      text-align: center;
+      margin-bottom: 24px;
     }
 
     .balance-label {
-      font-size: 13px;
+      font-size: 12px;
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      color: rgba(255, 255, 255, 0.6);
-      font-weight: 600;
-    }
-
-    .apple-chip {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      color: rgba(255, 255, 255, 0.9);
-      font-weight: 600;
-    }
-
-    .main-balance {
-      font-size: 34px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      color: #FFFFFF;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
-    }
-
-    .main-balance span.currency {
-      font-size: 20px;
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    /* HERO VOICE TRIGGER BAR (PRIMARY EXPERIENCE) */
-    .hero-voice-cta {
-      background: linear-gradient(135deg, rgba(10, 132, 255, 0.25), rgba(48, 209, 88, 0.25));
-      border: 0.5px solid rgba(48, 209, 88, 0.4);
-      border-radius: var(--radius-md);
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      margin-bottom: 16px;
-      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-    .hero-voice-cta:active {
-      transform: scale(0.97);
-      background: linear-gradient(135deg, rgba(10, 132, 255, 0.4), rgba(48, 209, 88, 0.4));
-    }
-    .hero-voice-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .voice-mic-bubble {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #0A84FF, #30D158);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      box-shadow: 0 0 12px rgba(48, 209, 88, 0.5);
-    }
-
-    .card-stats-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      padding-top: 14px;
-      border-top: 0.5px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .stat-box {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .stat-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .stat-badge.in { color: var(--apple-green); }
-    .stat-badge.out { color: var(--apple-red); }
-
-    .stat-val {
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: #FFFFFF;
-    }
-
-    /* Monthly Budget Meter */
-    .budget-meter-box {
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 0.5px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .budget-info-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.7);
       margin-bottom: 6px;
-      font-weight: 500;
-    }
-
-    .progress-bar-bg {
-      width: 100%;
-      height: 7px;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 10px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      border-radius: 10px;
-      background: linear-gradient(90deg, #30D158, #FF9F0A);
-      width: 0%;
-      transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-
-    /* ================= SEGMENTED CONTROLS ================= */
-    .segment-wrapper {
-      padding: 0 20px 14px 20px;
-    }
-
-    .apple-segmented-control {
-      background: var(--bg-card);
-      border-radius: var(--radius-md);
-      padding: 4px;
-      display: flex;
-      border: 0.5px solid var(--border-subtle);
-      position: relative;
-    }
-
-    .segment-btn {
-      flex: 1;
-      padding: 8px 12px;
-      border-radius: 12px;
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .segment-btn.active {
-      background: var(--bg-input);
-      color: var(--text-primary);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    [data-theme="light"] .segment-btn.active {
-      background: #FFFFFF;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    /* ================= SECTIONS & LISTS ================= */
-    .content-section {
-      padding: 0 20px 20px 20px;
-    }
-
-    .section-header-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin: 16px 0 10px 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .transaction-group {
-      background: var(--bg-card);
-      border-radius: var(--radius-lg);
-      border: 0.5px solid var(--border-subtle);
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-
-    .group-date-header {
-      padding: 10px 16px 6px 16px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
-      background: rgba(255, 255, 255, 0.02);
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .transaction-row {
-      display: flex;
-      align-items: center;
-      padding: 14px 16px;
-      cursor: pointer;
-      position: relative;
-      transition: background 0.15s ease;
-    }
-
-    .transaction-row:not(:last-child) {
-      border-bottom: 0.5px solid var(--border-subtle);
-    }
-
-    .transaction-row:active {
-      background: var(--bg-card-hover);
-    }
-
-    .tx-icon-squircle {
-      width: 44px;
-      height: 44px;
-      border-radius: 13px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      margin-right: 14px;
-      flex-shrink: 0;
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .tx-details {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .tx-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text-primary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-bottom: 3px;
-    }
-
-    .tx-subtitle {
-      font-size: 12px;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .method-tag {
-      font-size: 10px;
-      padding: 1px 6px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text-secondary);
       font-weight: 600;
     }
 
-    .tx-amount {
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      text-align: right;
-    }
-
-    .tx-amount.expense { color: var(--apple-red); }
-    .tx-amount.income { color: var(--apple-green); }
-
-    /* Empty State */
-    .empty-state {
-      padding: 40px 20px;
-      text-align: center;
-      color: var(--text-secondary);
-    }
-    .empty-state-icon {
-      font-size: 44px;
-      margin-bottom: 12px;
-      opacity: 0.7;
-    }
-
-    /* ================= CHARTS & ANALYTICS ================= */
-    .analytics-panel {
-      display: none;
-    }
-    .analytics-panel.active {
-      display: block;
-    }
-
-    .chart-card {
-      background: var(--bg-card);
-      border-radius: var(--radius-lg);
-      border: 0.5px solid var(--border-subtle);
-      padding: 18px;
-      margin-bottom: 16px;
-    }
-
-    .chart-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .category-bar-item {
-      margin-bottom: 12px;
-    }
-    .cat-bar-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      margin-bottom: 5px;
-    }
-    .cat-bar-name {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-weight: 500;
-    }
-    .cat-bar-sum {
-      font-weight: 700;
-    }
-    .cat-bar-track {
-      width: 100%;
-      height: 6px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    .cat-bar-fill {
-      height: 100%;
-      border-radius: 6px;
-      transition: width 0.5s ease;
-    }
-
-    /* ================= BOTTOM TAB BAR (NATIVE APPLE STYLE - VOICE PRIMARY) ================= */
-    .bottom-tab-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      max-width: 520px;
-      margin: 0 auto;
-      height: calc(66px + var(--safe-bottom));
-      padding-bottom: var(--safe-bottom);
-      backdrop-filter: var(--blur-glass);
-      -webkit-backdrop-filter: var(--blur-glass);
-      background-color: rgba(18, 18, 20, 0.88);
-      border-top: 0.5px solid var(--border-subtle);
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      z-index: 80;
-    }
-
-    @media (min-width: 900px) {
-      .bottom-tab-bar {
-        max-width: 860px;
-      }
-    }
-
-    [data-theme="light"] .bottom-tab-bar {
-      background-color: rgba(255, 255, 255, 0.92);
-    }
-
-    .tab-item {
-      flex: 1;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      background: none;
-      border: none;
-      color: var(--text-tertiary);
-      font-size: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: color 0.2s, transform 0.15s;
-    }
-
-    .tab-item:active {
-      transform: scale(0.92);
-    }
-
-    .tab-item.active {
-      color: var(--apple-blue);
-    }
-
-    .tab-icon {
-      font-size: 20px;
-      line-height: 1;
-    }
-
-    /* PRIMARY CENTRAL VOICE BUTTON (SIRI GLOWING ORB) */
-    .tab-voice-btn {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: conic-gradient(from 0deg, #0A84FF, #BF5AF2, #FF2D55, #FF9F0A, #30D158, #0A84FF);
-      border: 3.5px solid var(--bg-primary);
-      color: #FFFFFF;
-      font-size: 26px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 24px rgba(10, 132, 255, 0.6), 0 0 16px rgba(191, 90, 242, 0.5);
-      cursor: pointer;
-      margin-top: -22px;
-      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      animation: siriPulse 2s infinite alternate;
-    }
-    .tab-voice-btn:active {
-      transform: scale(0.9) rotate(20deg);
-    }
-
-    /* ================= APPLE MODAL BOTTOM SHEET ================= */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(8px);
-      z-index: 100;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-    }
-
-    .modal-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .bottom-sheet {
-      width: 100%;
-      max-width: 520px;
-      background: var(--bg-sheet);
-      border-top-left-radius: var(--radius-xl);
-      border-top-right-radius: var(--radius-xl);
-      padding: 12px 20px calc(24px + var(--safe-bottom)) 20px;
-      border-top: 0.5px solid var(--border-subtle);
-      max-height: 90vh;
-      max-height: 90dvh;
-      overflow-y: auto;
-      transform: translateY(100%);
-      transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
-      box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
-    }
-
-    .modal-overlay.active .bottom-sheet {
-      transform: translateY(0);
-    }
-
-    .sheet-handle-bar {
-      width: 40px;
-      height: 5px;
-      border-radius: 4px;
-      background: var(--text-tertiary);
-      margin: 4px auto 16px auto;
-      opacity: 0.5;
-    }
-
-    .sheet-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .sheet-title {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .sheet-close-btn {
-      background: var(--bg-input);
-      border: none;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      color: var(--text-secondary);
-      font-size: 14px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-
-    /* Calculator Style Amount Input */
-    .sheet-amount-container {
-      text-align: center;
-      margin: 10px 0 20px 0;
-      background: rgba(255, 255, 255, 0.03);
-      padding: 16px;
-      border-radius: var(--radius-lg);
-      border: 0.5px solid var(--border-subtle);
-      position: relative;
-    }
-
-    .sheet-amount-display {
+    .balance-val {
       font-size: 38px;
       font-weight: 800;
-      color: var(--text-primary);
-      letter-spacing: -0.02em;
-    }
-    .sheet-amount-display span.curr {
-      font-size: 22px;
-      color: var(--apple-blue);
-      margin-right: 4px;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 14px;
     }
 
-    .preset-chips {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 12px;
-      flex-wrap: wrap;
-    }
-    .preset-chip {
-      background: var(--bg-card);
-      border: 0.5px solid var(--border-subtle);
-      border-radius: 14px;
-      padding: 5px 12px;
+    .balance-stats {
+      display: inline-flex;
+      gap: 20px;
+      background: var(--card-subtle);
+      padding: 8px 18px;
+      border-radius: 20px;
+      border: 0.5px solid var(--border);
       font-size: 12px;
       font-weight: 600;
-      color: var(--text-secondary);
-      cursor: pointer;
     }
-    .preset-chip:active {
-      background: var(--apple-blue);
-      color: #FFF;
-    }
+    .stat-in { color: var(--green); }
+    .stat-out { color: var(--red); }
 
-    /* Form Fields in Sheet */
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 6px;
-      display: block;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .apple-input {
+    /* ================= PRIMARY VOICE ACTION BUTTON ================= */
+    .voice-main-btn {
       width: 100%;
-      padding: 14px 16px;
-      border-radius: var(--radius-md);
-      background: var(--bg-input);
-      border: 0.5px solid var(--border-subtle);
-      color: var(--text-primary);
-      font-size: 15px;
-      outline: none;
-      transition: border 0.2s;
-    }
-    .apple-input:focus {
-      border-color: var(--apple-blue);
-    }
-
-    /* Category Picker Grid */
-    .category-picker-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      max-height: 180px;
-      overflow-y: auto;
-      padding: 4px 2px;
-    }
-
-    .cat-pick-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      padding: 10px 4px;
-      border-radius: var(--radius-md);
-      background: var(--bg-input);
-      border: 1px solid transparent;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s ease;
-    }
-    .cat-pick-item.selected {
-      border-color: var(--apple-blue);
-      background: rgba(10, 132, 255, 0.15);
-    }
-    .cat-pick-icon {
-      font-size: 24px;
-    }
-    .cat-pick-name {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 100%;
-    }
-    .cat-pick-item.selected .cat-pick-name {
-      color: var(--apple-blue);
-    }
-
-    /* Submit Action Button */
-    .apple-submit-btn {
-      width: 100%;
-      padding: 16px;
-      border-radius: var(--radius-lg);
-      background: var(--apple-blue);
+      background: linear-gradient(135deg, #0A84FF 0%, #30D158 100%);
+      border: none;
+      border-radius: 20px;
+      padding: 16px 20px;
       color: #FFFFFF;
       font-size: 16px;
       font-weight: 700;
-      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
       cursor: pointer;
-      box-shadow: 0 4px 16px rgba(10, 132, 255, 0.4);
-      margin-top: 14px;
+      box-shadow: 0 8px 24px rgba(10, 132, 255, 0.35);
+      margin-bottom: 12px;
       transition: transform 0.15s, opacity 0.2s;
     }
-    .apple-submit-btn:active {
+    .voice-main-btn:active {
       transform: scale(0.98);
       opacity: 0.9;
     }
 
-    /* ================= SIRI APPLE INTELLIGENCE VOICE MODAL ================= */
-    .siri-orb-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px 10px;
-      text-align: center;
-    }
-
-    .siri-orb {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      background: conic-gradient(from 0deg, #0A84FF, #BF5AF2, #FF2D55, #FF9F0A, #30D158, #0A84FF);
-      animation: siriRotate 3s linear infinite, siriPulse 1.6s ease-in-out infinite alternate;
-      box-shadow: 0 0 40px rgba(191, 90, 242, 0.55), inset 0 0 16px rgba(255, 255, 255, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 42px;
-      cursor: pointer;
-      position: relative;
-      margin-bottom: 20px;
-      transition: transform 0.2s ease;
-    }
-
-    .siri-orb:active {
-      transform: scale(0.92);
-    }
-
-    .siri-orb.listening {
-      box-shadow: 0 0 50px rgba(48, 209, 88, 0.7), inset 0 0 20px rgba(255, 255, 255, 0.9);
-      animation: siriRotate 1.5s linear infinite, siriPulse 1s ease-in-out infinite alternate;
-    }
-
-    @keyframes siriRotate {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    @keyframes siriPulse {
-      0% { transform: scale(0.94); opacity: 0.88; }
-      100% { transform: scale(1.06); opacity: 1; }
-    }
-
-    .voice-transcript-box {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: var(--radius-md);
-      padding: 14px 18px;
-      width: 100%;
-      min-height: 54px;
-      border: 0.5px solid var(--border-subtle);
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--text-primary);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .voice-parsed-summary {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      width: 100%;
-      margin-bottom: 16px;
-    }
-
-    .voice-chip-badge {
-      background: var(--bg-input);
-      border: 0.5px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
-      padding: 8px 12px;
-      text-align: left;
-    }
-
-    .voice-chip-badge .chip-title {
-      font-size: 10px;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-
-    .voice-chip-badge .chip-val {
+    .manual-link-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
       font-size: 13px;
+      font-weight: 600;
+      align-self: center;
+      cursor: pointer;
+      margin-bottom: 24px;
+      padding: 4px 8px;
+    }
+    .manual-link-btn:active { color: var(--text); }
+
+    /* ================= TRANSACTIONS LIST ================= */
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+      padding: 0 4px;
+    }
+
+    .group-box {
+      background: var(--card);
+      border-radius: 18px;
+      border: 0.5px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .group-date {
+      padding: 8px 16px;
+      font-size: 11px;
       font-weight: 700;
-      color: var(--text-primary);
+      color: var(--text-dim);
+      background: var(--card-subtle);
+      border-bottom: 0.5px solid var(--border);
+      letter-spacing: 0.04em;
+    }
+
+    .tx-item {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .tx-item:not(:last-child) { border-bottom: 0.5px solid var(--border); }
+    .tx-item:active { background: var(--card-subtle); }
+
+    .tx-icon {
+      font-size: 22px;
+      margin-right: 14px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card-subtle);
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    .tx-meta {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tx-name {
+      font-size: 15px;
+      font-weight: 600;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      margin-bottom: 2px;
     }
 
-    /* Voice Shortcut Button in Add Sheet */
-    .voice-shortcut-btn {
+    .tx-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .tx-val {
+      font-size: 15px;
+      font-weight: 700;
+      text-align: right;
+    }
+    .val-out { color: var(--red); }
+    .val-in { color: var(--green); }
+
+    .empty-box {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* ================= MODAL BOTTOM SHEETS ================= */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s ease;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+    .modal.active { opacity: 1; visibility: visible; }
+
+    .sheet {
       width: 100%;
-      background: linear-gradient(135deg, rgba(10, 132, 255, 0.15), rgba(191, 90, 242, 0.15));
-      border: 0.5px solid rgba(191, 90, 242, 0.4);
-      color: var(--text-primary);
-      padding: 10px 14px;
-      border-radius: var(--radius-md);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
+      max-width: 480px;
+      background: var(--card);
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      padding: 16px 20px calc(24px + var(--safe-bottom)) 20px;
+      border-top: 0.5px solid var(--border);
+      transform: translateY(100%);
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    .modal.active .sheet { transform: translateY(0); }
+
+    .handle {
+      width: 36px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--text-dim);
+      margin: 0 auto 16px auto;
+      opacity: 0.5;
+    }
+
+    .sheet-title {
+      font-size: 17px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* SIRI VOICE PULSE */
+    .siri-circle {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      margin: 10px auto 16px auto;
+      background: conic-gradient(#0A84FF, #BF5AF2, #FF3B30, #30D158, #0A84FF);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      margin-bottom: 14px;
-      transition: all 0.2s;
+      font-size: 38px;
+      color: #FFF;
+      cursor: pointer;
+      box-shadow: 0 0 30px rgba(10, 132, 255, 0.5);
+      animation: siriSpin 3s linear infinite;
     }
-    .voice-shortcut-btn:active {
-      transform: scale(0.97);
-      background: linear-gradient(135deg, rgba(10, 132, 255, 0.3), rgba(191, 90, 242, 0.3));
+    @keyframes siriSpin { to { transform: rotate(360deg); } }
+
+    .transcript-box {
+      background: var(--card-subtle);
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 14px;
+      text-align: center;
+      min-height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      border: 0.5px solid var(--border);
     }
 
-    /* ================= TOAST NOTIFICATION (IOS BANNER) ================= */
-    .apple-toast {
+    .parsed-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .parsed-item {
+      background: var(--card-subtle);
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 0.5px solid var(--border);
+    }
+    .parsed-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+    .parsed-val { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--blue);
+      border: none;
+      padding: 14px;
+      border-radius: 14px;
+      color: #FFF;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-submit:active { opacity: 0.9; }
+
+    /* SIMPLE INPUTS */
+    .form-group { margin-bottom: 12px; }
+    .form-label { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; display: block; }
+    .clean-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--card-subtle);
+      border: 0.5px solid var(--border);
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+    }
+
+    /* TOAST */
+    .toast {
       position: fixed;
       top: calc(var(--safe-top) + 12px);
       left: 50%;
-      transform: translate(-50%, -120%);
-      background: rgba(30, 30, 30, 0.92);
-      backdrop-filter: var(--blur-glass);
-      border: 0.5px solid var(--border-subtle);
-      border-radius: 26px;
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      z-index: 150;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      transform: translate(-50%, -150%);
+      background: rgba(30, 30, 30, 0.95);
+      border: 0.5px solid var(--border);
       color: #FFF;
+      padding: 8px 18px;
+      border-radius: 20px;
       font-size: 13px;
       font-weight: 600;
+      z-index: 200;
+      transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
       pointer-events: none;
     }
-    .apple-toast.show {
-      transform: translate(-50%, 0);
-    }
-
-    /* ================= SETTINGS / CONFIG MODAL ================= */
-    .setup-guide-box {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: var(--radius-md);
-      padding: 14px;
-      margin-bottom: 14px;
-      font-size: 12px;
-      line-height: 1.6;
-      color: var(--text-secondary);
-    }
-    .setup-guide-box ol {
-      padding-left: 18px;
-      margin-top: 6px;
-    }
-    .setup-guide-box li {
-      margin-bottom: 4px;
-    }
-
-    /* PWA Install Banner */
-    .pwa-install-banner {
-      background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(48, 209, 88, 0.2));
-      border: 0.5px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 14px 16px;
-      margin: 10px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .pwa-text {
-      font-size: 12px;
-      line-height: 1.4;
-    }
-    .pwa-install-btn {
-      background: #FFFFFF;
-      color: #000000;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 16px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-    }
+    .toast.show { transform: translate(-50%, 0); }
   </style>
 </head>
 <body>
 
-  <!-- App Viewport (Cupertino Container) -->
-  <div class="app-viewport">
+  <div class="container">
     
-    <!-- Header -->
-    <header class="app-header">
-      <div class="brand-group">
-        <div class="app-logo-badge">
-          <img src="icon.svg" alt="Finance Kita Icon">
-        </div>
-        <div>
-          <h1 class="brand-title">Finance Kita</h1>
-          <div class="brand-subtitle">
-            <span class="status-dot" id="syncStatusDot"></span>
-            <span id="syncStatusText">Tersambung (Voice Ready)</span>
-          </div>
-        </div>
+    <!-- Top Header -->
+    <header class="top-bar">
+      <div class="brand">
+        <img src="icon.svg" class="brand-icon" alt="FK">
+        <span class="brand-title">Finance Kita</span>
       </div>
-
-      <div class="header-actions">
-        <!-- Voice Quick Header Button -->
-        <button class="icon-btn voice-pulse" id="headerVoiceBtn" title="Catat Pakai Suara">🎙️</button>
-        <!-- Manual Quick Add -->
-        <button class="icon-btn" id="headerAddManualBtn" title="Input Manual">+</button>
-        <!-- Theme Toggle -->
-        <button class="icon-btn" id="themeToggleBtn" title="Ganti Mode Gelap/Terang">🌗</button>
-        <!-- Settings -->
-        <button class="icon-btn" id="settingsBtn" title="Pengaturan">⚙️</button>
+      <div class="top-actions">
+        <button class="btn-icon" id="themeBtn" title="Tema">🌗</button>
+        <button class="btn-icon" id="settingsBtn" title="Pengaturan">⚙️</button>
       </div>
     </header>
 
-    <!-- PWA Install Prompt Banner -->
-    <div class="pwa-install-banner" id="pwaBanner" style="display: none;">
-      <div class="pwa-text">
-        <strong>📱 Pasang Finance Kita di Layar HP</strong><br>
-        Akses cepat aplikasi native dengan suara instan.
-      </div>
-      <button class="pwa-install-btn" id="pwaInstallBtn">Install</button>
+    <!-- Sleek Month Selector -->
+    <div class="month-pill">
+      <button class="month-nav" id="prevMonth">‹</button>
+      <span id="monthLabel">Oktober 2026</span>
+      <button class="month-nav" id="nextMonth">›</button>
     </div>
 
-    <!-- Filter / Month Selector Bar -->
-    <div class="filter-bar">
-      <div class="month-pill">
-        <button class="month-nav-btn" id="prevMonthBtn">‹</button>
-        <span id="currentMonthLabel">Oktober 2026</span>
-        <button class="month-nav-btn" id="nextMonthBtn">›</button>
-      </div>
-      <div style="font-size: 12px; font-weight: 600; color: var(--apple-blue); cursor: pointer;" id="todayJumpBtn">
-        Bulan Ini
+    <!-- Hero Balance Display -->
+    <div class="hero-balance">
+      <div class="balance-label">Total Saldo Bulan Ini</div>
+      <div class="balance-val" id="netBalance">Rp 0</div>
+      <div class="balance-stats">
+        <span class="stat-in">▲ Masuk: <strong id="incomeVal">Rp 0</strong></span>
+        <span class="stat-out">▼ Keluar: <strong id="expenseVal">Rp 0</strong></span>
       </div>
     </div>
 
-    <!-- Hero Card (Apple Wallet Style with Primary Voice Call-To-Action) -->
-    <div class="hero-card-container">
-      <div class="apple-finance-card">
-        <div class="card-glass-glow"></div>
-        <div class="card-top-meta">
-          <div class="balance-label">Total Saldo Bulan Ini</div>
-          <div class="apple-chip" id="cardChipBadge"> Voice Edition</div>
-        </div>
-        <div class="main-balance" id="heroNetBalance">
-          <span class="currency">Rp</span> <span id="valNetBalance">0</span>
-        </div>
+    <!-- PRIMARY VOICE BUTTON (ONE-TAP IMMEDIATE RECORDING) -->
+    <button class="voice-main-btn" id="voiceTriggerBtn">
+      <span>🎙️</span> Bicara Catat Transaksi
+    </button>
+    <button class="manual-link-btn" id="manualTriggerBtn">
+      + Input Manual
+    </button>
 
-        <!-- PRIMARY VOICE INPUT CALL-TO-ACTION -->
-        <div class="hero-voice-cta" id="heroVoiceCtaBtn">
-          <div class="hero-voice-left">
-            <div class="voice-mic-bubble">🎙️</div>
-            <div>
-              <div style="font-size: 13px; font-weight: 700; color: #FFFFFF;">Ketuk untuk Bicara</div>
-              <div style="font-size: 11px; color: rgba(255,255,255,0.7);">"Belanja makanan pentol 10.000"</div>
-            </div>
-          </div>
-          <div style="font-size: 12px; font-weight: 700; color: var(--apple-green);">Bicara ›</div>
-        </div>
-
-        <div class="card-stats-row">
-          <div class="stat-box">
-            <span class="stat-badge in">▲ PEMASUKAN</span>
-            <span class="stat-val" id="valMonthIncome">Rp 0</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-badge out">▼ PENGELUARAN</span>
-            <span class="stat-val" id="valMonthExpense">Rp 0</span>
-          </div>
-        </div>
-
-        <!-- Monthly Budget Meter -->
-        <div class="budget-meter-box">
-          <div class="budget-info-row">
-            <span>Target Budget: <strong id="valTargetBudget">Rp 8.900.000</strong></span>
-            <span id="valBudgetPercent">0%</span>
-          </div>
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" id="budgetProgressBar"></div>
-          </div>
-        </div>
-      </div>
+    <!-- Simple Transaction History -->
+    <div class="list-header">
+      <span>Riwayat</span>
+      <span id="totalTrxCount">0 Transaksi</span>
     </div>
 
-    <!-- Segmented Navigation (Transaksi / Analisis) -->
-    <div class="segment-wrapper">
-      <div class="apple-segmented-control">
-        <button class="segment-btn active" id="tabBtnTransactions">
-          <span>📋</span> Transaksi
-        </button>
-        <button class="segment-btn" id="tabBtnAnalytics">
-          <span>📊</span> Analisis Bulanan
-        </button>
-      </div>
+    <div id="txListContainer">
+      <!-- Dynamic Transactions Grouped by Date -->
     </div>
 
-    <!-- Main Content Area: Responsive Grid on Desktop/Tablet -->
-    <main class="content-section">
-      <!-- 1. TRANSACTIONS TAB -->
-      <div id="panelTransactions">
-        <div class="section-header-title">
-          <span>Riwayat Transaksi</span>
-          <span style="font-size: 12px; color: var(--apple-blue); cursor: pointer;" id="filterTypeToggle">Semua Tipe ▾</span>
-        </div>
-        
-        <div id="transactionsContainer">
-          <!-- Dynamic transaction cards grouped by date will be rendered here -->
-        </div>
-      </div>
-
-      <!-- 2. ANALYTICS TAB -->
-      <div id="panelAnalytics" class="analytics-panel">
-        <div class="chart-card">
-          <div class="chart-title">
-            <span>🍰</span> Distribusi Pengeluaran Kategori
-          </div>
-          <div id="categoryChartBars">
-            <!-- Dynamic Category Breakdown Bars -->
-          </div>
-        </div>
-
-        <div class="chart-card">
-          <div class="chart-title">
-            <span>📈</span> Ringkasan Rasio Finansial
-          </div>
-          <div style="font-size: 13px; line-height: 1.8; color: var(--text-secondary);">
-            <div style="display:flex; justify-content:space-between;">
-              <span>Tingkat Tabungan (Savings Rate):</span>
-              <strong style="color: var(--apple-green);" id="savingRateVal">0%</strong>
-            </div>
-            <div style="display:flex; justify-content:space-between;">
-              <span>Rata-rata Pengeluaran / Hari:</span>
-              <strong style="color: var(--text-primary);" id="dailyAvgVal">Rp 0</strong>
-            </div>
-            <div style="display:flex; justify-content:space-between;">
-              <span>Kategori Terbesar:</span>
-              <strong style="color: var(--apple-red);" id="topCategoryVal">-</strong>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- Bottom Tab Bar (PRIMARY VOICE IN CENTER) -->
-    <nav class="bottom-tab-bar">
-      <button class="tab-item active" id="navHome">
-        <span class="tab-icon">🏠</span>
-        <span>Home</span>
-      </button>
-      
-      <button class="tab-item" id="navStats">
-        <span class="tab-icon">📊</span>
-        <span>Analisis</span>
-      </button>
-
-      <!-- CENTRAL PRIMARY VOICE BUTTON (SIRI GLOWING ORB) -->
-      <button class="tab-voice-btn" id="navCentralVoiceBtn" title="Bicara untuk Catat Transaksi">
-        🎙️
-      </button>
-
-      <!-- Manual Input Option -->
-      <button class="tab-item" id="openAddModalBtn">
-        <span class="tab-icon">✍️</span>
-        <span>Manual</span>
-      </button>
-
-      <button class="tab-item" id="navSettings">
-        <span class="tab-icon">⚙️</span>
-        <span>Settings</span>
-      </button>
-    </nav>
   </div>
 
-  <!-- ================= VOICE INTELLIGENCE MODAL (SIRI STYLE) ================= -->
-  <div class="modal-overlay" id="voiceModal">
-    <div class="bottom-sheet" style="padding-top: 10px;">
-      <div class="sheet-handle-bar"></div>
-      <div class="sheet-header">
-        <div class="sheet-title"> Finance Kita Voice Intelligence</div>
-        <button class="sheet-close-btn" id="closeVoiceModalBtn">✕</button>
+  <!-- ================= VOICE MODAL ================= -->
+  <div class="modal" id="voiceModal">
+    <div class="sheet">
+      <div class="handle"></div>
+      <div class="sheet-title">Bicara Sekarang</div>
+
+      <div class="siri-circle" id="siriOrb">🎙️</div>
+
+      <div style="text-align: center; font-size: 13px; font-weight: 600; color: var(--blue); margin-bottom: 12px;" id="voiceStatus">
+        Sedang mendengarkan...
       </div>
 
-      <div class="siri-orb-container">
-        <!-- Glowing Multi-Color Siri Orb -->
-        <div class="siri-orb" id="siriOrbButton" title="Ketuk untuk bicara">
-          🎙️
-        </div>
-
-        <div style="font-size: 13px; font-weight: 600; color: var(--apple-blue); margin-bottom: 10px;" id="siriStatusText">
-          Ketuk lingkaran untuk bicara...
-        </div>
-
-        <!-- Real-time Speech Transcript -->
-        <div class="voice-transcript-box" id="speechTranscriptDisplay">
-          "Contoh: Belanja makanan pentol 10.000"
-        </div>
-
-        <!-- Smart Parsed Preview Badges -->
-        <div class="voice-parsed-summary" id="voiceParsedContainer" style="display: none;">
-          <div class="voice-chip-badge">
-            <div class="chip-title">Tipe Transaksi</div>
-            <div class="chip-val" id="parsedTypeBadge" style="color: var(--apple-red);">Pengeluaran</div>
-          </div>
-          <div class="voice-chip-badge">
-            <div class="chip-title">Kategori</div>
-            <div class="chip-val" id="parsedCategoryBadge">Makanan & Minuman</div>
-          </div>
-          <div class="voice-chip-badge">
-            <div class="chip-title">Nominal</div>
-            <div class="chip-val" id="parsedAmountBadge" style="color: var(--apple-blue); font-size: 16px;">Rp 10.000</div>
-          </div>
-          <div class="voice-chip-badge">
-            <div class="chip-title">Catatan</div>
-            <div class="chip-val" id="parsedNoteBadge">Pentol</div>
-          </div>
-        </div>
-
-        <!-- Action Button -->
-        <button class="apple-submit-btn" id="confirmVoiceTxBtn" style="display: none; background: var(--apple-green);">
-          ✓ Simpan Transaksi Ini
-        </button>
-        <button class="apple-submit-btn" id="retryVoiceBtn" style="display: none; background: var(--bg-card); color: var(--text-primary); margin-top: 8px;">
-          🔄 Coba Ulang Bicara
-        </button>
+      <div class="transcript-box" id="transcriptBox">
+        "Contoh: Makan pentol 10.000"
       </div>
+
+      <div class="parsed-grid" id="parsedGrid" style="display: none;">
+        <div class="parsed-item">
+          <div class="parsed-label">Tipe</div>
+          <div class="parsed-val" id="parsedType" style="color: var(--red);">Pengeluaran</div>
+        </div>
+        <div class="parsed-item">
+          <div class="parsed-label">Nominal</div>
+          <div class="parsed-val" id="parsedAmount" style="color: var(--blue);">Rp 10.000</div>
+        </div>
+        <div class="parsed-item">
+          <div class="parsed-label">Kategori</div>
+          <div class="parsed-val" id="parsedCategory">Makanan & Minuman</div>
+        </div>
+        <div class="parsed-item">
+          <div class="parsed-label">Catatan</div>
+          <div class="parsed-val" id="parsedNote">Pentol</div>
+        </div>
+      </div>
+
+      <button class="btn-submit" id="saveVoiceBtn" style="display: none; background: var(--green);">
+        ✓ Simpan Transaksi
+      </button>
     </div>
   </div>
 
-  <!-- ================= ADD TRANSACTION MODAL (MANUAL BOTTOM SHEET) ================= -->
-  <div class="modal-overlay" id="addTxModal">
-    <div class="bottom-sheet">
-      <div class="sheet-handle-bar"></div>
-      <div class="sheet-header">
-        <div class="sheet-title" id="sheetModalTitle">Catat Manual</div>
-        <button class="sheet-close-btn" id="closeAddModalBtn">✕</button>
+  <!-- ================= MANUAL MODAL ================= -->
+  <div class="modal" id="manualModal">
+    <div class="sheet">
+      <div class="handle"></div>
+      <div class="sheet-title">Input Manual</div>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+        <button class="btn-submit" id="btnTypeExpense" style="background: var(--red); flex: 1;">Pengeluaran</button>
+        <button class="btn-submit" id="btnTypeIncome" style="background: var(--card-subtle); color: var(--text-muted); flex: 1;">Pemasukan</button>
       </div>
 
-      <!-- Voice Shortcut Button inside manual form -->
-      <button class="voice-shortcut-btn" id="sheetVoiceBtn">
-        <span>🎙️</span> <strong>Lebih Cepat: Bicara Saja</strong>
-      </button>
-
-      <!-- Segmented Type Selector -->
-      <div class="apple-segmented-control" style="margin-bottom: 16px;">
-        <button class="segment-btn active" id="typeExpenseBtn">▼ Pengeluaran</button>
-        <button class="segment-btn" id="typeIncomeBtn">▲ Pemasukan</button>
-      </div>
-
-      <!-- Amount Input Display -->
-      <div class="sheet-amount-container">
-        <div class="sheet-amount-display">
-          <span class="curr">Rp</span>
-          <span id="amountDisplayNumber">0</span>
-        </div>
-        <input type="number" id="hiddenRawAmount" placeholder="0" style="position: absolute; opacity: 0; pointer-events: none;">
-        
-        <!-- Quick Preset Additions -->
-        <div class="preset-chips">
-          <div class="preset-chip" onclick="addAmountPreset(20000)">+20rb</div>
-          <div class="preset-chip" onclick="addAmountPreset(50000)">+50rb</div>
-          <div class="preset-chip" onclick="addAmountPreset(100000)">+100rb</div>
-          <div class="preset-chip" onclick="addAmountPreset(500000)">+500rb</div>
-          <div class="preset-chip" onclick="clearAmount()">Reset</div>
-        </div>
-      </div>
-
-      <!-- Category Picker -->
       <div class="form-group">
-        <label class="form-label">Pilih Kategori</label>
-        <div class="category-picker-grid" id="categoryPickerGrid">
-          <!-- Dynamic categories -->
-        </div>
+        <label class="form-label">Nominal (Rp)</label>
+        <input type="number" class="clean-input" id="inputAmount" placeholder="Contoh: 25000">
       </div>
 
-      <!-- Date & Payment Method -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-        <div class="form-group">
-          <label class="form-label">Tanggal</label>
-          <input type="date" class="apple-input" id="txDateInput">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Metode Pembayaran</label>
-          <select class="apple-input" id="txMethodInput">
-            <option value="Tunai">💵 Tunai / Cash</option>
-            <option value="BCA">💳 BCA</option>
-            <option value="Mandiri">💳 Mandiri</option>
-            <option value="BRI">💳 BRI</option>
-            <option value="QRIS">📱 QRIS / E-Wallet</option>
-            <option value="GoPay">🟢 GoPay</option>
-            <option value="OVO">🟣 OVO</option>
-            <option value="ShopeePay">🟠 ShopeePay</option>
-            <option value="Lainnya">📦 Lainnya</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Note Input -->
       <div class="form-group">
-        <label class="form-label">Catatan (Opsional)</label>
-        <input type="text" class="apple-input" id="txNoteInput" placeholder="Contoh: Makan siang ramen, beli token listrik...">
+        <label class="form-label">Kategori</label>
+        <select class="clean-input" id="selectCategory">
+          <option value="Makanan & Minuman">🍔 Makanan & Minuman</option>
+          <option value="Transportasi & Bensin">🚗 Transportasi & Bensin</option>
+          <option value="Belanja & Kebutuhan">🛍️ Belanja & Kebutuhan</option>
+          <option value="Tagihan & Listrik/Air">⚡ Tagihan & Listrik/Air</option>
+          <option value="Gaji Pokok">💼 Gaji Pokok</option>
+          <option value="Lain-lain">📦 Lain-lain</option>
+        </select>
       </div>
 
-      <!-- Submit Button -->
-      <button class="apple-submit-btn" id="saveTransactionBtn">Simpan Transaksi</button>
+      <div class="form-group">
+        <label class="form-label">Catatan</label>
+        <input type="text" class="clean-input" id="inputNote" placeholder="Contoh: Beli bensin pertamax">
+      </div>
+
+      <button class="btn-submit" id="saveManualBtn" style="margin-top: 8px;">Simpan</button>
     </div>
   </div>
 
   <!-- ================= SETTINGS MODAL ================= -->
-  <div class="modal-overlay" id="settingsModal">
-    <div class="bottom-sheet">
-      <div class="sheet-handle-bar"></div>
-      <div class="sheet-header">
-        <div class="sheet-title">Pengaturan Finance Kita</div>
-        <button class="sheet-close-btn" id="closeSettingsModalBtn">✕</button>
-      </div>
-
-      <div class="setup-guide-box">
-        <strong>🚀 Cara Sambungkan ke Google Apps Script:</strong>
-        <ol>
-          <li>Buka Google Sheets di browser Anda.</li>
-          <li>Klik menu <strong>Extensions > Apps Script</strong>.</li>
-          <li>Jalankan fungsi <code>setupDatabase()</code> dari <code>SETUP.gs</code> satu kali.</li>
-          <li>Klik tombol biru <strong>Deploy > New Deployment > Web App</strong> (Execute as: <em>Me</em>, Access: <em>Anyone</em>).</li>
-          <li>Salin <strong>Web App URL</strong> dan tempel di bawah ini.</li>
-        </ol>
-      </div>
+  <div class="modal" id="settingsModal">
+    <div class="sheet">
+      <div class="handle"></div>
+      <div class="sheet-title">Pengaturan Google Sheet</div>
 
       <div class="form-group">
-        <label class="form-label">Google Apps Script Web App URL</label>
-        <input type="url" class="apple-input" id="apiEndpointInput" placeholder="https://script.google.com/macros/s/.../exec">
+        <label class="form-label">URL Web App Apps Script</label>
+        <input type="url" class="clean-input" id="inputApiUrl" placeholder="https://script.google.com/macros/s/.../exec">
       </div>
 
-      <div class="form-group">
-        <label class="form-label">Target Budget Pengeluaran Bulanan (IDR)</label>
-        <input type="number" class="apple-input" id="targetBudgetInput" value="8900000" placeholder="8900000">
-      </div>
-
-      <div style="display: flex; gap: 10px; margin-top: 14px;">
-        <button class="apple-submit-btn" style="flex: 1; background: var(--apple-green);" id="testApiBtn">Tes Koneksi</button>
-        <button class="apple-submit-btn" style="flex: 1;" id="saveSettingsBtn">Simpan Pengaturan</button>
-      </div>
-
-      <div style="margin-top: 20px; text-align: center;">
-        <button id="resetDemoDataBtn" style="background: none; border: none; color: var(--apple-red); font-size: 13px; font-weight: 600; cursor: pointer;">
-          Reset ke Data Demo Bawaan
-        </button>
-      </div>
+      <button class="btn-submit" id="saveSettingsBtn">Simpan URL</button>
     </div>
   </div>
 
-  <!-- Toast Notification Banner -->
-  <div class="apple-toast" id="appleToast">
-    <span id="toastIcon"></span>
-    <span id="toastMessage">Transaksi Berhasil Dicatat</span>
-  </div>
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">Tersimpan</div>
 
-  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <!-- ================= LIGHTWEIGHT JAVASCRIPT ================= -->
   <script>
-    const STORAGE_KEY = 'FINANCE_KITA_DATA_V2';
-    const SETTINGS_KEY = 'FINANCE_KITA_SETTINGS_V2';
+    const STORAGE_KEY = 'FINANCE_KITA_CLEAN';
+    const MONTHS = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
-    let appState = {
+    let state = {
       apiUrl: localStorage.getItem('API_URL') || '',
-      targetBudget: Number(localStorage.getItem('TARGET_BUDGET')) || 8900000,
-      activeYear: new Date().getFullYear(),
-      activeMonth: new Date().getMonth() + 1,
-      selectedType: 'Pengeluaran',
-      selectedCategory: null,
-      currentAmount: 0,
-      filterType: 'ALL',
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1,
       transactions: [],
-      categories: [],
-      summary: {
-        monthPemasukan: 0,
-        monthPengeluaran: 0,
-        totalSaldo: 0,
-        categoryExpenses: {}
-      }
+      manualType: 'Pengeluaran',
+      detectedVoice: null
     };
 
-    const DEFAULT_CATEGORIES = [
-      { id: "cat_makan", nama: "Makanan & Minuman", tipe: "Pengeluaran", icon: "🍔", warna: "#FF9500", budget: 2500000 },
-      { id: "cat_transport", nama: "Transportasi & Bensin", tipe: "Pengeluaran", icon: "🚗", warna: "#0A84FF", budget: 800000 },
-      { id: "cat_belanja", nama: "Belanja & Kebutuhan", tipe: "Pengeluaran", icon: "🛍️", warna: "#AF52DE", budget: 1200000 },
-      { id: "cat_tagihan", nama: "Tagihan & Listrik/Air", tipe: "Pengeluaran", icon: "⚡", warna: "#FF3B30", budget: 900000 },
-      { id: "cat_hiburan", nama: "Hiburan & Rekreasi", tipe: "Pengeluaran", icon: "🎮", warna: "#5E5CE6", budget: 500000 },
-      { id: "cat_kesehatan", nama: "Kesehatan & Medis", tipe: "Pengeluaran", icon: "💊", warna: "#30D158", budget: 400000 },
-      { id: "cat_edukasi", nama: "Pendidikan & Buku", tipe: "Pengeluaran", icon: "📚", warna: "#64D2FF", budget: 300000 },
-      { id: "cat_amal", nama: "Sedekah & Amal", tipe: "Pengeluaran", icon: "🤲", warna: "#34C759", budget: 500000 },
-      { id: "cat_keluarga", nama: "Keluarga & Anak", tipe: "Pengeluaran", icon: "🏡", warna: "#FF2D55", budget: 1500000 },
-      { id: "cat_lain", nama: "Lain-lain", tipe: "Pengeluaran", icon: "📦", warna: "#8E8E93", budget: 300000 },
-      { id: "cat_gaji", nama: "Gaji Pokok", tipe: "Pemasukan", icon: "💼", warna: "#30D158", budget: 0 },
-      { id: "cat_bisnis", nama: "Bisnis & Usaha", tipe: "Pemasukan", icon: "📈", warna: "#34C759", budget: 0 },
-      { id: "cat_freelance", nama: "Freelance & Proyek", tipe: "Pemasukan", icon: "💻", warna: "#0A84FF", budget: 0 },
-      { id: "cat_investasi", nama: "Investasi & Dividen", tipe: "Pemasukan", icon: "💰", warna: "#FFD60A", budget: 0 },
-      { id: "cat_bonus", nama: "Bonus & Hadiah", tipe: "Pemasukan", icon: "🎁", warna: "#FF9F0A", budget: 0 }
-    ];
-
-    const DUMMY_TRANSACTIONS = [
-      { id: "TRX-DEMO1", tanggal: getFormattedDate(0), jenis: "Pemasukan", kategori: "Gaji Pokok", jumlah: 12500000, metode: "BCA", catatan: "Gaji Bulanan", createdAt: new Date().toISOString() },
-      { id: "TRX-DEMO2", tanggal: getFormattedDate(0), jenis: "Pengeluaran", kategori: "Makanan & Minuman", jumlah: 85000, metode: "QRIS", catatan: "Kopi & Brunch", createdAt: new Date().toISOString() },
-      { id: "TRX-DEMO3", tanggal: getFormattedDate(1), jenis: "Pengeluaran", kategori: "Transportasi & Bensin", jumlah: 150000, metode: "Tunai", catatan: "Isi Bensin Pertamax", createdAt: new Date().toISOString() },
-      { id: "TRX-DEMO4", tanggal: getFormattedDate(2), jenis: "Pengeluaran", kategori: "Tagihan & Listrik/Air", jumlah: 650000, metode: "BCA", catatan: "Token Listrik & WiFi", createdAt: new Date().toISOString() },
-      { id: "TRX-DEMO5", tanggal: getFormattedDate(3), jenis: "Pemasukan", kategori: "Freelance & Proyek", jumlah: 2500000, metode: "Mandiri", catatan: "DP Pembuatan Web App", createdAt: new Date().toISOString() }
-    ];
-
-    function getFormattedDate(daysAgo) {
-      const d = new Date();
-      d.setDate(d.getDate() - daysAgo);
-      return d.toISOString().split('T')[0];
-    }
-
+    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
-      loadCachedData();
-      initUI();
-      initVoiceEngine();
-      registerPWA();
-
-      if (appState.apiUrl) {
-        fetchFromGoogleSheets();
-      } else {
-        updateSyncStatus('offline', 'Mode Demo (Belum Ada URL Sheet)');
-      }
+      loadData();
+      initEvents();
+      initVoice();
     });
 
-    function loadCachedData() {
+    function loadData() {
       const cached = localStorage.getItem(STORAGE_KEY);
       if (cached) {
-        try {
-          const parsed = JSON.parse(cached);
-          appState.transactions = parsed.transactions || [];
-          appState.categories = parsed.categories || DEFAULT_CATEGORIES;
-        } catch (e) {
-          appState.transactions = DUMMY_TRANSACTIONS;
-          appState.categories = DEFAULT_CATEGORIES;
-        }
+        try { state.transactions = JSON.parse(cached); } catch(e){}
       } else {
-        appState.transactions = DUMMY_TRANSACTIONS;
-        appState.categories = DEFAULT_CATEGORIES;
-        saveToCache();
+        state.transactions = [
+          { id: 'T1', tanggal: today(), jenis: 'Pengeluaran', kategori: 'Makanan & Minuman', jumlah: 15000, catatan: 'Makan Pentol', icon: '🍔' },
+          { id: 'T2', tanggal: today(), jenis: 'Pemasukan', kategori: 'Gaji Pokok', jumlah: 5000000, catatan: 'Gaji Masuk', icon: '💼' }
+        ];
+        save();
       }
-      recalculateMonthlySummary();
-      renderAll();
+      render();
+      if (state.apiUrl) fetchCloud();
     }
 
-    function saveToCache() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        transactions: appState.transactions,
-        categories: appState.categories
-      }));
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.transactions));
     }
 
-    function recalculateMonthlySummary() {
-      let mIn = 0;
-      let mOut = 0;
-      let catExpenses = {};
-      const targetY = appState.activeYear;
-      const targetM = appState.activeMonth;
-
-      appState.transactions.forEach(t => {
-        const parts = t.tanggal.split('-');
-        if (parts.length === 3) {
-          const y = parseInt(parts[0], 10);
-          const m = parseInt(parts[1], 10);
-
-          if (y === targetY && m === targetM) {
-            if (t.jenis === 'Pemasukan') {
-              mIn += Number(t.jumlah) || 0;
-            } else {
-              mOut += Number(t.jumlah) || 0;
-              catExpenses[t.kategori] = (catExpenses[t.kategori] || 0) + Number(t.jumlah);
-            }
-          }
-        }
-      });
-
-      appState.summary = {
-        monthPemasukan: mIn,
-        monthPengeluaran: mOut,
-        totalSaldo: mIn - mOut,
-        categoryExpenses: catExpenses
-      };
-    }
-
-    function renderAll() {
-      renderHeaderMonth();
-      renderHeroCard();
-      renderTransactionsList();
-      renderAnalyticsChart();
-    }
-
-    const MONTH_NAMES = [
-      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-    ];
-
-    function renderHeaderMonth() {
-      document.getElementById('currentMonthLabel').textContent = 
-        `${MONTH_NAMES[appState.activeMonth - 1]} ${appState.activeYear}`;
+    function today() {
+      return new Date().toISOString().split('T')[0];
     }
 
     function formatIDR(num) {
       return new Intl.NumberFormat('id-ID').format(Math.round(num || 0));
     }
 
-    function renderHeroCard() {
-      const net = appState.summary.totalSaldo;
-      const netEl = document.getElementById('valNetBalance');
-      netEl.textContent = formatIDR(net);
-      netEl.style.color = net < 0 ? 'var(--apple-red)' : '#FFFFFF';
+    // Render Clean UI
+    function render() {
+      document.getElementById('monthLabel').textContent = `${MONTHS[state.month - 1]} ${state.year}`;
 
-      document.getElementById('valMonthIncome').textContent = 'Rp ' + formatIDR(appState.summary.monthPemasukan);
-      document.getElementById('valMonthExpense').textContent = 'Rp ' + formatIDR(appState.summary.monthPengeluaran);
-      document.getElementById('valTargetBudget').textContent = 'Rp ' + formatIDR(appState.targetBudget);
+      let income = 0;
+      let expense = 0;
 
-      let percent = 0;
-      if (appState.targetBudget > 0) {
-        percent = Math.min(100, Math.round((appState.summary.monthPengeluaran / appState.targetBudget) * 100));
-      }
-      document.getElementById('valBudgetPercent').textContent = percent + '%';
-      const fillBar = document.getElementById('budgetProgressBar');
-      fillBar.style.width = percent + '%';
-
-      if (percent > 90) {
-        fillBar.style.background = 'var(--apple-red)';
-      } else if (percent > 75) {
-        fillBar.style.background = 'var(--apple-orange)';
-      } else {
-        fillBar.style.background = 'linear-gradient(90deg, #30D158, #0A84FF)';
-      }
-    }
-
-    function renderTransactionsList() {
-      const container = document.getElementById('transactionsContainer');
-      container.innerHTML = '';
-
-      const filtered = appState.transactions.filter(t => {
+      const filtered = state.transactions.filter(t => {
         const parts = t.tanggal.split('-');
-        if (parts.length === 3) {
-          const y = parseInt(parts[0], 10);
-          const m = parseInt(parts[1], 10);
-          if (y !== appState.activeYear || m !== appState.activeMonth) return false;
-          if (appState.filterType !== 'ALL' && t.jenis !== appState.filterType) return false;
-          return true;
-        }
-        return false;
+        return parseInt(parts[0], 10) === state.year && parseInt(parts[1], 10) === state.month;
       });
 
+      filtered.forEach(t => {
+        if (t.jenis === 'Pemasukan') income += t.jumlah;
+        else expense += t.jumlah;
+      });
+
+      const net = income - expense;
+      const netEl = document.getElementById('netBalance');
+      netEl.textContent = 'Rp ' + formatIDR(net);
+      netEl.style.color = net < 0 ? 'var(--red)' : 'var(--text)';
+
+      document.getElementById('incomeVal').textContent = 'Rp ' + formatIDR(income);
+      document.getElementById('expenseVal').textContent = 'Rp ' + formatIDR(expense);
+      document.getElementById('totalTrxCount').textContent = `${filtered.length} Transaksi`;
+
+      // Render Transaction List Grouped
+      const container = document.getElementById('txListContainer');
+      container.innerHTML = '';
+
       if (filtered.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-icon">🎙️</div>
-            <p><strong>Belum ada transaksi di bulan ini.</strong></p>
-            <p style="font-size: 13px; margin-top: 6px;">Ketuk tombol <strong>🎙️ Bicara</strong> di tengah untuk mencatat instan.</p>
-          </div>
-        `;
+        container.innerHTML = '<div class="empty-box">Belum ada transaksi di bulan ini.</div>';
         return;
       }
 
@@ -1752,866 +685,290 @@
         grouped[t.tanggal].push(t);
       });
 
-      const todayStr = new Date().toISOString().split('T')[0];
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = yesterday.toISOString().split('T')[0];
+      const dates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
+      dates.forEach(d => {
+        const box = document.createElement('div');
+        box.className = 'group-box';
 
-      const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
+        let dateLabel = d === today() ? 'HARI INI' : d;
+        box.innerHTML = `<div class="group-date">${dateLabel}</div>`;
 
-      sortedDates.forEach(dateStr => {
-        let label = dateStr;
-        if (dateStr === todayStr) label = 'Hari Ini';
-        else if (dateStr === yesterdayStr) label = 'Kemarin';
-        else {
-          const d = new Date(dateStr + "T00:00:00");
-          label = `${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
-        }
-
-        const groupEl = document.createElement('div');
-        groupEl.className = 'transaction-group';
-
-        const headerEl = document.createElement('div');
-        headerEl.className = 'group-date-header';
-        headerEl.innerHTML = `<span>${label}</span><span>${grouped[dateStr].length} transaksi</span>`;
-        groupEl.appendChild(headerEl);
-
-        grouped[dateStr].forEach(t => {
-          const cat = appState.categories.find(c => c.nama === t.kategori) || { icon: '🏷️', warna: '#8E8E93' };
-          const isExpense = t.jenis === 'Pengeluaran';
+        grouped[d].forEach(t => {
+          const isExp = t.jenis === 'Pengeluaran';
           const row = document.createElement('div');
-          row.className = 'transaction-row';
+          row.className = 'tx-item';
           row.innerHTML = `
-            <div class="tx-icon-squircle" style="background: ${cat.warna}20; color: ${cat.warna};">
-              ${cat.icon}
+            <div class="tx-icon">${t.icon || (isExp ? '🍔' : '💰')}</div>
+            <div class="tx-meta">
+              <div class="tx-name">${escapeHtml(t.catatan || t.kategori)}</div>
+              <div class="tx-sub">${escapeHtml(t.kategori)}</div>
             </div>
-            <div class="tx-details">
-              <div class="tx-title">${escapeHtml(t.kategori)}</div>
-              <div class="tx-subtitle">
-                <span class="method-tag">${escapeHtml(t.metode || 'Tunai')}</span>
-                <span>${t.catatan ? escapeHtml(t.catatan) : ''}</span>
-              </div>
-            </div>
-            <div class="tx-amount ${isExpense ? 'expense' : 'income'}">
-              ${isExpense ? '-' : '+'}Rp ${formatIDR(t.jumlah)}
+            <div class="tx-val ${isExp ? 'val-out' : 'val-in'}">
+              ${isExp ? '-' : '+'}Rp ${formatIDR(t.jumlah)}
             </div>
           `;
-
-          row.addEventListener('click', () => {
-            promptDeleteTransaction(t);
-          });
-
-          groupEl.appendChild(row);
+          row.onclick = () => {
+            if (confirm(`Hapus: ${t.catatan || t.kategori} (Rp ${formatIDR(t.jumlah)})?`)) {
+              state.transactions = state.transactions.filter(x => x.id !== t.id);
+              save();
+              render();
+              showToast('Dihapus');
+              if (state.apiUrl) postCloud({ action: 'delete_transaction', id: t.id });
+            }
+          };
+          box.appendChild(row);
         });
 
-        container.appendChild(groupEl);
+        container.appendChild(box);
       });
     }
 
-    function renderAnalyticsChart() {
-      const container = document.getElementById('categoryChartBars');
-      container.innerHTML = '';
-
-      const expenses = appState.summary.categoryExpenses;
-      const totalExpense = appState.summary.monthPengeluaran;
-
-      const keys = Object.keys(expenses);
-      if (keys.length === 0 || totalExpense === 0) {
-        container.innerHTML = '<div style="color: var(--text-secondary); font-size: 13px; text-align: center; padding: 20px;">Belum ada pengeluaran di bulan ini.</div>';
-        document.getElementById('topCategoryVal').textContent = '-';
-        document.getElementById('savingRateVal').textContent = '0%';
-        document.getElementById('dailyAvgVal').textContent = 'Rp 0';
-        return;
-      }
-
-      keys.sort((a, b) => expenses[b] - expenses[a]);
-
-      let topCat = keys[0];
-      document.getElementById('topCategoryVal').textContent = `${topCat} (Rp ${formatIDR(expenses[topCat])})`;
-
-      if (appState.summary.monthPemasukan > 0) {
-        const rate = Math.round(((appState.summary.monthPemasukan - totalExpense) / appState.summary.monthPemasukan) * 100);
-        document.getElementById('savingRateVal').textContent = rate + '%';
-      } else {
-        document.getElementById('savingRateVal').textContent = '0%';
-      }
-
-      const now = new Date();
-      let dayCount = 30;
-      if (appState.activeMonth === (now.getMonth() + 1) && appState.activeYear === now.getFullYear()) {
-        dayCount = Math.max(1, now.getDate());
-      }
-      const dailyAvg = Math.round(totalExpense / dayCount);
-      document.getElementById('dailyAvgVal').textContent = 'Rp ' + formatIDR(dailyAvg);
-
-      keys.forEach(catName => {
-        const amount = expenses[catName];
-        const percent = Math.round((amount / totalExpense) * 100);
-        const cat = appState.categories.find(c => c.nama === catName) || { icon: '🏷️', warna: '#0A84FF' };
-
-        const bar = document.createElement('div');
-        bar.className = 'category-bar-item';
-        bar.innerHTML = `
-          <div class="cat-bar-header">
-            <span class="cat-bar-name"><span>${cat.icon}</span> ${escapeHtml(catName)}</span>
-            <span class="cat-bar-sum">Rp ${formatIDR(amount)} <span style="color: var(--text-tertiary); font-weight: normal; font-size: 11px;">(${percent}%)</span></span>
-          </div>
-          <div class="cat-bar-track">
-            <div class="cat-bar-fill" style="width: ${percent}%; background: ${cat.warna};"></div>
-          </div>
-        `;
-        container.appendChild(bar);
-      });
-    }
-
-    function renderCategoryPicker() {
-      const grid = document.getElementById('categoryPickerGrid');
-      grid.innerHTML = '';
-
-      const relevant = appState.categories.filter(c => c.tipe === appState.selectedType);
-      if (relevant.length === 0) return;
-
-      if (!appState.selectedCategory || !relevant.find(c => c.nama === appState.selectedCategory)) {
-        appState.selectedCategory = relevant[0].nama;
-      }
-
-      relevant.forEach(c => {
-        const item = document.createElement('div');
-        item.className = 'cat-pick-item' + (c.nama === appState.selectedCategory ? ' selected' : '');
-        item.innerHTML = `
-          <div class="cat-pick-icon">${c.icon}</div>
-          <div class="cat-pick-name">${escapeHtml(c.nama)}</div>
-        `;
-        item.addEventListener('click', () => {
-          hapticFeedback();
-          appState.selectedCategory = c.nama;
-          document.querySelectorAll('.cat-pick-item').forEach(el => el.classList.remove('selected'));
-          item.classList.add('selected');
-        });
-        grid.appendChild(item);
-      });
-    }
-
-    function initUI() {
-      document.getElementById('prevMonthBtn').addEventListener('click', () => {
-        hapticFeedback();
-        if (appState.activeMonth === 1) {
-          appState.activeMonth = 12;
-          appState.activeYear--;
-        } else {
-          appState.activeMonth--;
-        }
-        recalculateMonthlySummary();
-        renderAll();
-      });
-
-      document.getElementById('nextMonthBtn').addEventListener('click', () => {
-        hapticFeedback();
-        if (appState.activeMonth === 12) {
-          appState.activeMonth = 1;
-          appState.activeYear++;
-        } else {
-          appState.activeMonth++;
-        }
-        recalculateMonthlySummary();
-        renderAll();
-      });
-
-      document.getElementById('todayJumpBtn').addEventListener('click', () => {
-        hapticFeedback();
-        const now = new Date();
-        appState.activeYear = now.getFullYear();
-        appState.activeMonth = now.getMonth() + 1;
-        recalculateMonthlySummary();
-        renderAll();
-        showToast('Bulan Ini Ditampilkan');
-      });
-
-      document.getElementById('filterTypeToggle').addEventListener('click', () => {
-        hapticFeedback();
-        if (appState.filterType === 'ALL') {
-          appState.filterType = 'Pengeluaran';
-          document.getElementById('filterTypeToggle').textContent = 'Pengeluaran Saja ▾';
-        } else if (appState.filterType === 'Pengeluaran') {
-          appState.filterType = 'Pemasukan';
-          document.getElementById('filterTypeToggle').textContent = 'Pemasukan Saja ▾';
-        } else {
-          appState.filterType = 'ALL';
-          document.getElementById('filterTypeToggle').textContent = 'Semua Tipe ▾';
-        }
-        renderTransactionsList();
-      });
-
-      const tabTx = document.getElementById('tabBtnTransactions');
-      const tabAn = document.getElementById('tabBtnAnalytics');
-      const panelTx = document.getElementById('panelTransactions');
-      const panelAn = document.getElementById('panelAnalytics');
-
-      tabTx.addEventListener('click', () => {
-        hapticFeedback();
-        tabTx.classList.add('active');
-        tabAn.classList.remove('active');
-        panelTx.style.display = 'block';
-        panelAn.classList.remove('active');
-      });
-
-      tabAn.addEventListener('click', () => {
-        hapticFeedback();
-        tabAn.classList.add('active');
-        tabTx.classList.remove('active');
-        panelTx.style.display = 'none';
-        panelAn.classList.add('active');
-      });
-
-      document.getElementById('navHome').addEventListener('click', () => {
-        hapticFeedback();
-        tabTx.click();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-      document.getElementById('navStats').addEventListener('click', () => {
-        hapticFeedback();
-        tabAn.click();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-
-      // CENTRAL PRIMARY VOICE BUTTON
-      document.getElementById('navCentralVoiceBtn').addEventListener('click', () => {
-        hapticFeedback();
-        openVoiceModal();
-      });
-
-      // HERO CARD VOICE CTA
-      document.getElementById('heroVoiceCtaBtn').addEventListener('click', () => {
-        hapticFeedback();
-        openVoiceModal();
-      });
-
-      // HEADER BUTTONS
-      document.getElementById('headerVoiceBtn').addEventListener('click', openVoiceModal);
-      document.getElementById('headerAddManualBtn').addEventListener('click', openAddModal);
-
-      // MANUAL MODAL
-      document.getElementById('openAddModalBtn').addEventListener('click', openAddModal);
-      document.getElementById('closeAddModalBtn').addEventListener('click', closeAddModal);
-
-      const expBtn = document.getElementById('typeExpenseBtn');
-      const incBtn = document.getElementById('typeIncomeBtn');
-
-      expBtn.addEventListener('click', () => {
-        hapticFeedback();
-        appState.selectedType = 'Pengeluaran';
-        expBtn.classList.add('active');
-        incBtn.classList.remove('active');
-        document.getElementById('amountDisplayNumber').style.color = 'var(--apple-red)';
-        renderCategoryPicker();
-      });
-
-      incBtn.addEventListener('click', () => {
-        hapticFeedback();
-        appState.selectedType = 'Pemasukan';
-        incBtn.classList.add('active');
-        expBtn.classList.remove('active');
-        document.getElementById('amountDisplayNumber').style.color = 'var(--apple-green)';
-        renderCategoryPicker();
-      });
-
-      document.getElementById('saveTransactionBtn').addEventListener('click', handleSaveTransaction);
-
-      document.querySelector('.sheet-amount-container').addEventListener('click', () => {
-        const raw = document.getElementById('hiddenRawAmount');
-        raw.style.display = 'block';
-        raw.focus();
-      });
-
-      document.getElementById('hiddenRawAmount').addEventListener('input', (e) => {
-        const val = parseInt(e.target.value, 10) || 0;
-        appState.currentAmount = val;
-        updateAmountDisplay();
-      });
-
-      document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
-      document.getElementById('navSettings').addEventListener('click', openSettingsModal);
-      document.getElementById('closeSettingsModalBtn').addEventListener('click', closeSettingsModal);
-      document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
-      document.getElementById('testApiBtn').addEventListener('click', testApiConnection);
-
-      document.getElementById('resetDemoDataBtn').addEventListener('click', () => {
-        if (confirm('Reset ke data demo bawaan? Data lokal akan diganti.')) {
-          localStorage.removeItem(STORAGE_KEY);
-          loadCachedData();
-          closeSettingsModal();
-          showToast('Data demo berhasil dimuat');
-        }
-      });
-
-      document.getElementById('themeToggleBtn').addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme') || 'dark';
-        const next = current === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('THEME_MODE', next);
-        showToast(next === 'light' ? '☀️ Mode Terang' : '🌙 Mode Gelap');
-      });
-
-      const savedTheme = localStorage.getItem('THEME_MODE');
-      if (savedTheme) {
-        document.documentElement.setAttribute('data-theme', savedTheme);
-      }
-
-      document.getElementById('closeVoiceModalBtn').addEventListener('click', closeVoiceModal);
-      document.getElementById('sheetVoiceBtn').addEventListener('click', () => {
-        closeAddModal();
-        openVoiceModal();
-      });
-    }
-
-    function openAddModal() {
-      hapticFeedback();
-      appState.currentAmount = 0;
-      updateAmountDisplay();
-      document.getElementById('hiddenRawAmount').value = '';
-      document.getElementById('txNoteInput').value = '';
-      document.getElementById('txDateInput').value = new Date().toISOString().split('T')[0];
-      
-      document.getElementById('typeExpenseBtn').click();
-      document.getElementById('addTxModal').classList.add('active');
-    }
-
-    function closeAddModal() {
-      hapticFeedback();
-      document.getElementById('addTxModal').classList.remove('active');
-    }
-
-    function addAmountPreset(amount) {
-      hapticFeedback();
-      appState.currentAmount += amount;
-      updateAmountDisplay();
-    }
-
-    function clearAmount() {
-      hapticFeedback();
-      appState.currentAmount = 0;
-      document.getElementById('hiddenRawAmount').value = '';
-      updateAmountDisplay();
-    }
-
-    function updateAmountDisplay() {
-      document.getElementById('amountDisplayNumber').textContent = formatIDR(appState.currentAmount);
-    }
-
-    function openSettingsModal() {
-      document.getElementById('apiEndpointInput').value = appState.apiUrl;
-      document.getElementById('targetBudgetInput').value = appState.targetBudget;
-      document.getElementById('settingsModal').classList.add('active');
-    }
-
-    function closeSettingsModal() {
-      document.getElementById('settingsModal').classList.remove('active');
-    }
-
-    function saveSettings() {
-      hapticFeedback();
-      const url = document.getElementById('apiEndpointInput').value.trim();
-      const budget = Number(document.getElementById('targetBudgetInput').value) || 8900000;
-
-      appState.apiUrl = url;
-      appState.targetBudget = budget;
-
-      localStorage.setItem('API_URL', url);
-      localStorage.setItem('TARGET_BUDGET', budget);
-
-      closeSettingsModal();
-      showToast('Pengaturan Berhasil Disimpan');
-      recalculateMonthlySummary();
-      renderAll();
-
-      if (url) {
-        fetchFromGoogleSheets();
-      }
-    }
-
-    function handleSaveTransaction() {
-      if (appState.currentAmount <= 0) {
-        alert('Harap masukkan nominal terlebih dahulu!');
-        return;
-      }
-
-      hapticFeedback();
-
-      const newTx = {
-        id: 'TRX-' + Math.floor(100000 + Math.random() * 900000),
-        tanggal: document.getElementById('txDateInput').value || new Date().toISOString().split('T')[0],
-        jenis: appState.selectedType,
-        kategori: appState.selectedCategory || 'Lain-lain',
-        jumlah: appState.currentAmount,
-        metode: document.getElementById('txMethodInput').value || 'Tunai',
-        catatan: document.getElementById('txNoteInput').value.trim(),
-        createdAt: new Date().toISOString()
+    // Event Bindings
+    function initEvents() {
+      document.getElementById('prevMonth').onclick = () => {
+        if (state.month === 1) { state.month = 12; state.year--; } else { state.month--; }
+        render();
+      };
+      document.getElementById('nextMonth').onclick = () => {
+        if (state.month === 12) { state.month = 1; state.year++; } else { state.month++; }
+        render();
       };
 
-      appState.transactions.unshift(newTx);
-      saveToCache();
-      recalculateMonthlySummary();
-      renderAll();
-      closeAddModal();
-      showToast(`+Rp ${formatIDR(newTx.jumlah)} (${newTx.kategori}) Tersimpan`);
+      // Modals
+      const vModal = document.getElementById('voiceModal');
+      const mModal = document.getElementById('manualModal');
+      const sModal = document.getElementById('settingsModal');
 
-      if (appState.apiUrl) {
-        postToGoogleSheets(newTx);
+      document.getElementById('voiceTriggerBtn').onclick = () => openModal(vModal, startVoice);
+      document.getElementById('manualTriggerBtn').onclick = () => openModal(mModal);
+      document.getElementById('settingsBtn').onclick = () => {
+        document.getElementById('inputApiUrl').value = state.apiUrl;
+        openModal(sModal);
+      };
+
+      [vModal, mModal, sModal].forEach(m => {
+        m.onclick = (e) => { if (e.target === m) closeModal(m); };
+      });
+
+      // Theme
+      document.getElementById('themeBtn').onclick = () => {
+        const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('THEME', next);
+      };
+      if (localStorage.getItem('THEME')) document.documentElement.setAttribute('data-theme', localStorage.getItem('THEME'));
+
+      // Manual Form
+      document.getElementById('btnTypeExpense').onclick = () => setManualType('Pengeluaran');
+      document.getElementById('btnTypeIncome').onclick = () => setManualType('Pemasukan');
+      document.getElementById('saveManualBtn').onclick = saveManual;
+
+      // Settings Form
+      document.getElementById('saveSettingsBtn').onclick = () => {
+        state.apiUrl = document.getElementById('inputApiUrl').value.trim();
+        localStorage.setItem('API_URL', state.apiUrl);
+        closeModal(sModal);
+        showToast('URL Tersimpan');
+        if (state.apiUrl) fetchCloud();
+      };
+    }
+
+    function setManualType(t) {
+      state.manualType = t;
+      const exp = document.getElementById('btnTypeExpense');
+      const inc = document.getElementById('btnTypeIncome');
+      if (t === 'Pengeluaran') {
+        exp.style.background = 'var(--red)'; exp.style.color = '#FFF';
+        inc.style.background = 'var(--card-subtle)'; inc.style.color = 'var(--text-muted)';
+      } else {
+        inc.style.background = 'var(--green)'; inc.style.color = '#FFF';
+        exp.style.background = 'var(--card-subtle)'; exp.style.color = 'var(--text-muted)';
       }
     }
 
-    async function postToGoogleSheets(txData) {
-      updateSyncStatus('syncing', 'Menyimpan ke Cloud...');
-      try {
-        const payload = {
-          action: 'add_transaction',
-          id: txData.id,
-          tanggal: txData.tanggal,
-          jenis: txData.jenis,
-          kategori: txData.kategori,
-          jumlah: txData.jumlah,
-          metode: txData.metode,
-          catatan: txData.catatan
-        };
+    function saveManual() {
+      const amt = Number(document.getElementById('inputAmount').value) || 0;
+      if (amt <= 0) return alert('Masukkan nominal!');
 
-        const response = await fetch(appState.apiUrl, {
+      const cat = document.getElementById('selectCategory').value;
+      const note = document.getElementById('inputNote').value.trim() || cat;
+
+      addTransaction({
+        id: 'TRX-' + Date.now().toString(36),
+        tanggal: today(),
+        jenis: state.manualType,
+        kategori: cat,
+        jumlah: amt,
+        catatan: note,
+        icon: getCategoryIcon(cat)
+      });
+
+      closeModal(document.getElementById('manualModal'));
+      document.getElementById('inputAmount').value = '';
+      document.getElementById('inputNote').value = '';
+    }
+
+    function openModal(m, cb) {
+      m.classList.add('active');
+      if (cb) cb();
+    }
+    function closeModal(m) {
+      m.classList.remove('active');
+      if (recognition) recognition.stop();
+    }
+
+    // ================= VOICE PARSER =================
+    let recognition = null;
+
+    function initVoice() {
+      const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!Speech) return;
+
+      recognition = new Speech();
+      recognition.lang = 'id-ID';
+      recognition.continuous = false;
+      recognition.interimResults = true;
+
+      recognition.onstart = () => {
+        document.getElementById('voiceStatus').textContent = 'Mendengarkan... Katakan sekarang!';
+        document.getElementById('voiceStatus').style.color = 'var(--green)';
+      };
+
+      recognition.onresult = (e) => {
+        let text = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) text += e.results[i][0].transcript;
+        document.getElementById('transcriptBox').textContent = `"${text}"`;
+
+        const parsed = parseSpeech(text);
+        if (parsed.amount > 0) {
+          state.detectedVoice = parsed;
+          document.getElementById('parsedGrid').style.display = 'grid';
+          document.getElementById('parsedType').textContent = parsed.type;
+          document.getElementById('parsedType').style.color = parsed.type === 'Pemasukan' ? 'var(--green)' : 'var(--red)';
+          document.getElementById('parsedAmount').textContent = 'Rp ' + formatIDR(parsed.amount);
+          document.getElementById('parsedCategory').textContent = parsed.category;
+          document.getElementById('parsedNote').textContent = parsed.note;
+          document.getElementById('saveVoiceBtn').style.display = 'block';
+        }
+      };
+
+      recognition.onerror = () => {
+        document.getElementById('voiceStatus').textContent = 'Ketuk lingkaran untuk bicara lagi';
+        document.getElementById('voiceStatus').style.color = 'var(--blue)';
+      };
+
+      document.getElementById('siriOrb').onclick = startVoice;
+      document.getElementById('saveVoiceBtn').onclick = () => {
+        if (!state.detectedVoice) return;
+        addTransaction({
+          id: 'TRX-' + Date.now().toString(36),
+          tanggal: today(),
+          jenis: state.detectedVoice.type,
+          kategori: state.detectedVoice.category,
+          jumlah: state.detectedVoice.amount,
+          catatan: state.detectedVoice.note,
+          icon: getCategoryIcon(state.detectedVoice.category)
+        });
+        closeModal(document.getElementById('voiceModal'));
+      };
+    }
+
+    function startVoice() {
+      if (!recognition) return alert('Gunakan Google Chrome atau Safari untuk fitur suara.');
+      document.getElementById('parsedGrid').style.display = 'none';
+      document.getElementById('saveVoiceBtn').style.display = 'none';
+      document.getElementById('transcriptBox').textContent = '"Contoh: Makan pentol 10.000"';
+      try { recognition.start(); } catch(e){}
+    }
+
+    function parseSpeech(raw) {
+      const text = raw.toLowerCase();
+      let type = 'Pengeluaran';
+      if (['gaji','masuk','terima','proyek','freelance','bonus'].some(w => text.includes(w))) type = 'Pemasukan';
+
+      // Parse Amount
+      let amount = 0;
+      const digit = text.match(/(\d+(?:[.,]\d+)?)\s*(ribu|rb|k|juta|jt)?/i);
+      if (digit) {
+        amount = parseFloat(digit[1].replace(/\./g, '').replace(/,/g, '.'));
+        const u = (digit[2] || '').toLowerCase();
+        if (['ribu','rb','k'].includes(u)) amount *= 1000;
+        if (['juta','jt'].includes(u)) amount *= 1000000;
+      } else {
+        // Simple Verbal parser
+        if (text.includes('sepuluh ribu')) amount = 10000;
+        else if (text.includes('dua puluh ribu')) amount = 20000;
+        else if (text.includes('lima puluh ribu')) amount = 50000;
+        else if (text.includes('seratus ribu')) amount = 100000;
+        else if (text.includes('satu juta') || text.includes('sejuta')) amount = 1000000;
+      }
+
+      // Category
+      let cat = type === 'Pemasukan' ? 'Gaji Pokok' : 'Makanan & Minuman';
+      if (['bensin','pertamax','ojek','gojek','grab','parkir','tol'].some(w => text.includes(w))) cat = 'Transportasi & Bensin';
+      else if (['belanja','pasar','supermarket','indomaret','baju','sabun'].some(w => text.includes(w))) cat = 'Belanja & Kebutuhan';
+      else if (['listrik','pln','air','pdam','wifi','pulsa'].some(w => text.includes(w))) cat = 'Tagihan & Listrik/Air';
+
+      // Clean Note
+      let note = text.replace(/[\d.,]+/g, ' ')
+        .replace(/\b(belanja|makanan|beli|bayar|buat|untuk|ribu|juta|rp|rupiah|gaji|pemasukan)\b/gi, ' ')
+        .trim().replace(/\s+/g, ' ');
+      note = note.length > 0 ? (note.charAt(0).toUpperCase() + note.slice(1)) : cat;
+
+      return { type, category: cat, amount: Math.round(amount), note };
+    }
+
+    function getCategoryIcon(cat) {
+      if (cat.includes('Makan')) return '🍔';
+      if (cat.includes('Transport') || cat.includes('Bensin')) return '🚗';
+      if (cat.includes('Belanja')) return '🛍️';
+      if (cat.includes('Tagihan') || cat.includes('Listrik')) return '⚡';
+      if (cat.includes('Gaji')) return '💼';
+      return '📦';
+    }
+
+    function addTransaction(tx) {
+      state.transactions.unshift(tx);
+      save();
+      render();
+      showToast(`+Rp ${formatIDR(tx.jumlah)} Tersimpan`);
+      if (state.apiUrl) postCloud({ action: 'add_transaction', ...tx });
+    }
+
+    // ================= CLOUD SYNC =================
+    async function postCloud(payload) {
+      try {
+        await fetch(state.apiUrl, {
           method: 'POST',
           mode: 'cors',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(payload)
         });
-
-        const res = await response.json();
-        if (res.status === 'success') {
-          updateSyncStatus('online', 'Tersinkron');
-        } else {
-          updateSyncStatus('offline', 'Sheet error: ' + (res.message || ''));
-        }
-      } catch (err) {
-        console.error('GAS Post error:', err);
-        updateSyncStatus('offline', 'Tersimpan Offline');
-      }
+      } catch(e){}
     }
 
-    function promptDeleteTransaction(tx) {
-      hapticFeedback();
-      if (confirm(`Hapus transaksi:\n"${tx.kategori} - Rp ${formatIDR(tx.jumlah)}"?`)) {
-        appState.transactions = appState.transactions.filter(t => t.id !== tx.id);
-        saveToCache();
-        recalculateMonthlySummary();
-        renderAll();
-        showToast('Transaksi dihapus');
-
-        if (appState.apiUrl) {
-          deleteFromGoogleSheets(tx.id);
-        }
-      }
-    }
-
-    async function deleteFromGoogleSheets(id) {
-      updateSyncStatus('syncing', 'Menghapus...');
+    async function fetchCloud() {
       try {
-        await fetch(appState.apiUrl, {
-          method: 'POST',
-          mode: 'cors',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'delete_transaction', id: id })
-        });
-        updateSyncStatus('online', 'Tersinkron');
-      } catch (e) {
-        updateSyncStatus('offline', 'Gagal hapus di Cloud');
-      }
-    }
-
-    async function fetchFromGoogleSheets() {
-      if (!appState.apiUrl) return;
-
-      updateSyncStatus('syncing', 'Mengambil Data...');
-      try {
-        const url = `${appState.apiUrl}?action=get_init_data&year=${appState.activeYear}&month=${appState.activeMonth}&_t=${Date.now()}`;
-        const res = await fetch(url);
+        const res = await fetch(`${state.apiUrl}?action=get_init_data&year=${state.year}&month=${state.month}&_t=${Date.now()}`);
         const data = await res.json();
-
-        if (data.status === 'success') {
-          if (data.transactions && Array.isArray(data.transactions)) {
-            appState.transactions = data.transactions;
-          }
-          if (data.categories && Array.isArray(data.categories)) {
-            appState.categories = data.categories;
-          }
-          saveToCache();
-          recalculateMonthlySummary();
-          renderAll();
-          updateSyncStatus('online', 'Tersambung (Cloud)');
-          showToast('Data Sheet Terupdate');
-        } else {
-          updateSyncStatus('offline', data.message || 'Error API');
+        if (data.status === 'success' && data.transactions) {
+          state.transactions = data.transactions;
+          save();
+          render();
         }
-      } catch (err) {
-        console.error('Fetch error:', err);
-        updateSyncStatus('offline', 'Gagal Konek ke Sheet');
-      }
-    }
-
-    async function testApiConnection() {
-      const url = document.getElementById('apiEndpointInput').value.trim();
-      if (!url) {
-        alert('Masukkan URL Web App Apps Script terlebih dahulu!');
-        return;
-      }
-      showToast('Menguji koneksi...');
-      try {
-        const res = await fetch(`${url}?action=ping&_t=${Date.now()}`);
-        const json = await res.json();
-        if (json.status === 'success') {
-          alert('✅ KONEKSI SUKSES!\nBackend Google Apps Script siap digunakan.');
-        } else {
-          alert('⚠️ Respons diterima tetapi status error: ' + json.message);
-        }
-      } catch (e) {
-        alert('❌ GAGAL TERHUBUNG!\nPeriksa kembali URL Deployment Anda.');
-      }
-    }
-
-    function updateSyncStatus(state, text) {
-      const dot = document.getElementById('syncStatusDot');
-      const label = document.getElementById('syncStatusText');
-      
-      dot.className = 'status-dot';
-      if (state === 'syncing') dot.classList.add('syncing');
-      else if (state === 'offline') dot.classList.add('offline');
-      
-      label.textContent = text;
-    }
-
-    // --------------------------------------------------------------------------
-    // 🎙️ VOICE INTELLIGENCE ENGINE (PRIMARY INPUT)
-    // --------------------------------------------------------------------------
-    let voiceRecognition = null;
-    let isListening = false;
-    let detectedVoiceData = null;
-
-    function initVoiceEngine() {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        console.warn('SpeechRecognition API not available in this browser.');
-        return;
-      }
-
-      voiceRecognition = new SpeechRecognition();
-      voiceRecognition.lang = 'id-ID';
-      voiceRecognition.continuous = false;
-      voiceRecognition.interimResults = true;
-
-      voiceRecognition.onstart = () => {
-        isListening = true;
-        hapticFeedback();
-        document.getElementById('siriOrbButton').classList.add('listening');
-        document.getElementById('siriStatusText').textContent = '🎙️ Sedang mendengarkan... Katakan sekarang!';
-        document.getElementById('siriStatusText').style.color = 'var(--apple-green)';
-      };
-
-      voiceRecognition.onresult = (event) => {
-        let transcript = '';
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript;
-        }
-
-        document.getElementById('speechTranscriptDisplay').textContent = `"${transcript}"`;
-
-        const parsed = parseIndonesianSpeech(transcript);
-        if (parsed && parsed.amount > 0) {
-          detectedVoiceData = parsed;
-          renderVoiceParsedPreview(parsed);
-        }
-      };
-
-      voiceRecognition.onerror = (event) => {
-        console.error('Speech error:', event.error);
-        isListening = false;
-        document.getElementById('siriOrbButton').classList.remove('listening');
-        if (event.error === 'not-allowed') {
-          document.getElementById('siriStatusText').textContent = '⚠️ Izin mikrofon belum diberikan.';
-        } else {
-          document.getElementById('siriStatusText').textContent = '⚠️ Belum terdengar jelas. Ketuk bola untuk coba lagi.';
-        }
-        document.getElementById('siriStatusText').style.color = 'var(--apple-orange)';
-      };
-
-      voiceRecognition.onend = () => {
-        isListening = false;
-        document.getElementById('siriOrbButton').classList.remove('listening');
-        if (detectedVoiceData && detectedVoiceData.amount > 0) {
-          document.getElementById('siriStatusText').textContent = '✨ Transaksi berhasil dideteksi!';
-          document.getElementById('siriStatusText').style.color = 'var(--apple-green)';
-          document.getElementById('confirmVoiceTxBtn').style.display = 'block';
-          document.getElementById('retryVoiceBtn').style.display = 'block';
-        } else {
-          document.getElementById('siriStatusText').textContent = 'Selesai. Ketuk bola jika ingin bicara lagi.';
-          document.getElementById('siriStatusText').style.color = 'var(--apple-blue)';
-        }
-      };
-
-      document.getElementById('siriOrbButton').addEventListener('click', toggleVoiceListening);
-      document.getElementById('retryVoiceBtn').addEventListener('click', () => {
-        startVoiceListening();
-      });
-
-      document.getElementById('confirmVoiceTxBtn').addEventListener('click', () => {
-        if (!detectedVoiceData || detectedVoiceData.amount <= 0) return;
-
-        hapticFeedback();
-        const tx = {
-          id: 'TRX-' + Math.floor(100000 + Math.random() * 900000),
-          tanggal: new Date().toISOString().split('T')[0],
-          jenis: detectedVoiceData.type,
-          kategori: detectedVoiceData.category,
-          jumlah: detectedVoiceData.amount,
-          metode: detectedVoiceData.method || 'Tunai',
-          catatan: detectedVoiceData.note || detectedVoiceData.category,
-          createdAt: new Date().toISOString()
-        };
-
-        appState.transactions.unshift(tx);
-        saveToCache();
-        recalculateMonthlySummary();
-        renderAll();
-
-        closeVoiceModal();
-        showToast(`✓ Berhasil: ${tx.catatan} (Rp ${formatIDR(tx.jumlah)})`);
-
-        if (appState.apiUrl) {
-          postToGoogleSheets(tx);
-        }
-      });
-    }
-
-    function openVoiceModal() {
-      hapticFeedback();
-      detectedVoiceData = null;
-      document.getElementById('speechTranscriptDisplay').textContent = '"Contoh: Belanja makanan pentol 10.000"';
-      document.getElementById('voiceParsedContainer').style.display = 'none';
-      document.getElementById('confirmVoiceTxBtn').style.display = 'none';
-      document.getElementById('retryVoiceBtn').style.display = 'none';
-      document.getElementById('voiceModal').classList.add('active');
-
-      setTimeout(() => {
-        startVoiceListening();
-      }, 350);
-    }
-
-    function closeVoiceModal() {
-      hapticFeedback();
-      stopVoiceListening();
-      document.getElementById('voiceModal').classList.remove('active');
-    }
-
-    function toggleVoiceListening() {
-      if (isListening) {
-        stopVoiceListening();
-      } else {
-        startVoiceListening();
-      }
-    }
-
-    function startVoiceListening() {
-      if (!voiceRecognition) {
-        alert('Fitur suara membutuhkan Google Chrome di Android atau Safari di iPhone.');
-        return;
-      }
-      try {
-        detectedVoiceData = null;
-        document.getElementById('confirmVoiceTxBtn').style.display = 'none';
-        document.getElementById('retryVoiceBtn').style.display = 'none';
-        voiceRecognition.start();
-      } catch (err) {
-        console.warn('Voice restart:', err);
-      }
-    }
-
-    function stopVoiceListening() {
-      if (voiceRecognition && isListening) {
-        voiceRecognition.stop();
-      }
-    }
-
-    function renderVoiceParsedPreview(p) {
-      document.getElementById('voiceParsedContainer').style.display = 'grid';
-      const typeBadge = document.getElementById('parsedTypeBadge');
-      typeBadge.textContent = p.type;
-      typeBadge.style.color = p.type === 'Pemasukan' ? 'var(--apple-green)' : 'var(--apple-red)';
-      
-      document.getElementById('parsedCategoryBadge').textContent = p.category;
-      document.getElementById('parsedAmountBadge').textContent = 'Rp ' + formatIDR(p.amount);
-      document.getElementById('parsedNoteBadge').textContent = p.note || p.category;
-    }
-
-    function parseIndonesianSpeech(raw) {
-      if (!raw) return null;
-      const text = raw.toLowerCase().trim();
-
-      let type = 'Pengeluaran';
-      const incomeKeywords = ['gaji', 'pemasukan', 'masuk', 'terima', 'dapat uang', 'proyek', 'freelance', 'bonus', 'dividen', 'hadiah', 'penjualan', 'omset'];
-      for (const kw of incomeKeywords) {
-        if (text.includes(kw)) {
-          type = 'Pemasukan';
-          break;
-        }
-      }
-
-      let amount = extractIndonesianNumber(text);
-
-      let method = 'Tunai';
-      if (text.includes('bca')) method = 'BCA';
-      else if (text.includes('mandiri')) method = 'Mandiri';
-      else if (text.includes('bri')) method = 'BRI';
-      else if (text.includes('gopay') || text.includes('go pay')) method = 'GoPay';
-      else if (text.includes('ovo')) method = 'OVO';
-      else if (text.includes('shopeepay') || text.includes('shopee pay')) method = 'ShopeePay';
-      else if (text.includes('qris') || text.includes('dana')) method = 'QRIS';
-      else if (text.includes('transfer') || text.includes('bank')) method = 'BCA';
-
-      let category = type === 'Pemasukan' ? 'Gaji Pokok' : 'Makanan & Minuman';
-      
-      const catRules = [
-        { name: 'Makanan & Minuman', words: ['makan', 'minum', 'pentol', 'bakso', 'mie', 'nasi', 'ayam', 'kopi', 'kafe', 'cafe', 'snack', 'jajan', 'sarapan', 'brunch', 'warteg', 'restoran', 'sate', 'martabak', 'roti', 'es'] },
-        { name: 'Transportasi & Bensin', words: ['bensin', 'pertamax', 'pertalite', 'solar', 'ojek', 'gojek', 'grab', 'maxim', 'angkot', 'bus', 'kereta', 'tol', 'parkir', 'tambal ban', 'servis', 'bengkel', 'motor', 'mobil', 'cuci motor'] },
-        { name: 'Belanja & Kebutuhan', words: ['belanja', 'supermarket', 'indomaret', 'alfamart', 'pasar', 'sabun', 'shampoo', 'odol', 'minyak', 'beras', 'baju', 'celana', 'sepatu', 'shopee', 'tokopedia', 'lazada', 'kebutuhan'] },
-        { name: 'Tagihan & Listrik/Air', words: ['tagihan', 'listrik', 'pln', 'token', 'air', 'pdam', 'wifi', 'indihome', 'biznet', 'kuota', 'pulsa', 'iuran', 'kontrakan', 'kos'] },
-        { name: 'Hiburan & Rekreasi', words: ['nonton', 'bioskop', 'cinema', 'game', 'top up', 'steam', 'netflix', 'spotify', 'youtube', 'jalan-jalan', 'liburan', 'karaoke', 'rekreasi'] },
-        { name: 'Kesehatan & Medis', words: ['obat', 'dokter', 'klinik', 'apotek', 'rumah sakit', 'vitamin', 'medis', 'periksa'] },
-        { name: 'Sedekah & Amal', words: ['sedekah', 'infaq', 'zakat', 'amal', 'donasi', 'masjid'] },
-        { name: 'Gaji Pokok', words: ['gaji', 'upah', 'salary', 'honor'] },
-        { name: 'Freelance & Proyek', words: ['freelance', 'proyek', 'project', 'desain', 'klien', 'jasa', 'coding'] },
-        { name: 'Bisnis & Usaha', words: ['bisnis', 'usaha', 'dagang', 'jualan', 'toko', 'omset'] }
-      ];
-
-      for (const rule of catRules) {
-        if (rule.words.some(w => text.includes(w))) {
-          category = rule.name;
-          if (['Gaji Pokok', 'Freelance & Proyek', 'Bisnis & Usaha'].includes(category)) {
-            type = 'Pemasukan';
-          }
-          break;
-        }
-      }
-
-      let cleanNote = text;
-      const removeList = [
-        'belanja', 'makanan', 'beli', 'bayar', 'buat', 'untuk', 'pakai', 'via', 'dengan', 
-        'nominal', 'rp', 'rupiah', 'ribu', 'juta', 'ratus', 'gaji', 'pemasukan', 'pengeluaran',
-        'bca', 'mandiri', 'bri', 'qris', 'gopay', 'ovo', 'shopeepay', 'tunai', 'cash'
-      ];
-      cleanNote = cleanNote.replace(/[\d.,]+/g, ' ');
-      removeList.forEach(w => {
-        cleanNote = cleanNote.replace(new RegExp('\\b' + w + '\\b', 'gi'), ' ');
-      });
-      cleanNote = cleanNote.trim().replace(/\s+/g, ' ');
-
-      if (cleanNote.length > 0) {
-        cleanNote = cleanNote.charAt(0).toUpperCase() + cleanNote.slice(1);
-      } else {
-        cleanNote = category;
-      }
-
-      return {
-        type: type,
-        category: category,
-        amount: amount,
-        method: method,
-        note: cleanNote
-      };
-    }
-
-    function extractIndonesianNumber(str) {
-      const digitMatch = str.match(/(\d+(?:[.,]\d+)?)\s*(ribu|rb|k|juta|jt)?/i);
-      if (digitMatch) {
-        let num = parseFloat(digitMatch[1].replace(/\./g, '').replace(/,/g, '.'));
-        const unit = (digitMatch[2] || '').toLowerCase();
-        if (['ribu', 'rb', 'k'].includes(unit)) num *= 1000;
-        if (['juta', 'jt'].includes(unit)) num *= 1000000;
-        if (num > 0) return Math.round(num);
-      }
-
-      const words = str.split(/\s+/);
-      const wordMap = {
-        'nol': 0, 'satu': 1, 'se': 1, 'dua': 2, 'tiga': 3, 'empat': 4,
-        'lima': 5, 'enam': 6, 'tujuh': 7, 'delapan': 8, 'sembilan': 9,
-        'sepuluh': 10, 'sebelas': 11, 'dua belas': 12, 'seratus': 100, 'seribu': 1000, 'sejuta': 1000000
-      };
-
-      let current = 0;
-      let total = 0;
-
-      for (let i = 0; i < words.length; i++) {
-        const w = words[i].toLowerCase();
-        if (wordMap[w] !== undefined) {
-          current += wordMap[w];
-        } else if (w === 'belas') {
-          current += 10;
-        } else if (w === 'puluh') {
-          current = (current === 0 ? 1 : current) * 10;
-        } else if (w === 'ratus') {
-          current = (current === 0 ? 1 : current) * 100;
-        } else if (w === 'ribu') {
-          current = (current === 0 ? 1 : current) * 1000;
-          total += current;
-          current = 0;
-        } else if (w === 'juta') {
-          current = (current === 0 ? 1 : current) * 1000000;
-          total += current;
-          current = 0;
-        }
-      }
-      total += current;
-      return total;
-    }
-
-    function hapticFeedback() {
-      if (window.navigator && window.navigator.vibrate) {
-        window.navigator.vibrate(12);
-      }
+      } catch(e){}
     }
 
     function showToast(msg) {
-      const toast = document.getElementById('appleToast');
-      document.getElementById('toastMessage').textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 2400);
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
     }
 
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
-    function registerPWA() {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').catch(()=>{});
-      }
-
-      let deferredPrompt = null;
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        const banner = document.getElementById('pwaBanner');
-        if (banner) banner.style.display = 'flex';
-
-        document.getElementById('pwaInstallBtn').addEventListener('click', () => {
-          banner.style.display = 'none';
-          deferredPrompt.prompt();
-          deferredPrompt.userChoice.then(() => {
-            deferredPrompt = null;
-          });
-        });
-      });
+    function escapeHtml(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
   </script>
 </body>
