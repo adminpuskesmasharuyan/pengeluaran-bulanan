@@ -4,19 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
-  <title>Fajar Finance — Apple Edition PWA</title>
+  <title>Finance Kita — Apple Voice Edition PWA</title>
 
   <!-- Apple iOS Native PWA Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="FajarFinance">
+  <meta name="apple-mobile-web-app-title" content="Finance Kita">
   <meta name="format-detection" content="telephone=no">
   <meta name="mobile-web-app-capable" content="yes">
   
-  <!-- Apple Touch Icon (SVG Dynamic Data URI) -->
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230A84FF'/%3E%3Cstop offset='100%25' stop-color='%2330D158'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='120' fill='%231C1C1E'/%3E%3Ccircle cx='256' cy='256' r='180' fill='url(%23g)' opacity='0.25'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' dominant-baseline='central' font-family='-apple-system, sans-serif' font-size='220' font-weight='800' fill='%23FFFFFF'%3E%3C/text%3E%3C/svg%3E">
+  <!-- Apple Touch Icon (Vector SVG Icon) -->
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
 
-  <!-- Manifest PWA (Inline Data URI & File fallback) -->
+  <!-- Manifest PWA -->
   <link rel="manifest" href="manifest.json" id="manifestLink">
 
   <!-- Google Fonts: Inter / Apple SF Fallback -->
@@ -64,7 +65,6 @@
       --safe-bottom: env(safe-area-inset-bottom, 20px);
     }
 
-    /* Light Mode Support with Apple Cupertino Light Aesthetics */
     [data-theme="light"] {
       --bg-primary: #F2F2F7;
       --bg-secondary: #FFFFFF;
@@ -146,7 +146,7 @@
       z-index: 50;
       backdrop-filter: var(--blur-glass);
       -webkit-backdrop-filter: var(--blur-glass);
-      background-color: rgba(0, 0, 0, 0.7);
+      background-color: rgba(0, 0, 0, 0.75);
       border-bottom: 0.5px solid var(--border-subtle);
       padding: calc(var(--safe-top) + 12px) 20px 14px 20px;
       display: flex;
@@ -156,7 +156,7 @@
     }
 
     [data-theme="light"] .app-header {
-      background-color: rgba(242, 242, 247, 0.8);
+      background-color: rgba(242, 242, 247, 0.85);
     }
 
     .brand-group {
@@ -166,22 +166,26 @@
     }
 
     .app-logo-badge {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: var(--radius-sm);
-      background: linear-gradient(135deg, #0A84FF, #30D158);
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #FFF;
-      font-weight: 800;
-      font-size: 18px;
-      box-shadow: 0 4px 12px rgba(10, 132, 255, 0.35);
+      box-shadow: 0 4px 14px rgba(10, 132, 255, 0.4);
+      background: #181920;
+    }
+
+    .app-logo-badge img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .brand-title {
-      font-size: 19px;
-      font-weight: 700;
+      font-size: 20px;
+      font-weight: 800;
       color: var(--text-primary);
       letter-spacing: -0.02em;
       line-height: 1.1;
@@ -244,7 +248,7 @@
       background: var(--bg-card-hover);
     }
     .icon-btn.voice-pulse {
-      background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(191, 90, 242, 0.2));
+      background: linear-gradient(135deg, rgba(10, 132, 255, 0.25), rgba(191, 90, 242, 0.25));
       border-color: var(--apple-blue);
       color: var(--apple-blue);
     }
@@ -349,7 +353,7 @@
       font-weight: 800;
       letter-spacing: -0.03em;
       color: #FFFFFF;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
       display: flex;
       align-items: baseline;
       gap: 6px;
@@ -361,11 +365,45 @@
       color: rgba(255, 255, 255, 0.7);
     }
 
+    /* HERO VOICE TRIGGER BAR (PRIMARY EXPERIENCE) */
+    .hero-voice-cta {
+      background: linear-gradient(135deg, rgba(10, 132, 255, 0.25), rgba(48, 209, 88, 0.25));
+      border: 0.5px solid rgba(48, 209, 88, 0.4);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .hero-voice-cta:active {
+      transform: scale(0.97);
+      background: linear-gradient(135deg, rgba(10, 132, 255, 0.4), rgba(48, 209, 88, 0.4));
+    }
+    .hero-voice-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .voice-mic-bubble {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0A84FF, #30D158);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 0 12px rgba(48, 209, 88, 0.5);
+    }
+
     .card-stats-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      padding-top: 16px;
+      padding-top: 14px;
       border-top: 0.5px solid rgba(255, 255, 255, 0.12);
     }
 
@@ -395,8 +433,8 @@
 
     /* Monthly Budget Meter */
     .budget-meter-box {
-      margin-top: 16px;
-      padding-top: 14px;
+      margin-top: 14px;
+      padding-top: 12px;
       border-top: 0.5px solid rgba(255, 255, 255, 0.08);
     }
 
@@ -645,7 +683,7 @@
       transition: width 0.5s ease;
     }
 
-    /* ================= BOTTOM TAB BAR (NATIVE APPLE STYLE) ================= */
+    /* ================= BOTTOM TAB BAR (NATIVE APPLE STYLE - VOICE PRIMARY) ================= */
     .bottom-tab-bar {
       position: fixed;
       bottom: 0;
@@ -653,11 +691,11 @@
       right: 0;
       max-width: 520px;
       margin: 0 auto;
-      height: calc(64px + var(--safe-bottom));
+      height: calc(66px + var(--safe-bottom));
       padding-bottom: var(--safe-bottom);
       backdrop-filter: var(--blur-glass);
       -webkit-backdrop-filter: var(--blur-glass);
-      background-color: rgba(18, 18, 20, 0.85);
+      background-color: rgba(18, 18, 20, 0.88);
       border-top: 0.5px solid var(--border-subtle);
       display: flex;
       align-items: center;
@@ -672,7 +710,7 @@
     }
 
     [data-theme="light"] .bottom-tab-bar {
-      background-color: rgba(255, 255, 255, 0.9);
+      background-color: rgba(255, 255, 255, 0.92);
     }
 
     .tab-item {
@@ -705,32 +743,33 @@
       line-height: 1;
     }
 
-    /* Floating Center Add Button */
-    .tab-add-btn {
-      width: 48px;
-      height: 48px;
+    /* PRIMARY CENTRAL VOICE BUTTON (SIRI GLOWING ORB) */
+    .tab-voice-btn {
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--apple-blue), #2AC358);
-      border: 3px solid var(--bg-primary);
+      background: conic-gradient(from 0deg, #0A84FF, #BF5AF2, #FF2D55, #FF9F0A, #30D158, #0A84FF);
+      border: 3.5px solid var(--bg-primary);
       color: #FFFFFF;
       font-size: 26px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 18px rgba(10, 132, 255, 0.5);
+      box-shadow: 0 4px 24px rgba(10, 132, 255, 0.6), 0 0 16px rgba(191, 90, 242, 0.5);
       cursor: pointer;
-      margin-top: -16px;
+      margin-top: -22px;
       transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: siriPulse 2s infinite alternate;
     }
-    .tab-add-btn:active {
-      transform: scale(0.9) rotate(90deg);
+    .tab-voice-btn:active {
+      transform: scale(0.9) rotate(20deg);
     }
 
     /* ================= APPLE MODAL BOTTOM SHEET ================= */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.65);
       backdrop-filter: blur(8px);
       z-index: 100;
       opacity: 0;
@@ -939,10 +978,6 @@
       transform: scale(0.98);
       opacity: 0.9;
     }
-    .apple-submit-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
 
     /* ================= SIRI APPLE INTELLIGENCE VOICE MODAL ================= */
     .siri-orb-container {
@@ -1143,33 +1178,35 @@
     <!-- Header -->
     <header class="app-header">
       <div class="brand-group">
-        <div class="app-logo-badge"></div>
+        <div class="app-logo-badge">
+          <img src="icon.svg" alt="Finance Kita Icon">
+        </div>
         <div>
-          <h1 class="brand-title">Fajar Finance</h1>
+          <h1 class="brand-title">Finance Kita</h1>
           <div class="brand-subtitle">
             <span class="status-dot" id="syncStatusDot"></span>
-            <span id="syncStatusText">Tersambung (Siap)</span>
+            <span id="syncStatusText">Tersambung (Voice Ready)</span>
           </div>
         </div>
       </div>
 
       <div class="header-actions">
-        <!-- Voice Quick Button -->
-        <button class="icon-btn voice-pulse" id="headerVoiceBtn" title="Catat Cepat Pakai Suara">🎙️</button>
+        <!-- Voice Quick Header Button -->
+        <button class="icon-btn voice-pulse" id="headerVoiceBtn" title="Catat Pakai Suara">🎙️</button>
+        <!-- Manual Quick Add -->
+        <button class="icon-btn" id="headerAddManualBtn" title="Input Manual">+</button>
         <!-- Theme Toggle -->
         <button class="icon-btn" id="themeToggleBtn" title="Ganti Mode Gelap/Terang">🌗</button>
-        <!-- Manual Sync -->
-        <button class="icon-btn" id="manualSyncBtn" title="Sinkronkan dengan Google Sheets">🔄</button>
         <!-- Settings -->
-        <button class="icon-btn" id="settingsBtn" title="Pengaturan API & Sheet">⚙️</button>
+        <button class="icon-btn" id="settingsBtn" title="Pengaturan">⚙️</button>
       </div>
     </header>
 
-    <!-- PWA Install Prompt Banner (Visible on mobile browser when installable) -->
+    <!-- PWA Install Prompt Banner -->
     <div class="pwa-install-banner" id="pwaBanner" style="display: none;">
       <div class="pwa-text">
-        <strong>📱 Pasang di Layar Utama HP</strong><br>
-        Akses instan seperti aplikasi native iPhone/Android.
+        <strong>📱 Pasang Finance Kita di Layar HP</strong><br>
+        Akses cepat aplikasi native dengan suara instan.
       </div>
       <button class="pwa-install-btn" id="pwaInstallBtn">Install</button>
     </div>
@@ -1186,16 +1223,28 @@
       </div>
     </div>
 
-    <!-- Hero Card (Apple Wallet Style) -->
+    <!-- Hero Card (Apple Wallet Style with Primary Voice Call-To-Action) -->
     <div class="hero-card-container">
       <div class="apple-finance-card">
         <div class="card-glass-glow"></div>
         <div class="card-top-meta">
           <div class="balance-label">Total Saldo Bulan Ini</div>
-          <div class="apple-chip" id="cardChipBadge"> Apple Sheet Sync</div>
+          <div class="apple-chip" id="cardChipBadge"> Voice Edition</div>
         </div>
         <div class="main-balance" id="heroNetBalance">
           <span class="currency">Rp</span> <span id="valNetBalance">0</span>
+        </div>
+
+        <!-- PRIMARY VOICE INPUT CALL-TO-ACTION -->
+        <div class="hero-voice-cta" id="heroVoiceCtaBtn">
+          <div class="hero-voice-left">
+            <div class="voice-mic-bubble">🎙️</div>
+            <div>
+              <div style="font-size: 13px; font-weight: 700; color: #FFFFFF;">Ketuk untuk Bicara</div>
+              <div style="font-size: 11px; color: rgba(255,255,255,0.7);">"Belanja makanan pentol 10.000"</div>
+            </div>
+          </div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--apple-green);">Bicara ›</div>
         </div>
 
         <div class="card-stats-row">
@@ -1281,24 +1330,27 @@
       </div>
     </main>
 
-    <!-- Bottom Tab Bar (Apple Native Floating Glass) -->
+    <!-- Bottom Tab Bar (PRIMARY VOICE IN CENTER) -->
     <nav class="bottom-tab-bar">
       <button class="tab-item active" id="navHome">
         <span class="tab-icon">🏠</span>
-        <span>Ringkasan</span>
-      </button>
-      <button class="tab-item" id="navStats">
-        <span class="tab-icon">📊</span>
-        <span>Statistik</span>
+        <span>Home</span>
       </button>
       
-      <!-- Central Floating "+" Action -->
-      <button class="tab-add-btn" id="openAddModalBtn" title="Tambah Transaksi">+</button>
+      <button class="tab-item" id="navStats">
+        <span class="tab-icon">📊</span>
+        <span>Analisis</span>
+      </button>
 
-      <!-- Voice Quick Tab Item -->
-      <button class="tab-item" id="navVoice">
-        <span class="tab-icon">🎙️</span>
-        <span>Suara</span>
+      <!-- CENTRAL PRIMARY VOICE BUTTON (SIRI GLOWING ORB) -->
+      <button class="tab-voice-btn" id="navCentralVoiceBtn" title="Bicara untuk Catat Transaksi">
+        🎙️
+      </button>
+
+      <!-- Manual Input Option -->
+      <button class="tab-item" id="openAddModalBtn">
+        <span class="tab-icon">✍️</span>
+        <span>Manual</span>
       </button>
 
       <button class="tab-item" id="navSettings">
@@ -1313,7 +1365,7 @@
     <div class="bottom-sheet" style="padding-top: 10px;">
       <div class="sheet-handle-bar"></div>
       <div class="sheet-header">
-        <div class="sheet-title"> Apple Voice Intelligence</div>
+        <div class="sheet-title"> Finance Kita Voice Intelligence</div>
         <button class="sheet-close-btn" id="closeVoiceModalBtn">✕</button>
       </div>
 
@@ -1363,18 +1415,18 @@
     </div>
   </div>
 
-  <!-- ================= ADD TRANSACTION MODAL (APPLE BOTTOM SHEET) ================= -->
+  <!-- ================= ADD TRANSACTION MODAL (MANUAL BOTTOM SHEET) ================= -->
   <div class="modal-overlay" id="addTxModal">
     <div class="bottom-sheet">
       <div class="sheet-handle-bar"></div>
       <div class="sheet-header">
-        <div class="sheet-title" id="sheetModalTitle">Catat Transaksi</div>
+        <div class="sheet-title" id="sheetModalTitle">Catat Manual</div>
         <button class="sheet-close-btn" id="closeAddModalBtn">✕</button>
       </div>
 
       <!-- Voice Shortcut Button inside manual form -->
       <button class="voice-shortcut-btn" id="sheetVoiceBtn">
-        <span>🎙️</span> <strong>Bicara Saja (Otomatis Deteksi Akurat)</strong>
+        <span>🎙️</span> <strong>Lebih Cepat: Bicara Saja</strong>
       </button>
 
       <!-- Segmented Type Selector -->
@@ -1447,19 +1499,18 @@
     <div class="bottom-sheet">
       <div class="sheet-handle-bar"></div>
       <div class="sheet-header">
-        <div class="sheet-title">Pengaturan Google Sheet</div>
+        <div class="sheet-title">Pengaturan Finance Kita</div>
         <button class="sheet-close-btn" id="closeSettingsModalBtn">✕</button>
       </div>
 
       <div class="setup-guide-box">
         <strong>🚀 Cara Sambungkan ke Google Apps Script:</strong>
         <ol>
-          <li>Buka Google Sheets baru di browser Anda.</li>
+          <li>Buka Google Sheets di browser Anda.</li>
           <li>Klik menu <strong>Extensions > Apps Script</strong>.</li>
-          <li>Salin kode dari <code>SETUP.gs</code> lalu klik <strong>Run > setupDatabase</strong> untuk format sheet otomatis.</li>
-          <li>Salin kode dari <code>CODE.gs</code>, lalu klik tombol biru <strong>Deploy > New Deployment</strong>.</li>
-          <li>Pilih tipe <strong>Web App</strong>, atur <em>Execute as: Me</em> dan <em>Who has access: Anyone</em>.</li>
-          <li>Salin <strong>Web App URL</strong> yang dihasilkan dan tempel di bawah ini.</li>
+          <li>Jalankan fungsi <code>setupDatabase()</code> dari <code>SETUP.gs</code> satu kali.</li>
+          <li>Klik tombol biru <strong>Deploy > New Deployment > Web App</strong> (Execute as: <em>Me</em>, Access: <em>Anyone</em>).</li>
+          <li>Salin <strong>Web App URL</strong> dan tempel di bawah ini.</li>
         </ol>
       </div>
 
@@ -1492,13 +1543,10 @@
     <span id="toastMessage">Transaksi Berhasil Dicatat</span>
   </div>
 
-  <!-- ================= JAVASCRIPT LOGIC (OPTIMISTIC UI + PWA SERVICE WORKER + VOICE AI) ================= -->
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
   <script>
-    // --------------------------------------------------------------------------
-    // STATE & CONFIGURATION
-    // --------------------------------------------------------------------------
-    const STORAGE_KEY = 'FAJAR_FINANCE_DATA_V2';
-    const SETTINGS_KEY = 'FAJAR_FINANCE_SETTINGS_V2';
+    const STORAGE_KEY = 'FINANCE_KITA_DATA_V2';
+    const SETTINGS_KEY = 'FINANCE_KITA_SETTINGS_V2';
 
     let appState = {
       apiUrl: localStorage.getItem('API_URL') || '',
@@ -1508,7 +1556,7 @@
       selectedType: 'Pengeluaran',
       selectedCategory: null,
       currentAmount: 0,
-      filterType: 'ALL', // 'ALL', 'Pengeluaran', 'Pemasukan'
+      filterType: 'ALL',
       transactions: [],
       categories: [],
       summary: {
@@ -1519,7 +1567,6 @@
       }
     };
 
-    // Preset Default Categories
     const DEFAULT_CATEGORIES = [
       { id: "cat_makan", nama: "Makanan & Minuman", tipe: "Pengeluaran", icon: "🍔", warna: "#FF9500", budget: 2500000 },
       { id: "cat_transport", nama: "Transportasi & Bensin", tipe: "Pengeluaran", icon: "🚗", warna: "#0A84FF", budget: 800000 },
@@ -1552,16 +1599,12 @@
       return d.toISOString().split('T')[0];
     }
 
-    // --------------------------------------------------------------------------
-    // INITIALIZATION & CACHE LOADING (0ms Instant Launch)
-    // --------------------------------------------------------------------------
     document.addEventListener('DOMContentLoaded', () => {
       loadCachedData();
       initUI();
       initVoiceEngine();
       registerPWA();
 
-      // If API URL is set, fetch fresh data silently in background
       if (appState.apiUrl) {
         fetchFromGoogleSheets();
       } else {
@@ -1596,9 +1639,6 @@
       }));
     }
 
-    // --------------------------------------------------------------------------
-    // RECALCULATE SUMMARY & STATS
-    // --------------------------------------------------------------------------
     function recalculateMonthlySummary() {
       let mIn = 0;
       let mOut = 0;
@@ -1631,9 +1671,6 @@
       };
     }
 
-    // --------------------------------------------------------------------------
-    // UI RENDERING FUNCTIONS
-    // --------------------------------------------------------------------------
     function renderAll() {
       renderHeaderMonth();
       renderHeroCard();
@@ -1665,7 +1702,6 @@
       document.getElementById('valMonthExpense').textContent = 'Rp ' + formatIDR(appState.summary.monthPengeluaran);
       document.getElementById('valTargetBudget').textContent = 'Rp ' + formatIDR(appState.targetBudget);
 
-      // Budget Progress
       let percent = 0;
       if (appState.targetBudget > 0) {
         percent = Math.min(100, Math.round((appState.summary.monthPengeluaran / appState.targetBudget) * 100));
@@ -1687,7 +1723,6 @@
       const container = document.getElementById('transactionsContainer');
       container.innerHTML = '';
 
-      // Filter transactions for active month & active type filter
       const filtered = appState.transactions.filter(t => {
         const parts = t.tanggal.split('-');
         if (parts.length === 3) {
@@ -1703,15 +1738,14 @@
       if (filtered.length === 0) {
         container.innerHTML = `
           <div class="empty-state">
-            <div class="empty-state-icon">🕊️</div>
+            <div class="empty-state-icon">🎙️</div>
             <p><strong>Belum ada transaksi di bulan ini.</strong></p>
-            <p style="font-size: 13px; margin-top: 6px;">Ketuk <strong>🎙️ Bicara</strong> atau tombol <strong>+</strong> untuk mencatat.</p>
+            <p style="font-size: 13px; margin-top: 6px;">Ketuk tombol <strong>🎙️ Bicara</strong> di tengah untuk mencatat instan.</p>
           </div>
         `;
         return;
       }
 
-      // Group by date
       const grouped = {};
       filtered.forEach(t => {
         if (!grouped[t.tanggal]) grouped[t.tanggal] = [];
@@ -1723,7 +1757,6 @@
       yesterday.setDate(yesterday.getDate() - 1);
       const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-      // Sort dates descending
       const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
 
       sortedDates.forEach(dateStr => {
@@ -1764,7 +1797,6 @@
             </div>
           `;
 
-          // Quick tap to confirm deletion or view detail
           row.addEventListener('click', () => {
             promptDeleteTransaction(t);
           });
@@ -1792,13 +1824,11 @@
         return;
       }
 
-      // Sort categories highest to lowest
       keys.sort((a, b) => expenses[b] - expenses[a]);
 
       let topCat = keys[0];
       document.getElementById('topCategoryVal').textContent = `${topCat} (Rp ${formatIDR(expenses[topCat])})`;
 
-      // Savings rate
       if (appState.summary.monthPemasukan > 0) {
         const rate = Math.round(((appState.summary.monthPemasukan - totalExpense) / appState.summary.monthPemasukan) * 100);
         document.getElementById('savingRateVal').textContent = rate + '%';
@@ -1806,7 +1836,6 @@
         document.getElementById('savingRateVal').textContent = '0%';
       }
 
-      // Daily Average
       const now = new Date();
       let dayCount = 30;
       if (appState.activeMonth === (now.getMonth() + 1) && appState.activeYear === now.getFullYear()) {
@@ -1863,11 +1892,7 @@
       });
     }
 
-    // --------------------------------------------------------------------------
-    // MODAL & USER INTERACTIONS
-    // --------------------------------------------------------------------------
     function initUI() {
-      // Month navigation
       document.getElementById('prevMonthBtn').addEventListener('click', () => {
         hapticFeedback();
         if (appState.activeMonth === 1) {
@@ -1902,7 +1927,6 @@
         showToast('Bulan Ini Ditampilkan');
       });
 
-      // Filter Type Toggle
       document.getElementById('filterTypeToggle').addEventListener('click', () => {
         hapticFeedback();
         if (appState.filterType === 'ALL') {
@@ -1918,7 +1942,6 @@
         renderTransactionsList();
       });
 
-      // Segmented Tabs
       const tabTx = document.getElementById('tabBtnTransactions');
       const tabAn = document.getElementById('tabBtnAnalytics');
       const panelTx = document.getElementById('panelTransactions');
@@ -1940,7 +1963,6 @@
         panelAn.classList.add('active');
       });
 
-      // Bottom Nav Items
       document.getElementById('navHome').addEventListener('click', () => {
         hapticFeedback();
         tabTx.click();
@@ -1951,20 +1973,27 @@
         tabAn.click();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
-      document.getElementById('navVoice').addEventListener('click', () => {
+
+      // CENTRAL PRIMARY VOICE BUTTON
+      document.getElementById('navCentralVoiceBtn').addEventListener('click', () => {
         hapticFeedback();
         openVoiceModal();
       });
-      document.getElementById('navSettings').addEventListener('click', () => {
+
+      // HERO CARD VOICE CTA
+      document.getElementById('heroVoiceCtaBtn').addEventListener('click', () => {
         hapticFeedback();
-        openSettingsModal();
+        openVoiceModal();
       });
 
-      // Add Modal Open/Close
+      // HEADER BUTTONS
+      document.getElementById('headerVoiceBtn').addEventListener('click', openVoiceModal);
+      document.getElementById('headerAddManualBtn').addEventListener('click', openAddModal);
+
+      // MANUAL MODAL
       document.getElementById('openAddModalBtn').addEventListener('click', openAddModal);
       document.getElementById('closeAddModalBtn').addEventListener('click', closeAddModal);
 
-      // Add Modal Type Switch
       const expBtn = document.getElementById('typeExpenseBtn');
       const incBtn = document.getElementById('typeIncomeBtn');
 
@@ -1986,10 +2015,8 @@
         renderCategoryPicker();
       });
 
-      // Save Transaction Click
       document.getElementById('saveTransactionBtn').addEventListener('click', handleSaveTransaction);
 
-      // Amount Display Click to focus hidden raw amount input for mobile keyboard
       document.querySelector('.sheet-amount-container').addEventListener('click', () => {
         const raw = document.getElementById('hiddenRawAmount');
         raw.style.display = 'block';
@@ -2002,15 +2029,11 @@
         updateAmountDisplay();
       });
 
-      // Settings Modal
       document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
+      document.getElementById('navSettings').addEventListener('click', openSettingsModal);
       document.getElementById('closeSettingsModalBtn').addEventListener('click', closeSettingsModal);
       document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
       document.getElementById('testApiBtn').addEventListener('click', testApiConnection);
-      document.getElementById('manualSyncBtn').addEventListener('click', () => {
-        hapticFeedback();
-        fetchFromGoogleSheets();
-      });
 
       document.getElementById('resetDemoDataBtn').addEventListener('click', () => {
         if (confirm('Reset ke data demo bawaan? Data lokal akan diganti.')) {
@@ -2021,13 +2044,12 @@
         }
       });
 
-      // Dark / Light Theme Toggle
       document.getElementById('themeToggleBtn').addEventListener('click', () => {
         const current = document.documentElement.getAttribute('data-theme') || 'dark';
         const next = current === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem('THEME_MODE', next);
-        showToast(next === 'light' ? '☀️ Mode Terang Aktif' : '🌙 Mode Gelap Apple Aktif');
+        showToast(next === 'light' ? '☀️ Mode Terang' : '🌙 Mode Gelap');
       });
 
       const savedTheme = localStorage.getItem('THEME_MODE');
@@ -2035,8 +2057,6 @@
         document.documentElement.setAttribute('data-theme', savedTheme);
       }
 
-      // Voice Modal Triggers
-      document.getElementById('headerVoiceBtn').addEventListener('click', openVoiceModal);
       document.getElementById('closeVoiceModalBtn').addEventListener('click', closeVoiceModal);
       document.getElementById('sheetVoiceBtn').addEventListener('click', () => {
         closeAddModal();
@@ -2052,7 +2072,6 @@
       document.getElementById('txNoteInput').value = '';
       document.getElementById('txDateInput').value = new Date().toISOString().split('T')[0];
       
-      // Default type: Pengeluaran
       document.getElementById('typeExpenseBtn').click();
       document.getElementById('addTxModal').classList.add('active');
     }
@@ -2110,12 +2129,9 @@
       }
     }
 
-    // --------------------------------------------------------------------------
-    // TRANSACTION ACTIONS (OPTIMISTIC + GOOGLE SHEETS POST)
-    // --------------------------------------------------------------------------
     function handleSaveTransaction() {
       if (appState.currentAmount <= 0) {
-        alert('Harap masukkan jumlah nominal terlebih dahulu!');
+        alert('Harap masukkan nominal terlebih dahulu!');
         return;
       }
 
@@ -2132,7 +2148,6 @@
         createdAt: new Date().toISOString()
       };
 
-      // 1. OPTIMISTIC UPDATE: Add immediately to local state for 0ms latency
       appState.transactions.unshift(newTx);
       saveToCache();
       recalculateMonthlySummary();
@@ -2140,14 +2155,13 @@
       closeAddModal();
       showToast(`+Rp ${formatIDR(newTx.jumlah)} (${newTx.kategori}) Tersimpan`);
 
-      // 2. BACKGROUND POST TO GOOGLE APPS SCRIPT
       if (appState.apiUrl) {
         postToGoogleSheets(newTx);
       }
     }
 
     async function postToGoogleSheets(txData) {
-      updateSyncStatus('syncing', 'Menyimpan ke Google Sheets...');
+      updateSyncStatus('syncing', 'Menyimpan ke Cloud...');
       try {
         const payload = {
           action: 'add_transaction',
@@ -2160,7 +2174,6 @@
           catatan: txData.catatan
         };
 
-        // Note: Using text/plain avoids CORS preflight OPTIONS in Google Apps Script!
         const response = await fetch(appState.apiUrl, {
           method: 'POST',
           mode: 'cors',
@@ -2170,13 +2183,13 @@
 
         const res = await response.json();
         if (res.status === 'success') {
-          updateSyncStatus('online', 'Tersinkron dengan Sheet');
+          updateSyncStatus('online', 'Tersinkron');
         } else {
           updateSyncStatus('offline', 'Sheet error: ' + (res.message || ''));
         }
       } catch (err) {
         console.error('GAS Post error:', err);
-        updateSyncStatus('offline', 'Tersimpan Offline (Gagal Kirim)');
+        updateSyncStatus('offline', 'Tersimpan Offline');
       }
     }
 
@@ -2196,7 +2209,7 @@
     }
 
     async function deleteFromGoogleSheets(id) {
-      updateSyncStatus('syncing', 'Menghapus di Sheet...');
+      updateSyncStatus('syncing', 'Menghapus...');
       try {
         await fetch(appState.apiUrl, {
           method: 'POST',
@@ -2210,13 +2223,10 @@
       }
     }
 
-    // --------------------------------------------------------------------------
-    // API SYNC ENGINE (GET BATCH)
-    // --------------------------------------------------------------------------
     async function fetchFromGoogleSheets() {
       if (!appState.apiUrl) return;
 
-      updateSyncStatus('syncing', 'Mengambil Data Sheet...');
+      updateSyncStatus('syncing', 'Mengambil Data...');
       try {
         const url = `${appState.apiUrl}?action=get_init_data&year=${appState.activeYear}&month=${appState.activeMonth}&_t=${Date.now()}`;
         const res = await fetch(url);
@@ -2233,13 +2243,13 @@
           recalculateMonthlySummary();
           renderAll();
           updateSyncStatus('online', 'Tersambung (Cloud)');
-          showToast('Data Google Sheet Terupdate');
+          showToast('Data Sheet Terupdate');
         } else {
           updateSyncStatus('offline', data.message || 'Error API');
         }
       } catch (err) {
         console.error('Fetch error:', err);
-        updateSyncStatus('offline', 'Gagal Konek ke Sheet (Cek URL)');
+        updateSyncStatus('offline', 'Gagal Konek ke Sheet');
       }
     }
 
@@ -2259,7 +2269,7 @@
           alert('⚠️ Respons diterima tetapi status error: ' + json.message);
         }
       } catch (e) {
-        alert('❌ GAGAL TERHUBUNG!\nPastikan:\n1. URL sudah benar.\n2. Deployment diset "Who has access: Anyone".\n\nDetail error: ' + e.message);
+        alert('❌ GAGAL TERHUBUNG!\nPeriksa kembali URL Deployment Anda.');
       }
     }
 
@@ -2275,7 +2285,7 @@
     }
 
     // --------------------------------------------------------------------------
-    // 🎙️ APPLE VOICE RECOGNITION & NATURAL LANGUAGE PARSER
+    // 🎙️ VOICE INTELLIGENCE ENGINE (PRIMARY INPUT)
     // --------------------------------------------------------------------------
     let voiceRecognition = null;
     let isListening = false;
@@ -2289,7 +2299,7 @@
       }
 
       voiceRecognition = new SpeechRecognition();
-      voiceRecognition.lang = 'id-ID'; // Bahasa Indonesia
+      voiceRecognition.lang = 'id-ID';
       voiceRecognition.continuous = false;
       voiceRecognition.interimResults = true;
 
@@ -2309,7 +2319,6 @@
 
         document.getElementById('speechTranscriptDisplay').textContent = `"${transcript}"`;
 
-        // Parse Indonesian Financial Speech
         const parsed = parseIndonesianSpeech(transcript);
         if (parsed && parsed.amount > 0) {
           detectedVoiceData = parsed;
@@ -2322,7 +2331,7 @@
         isListening = false;
         document.getElementById('siriOrbButton').classList.remove('listening');
         if (event.error === 'not-allowed') {
-          document.getElementById('siriStatusText').textContent = '⚠️ Izin mikrofon ditolak di browser.';
+          document.getElementById('siriStatusText').textContent = '⚠️ Izin mikrofon belum diberikan.';
         } else {
           document.getElementById('siriStatusText').textContent = '⚠️ Belum terdengar jelas. Ketuk bola untuk coba lagi.';
         }
@@ -2343,13 +2352,11 @@
         }
       };
 
-      // Bind Orb Button Click
       document.getElementById('siriOrbButton').addEventListener('click', toggleVoiceListening);
       document.getElementById('retryVoiceBtn').addEventListener('click', () => {
         startVoiceListening();
       });
 
-      // Bind Save Detected Transaction
       document.getElementById('confirmVoiceTxBtn').addEventListener('click', () => {
         if (!detectedVoiceData || detectedVoiceData.amount <= 0) return;
 
@@ -2365,7 +2372,6 @@
           createdAt: new Date().toISOString()
         };
 
-        // Optimistic Save
         appState.transactions.unshift(tx);
         saveToCache();
         recalculateMonthlySummary();
@@ -2374,7 +2380,6 @@
         closeVoiceModal();
         showToast(`✓ Berhasil: ${tx.catatan} (Rp ${formatIDR(tx.jumlah)})`);
 
-        // Sync with Google Sheet
         if (appState.apiUrl) {
           postToGoogleSheets(tx);
         }
@@ -2411,7 +2416,7 @@
 
     function startVoiceListening() {
       if (!voiceRecognition) {
-        alert('Fitur suara tidak didukung pada browser ini. Harap gunakan Google Chrome atau Safari di iOS.');
+        alert('Fitur suara membutuhkan Google Chrome di Android atau Safari di iPhone.');
         return;
       }
       try {
@@ -2441,21 +2446,11 @@
       document.getElementById('parsedNoteBadge').textContent = p.note || p.category;
     }
 
-    /**
-     * INTELLIGENT INDONESIAN NATURAL LANGUAGE SPEECH PARSER
-     * Menangani:
-     * - "belanja makanan pentol 10.000"
-     * - "beli pentol sepuluh ribu"
-     * - "makan bakso 25 ribu pakai gopay"
-     * - "isi bensin pertamax 50rb"
-     * - "gaji bulanan masuk 10 juta via bca"
-     */
     function parseIndonesianSpeech(raw) {
       if (!raw) return null;
       const text = raw.toLowerCase().trim();
 
-      // 1. Deteksi Tipe (Pengeluaran vs Pemasukan)
-      let type = 'Pengeluaran'; // Default
+      let type = 'Pengeluaran';
       const incomeKeywords = ['gaji', 'pemasukan', 'masuk', 'terima', 'dapat uang', 'proyek', 'freelance', 'bonus', 'dividen', 'hadiah', 'penjualan', 'omset'];
       for (const kw of incomeKeywords) {
         if (text.includes(kw)) {
@@ -2464,10 +2459,8 @@
         }
       }
 
-      // 2. Deteksi Nominal (Angka, Verbal Bahasa Indonesia)
       let amount = extractIndonesianNumber(text);
 
-      // 3. Deteksi Metode Pembayaran
       let method = 'Tunai';
       if (text.includes('bca')) method = 'BCA';
       else if (text.includes('mandiri')) method = 'Mandiri';
@@ -2478,7 +2471,6 @@
       else if (text.includes('qris') || text.includes('dana')) method = 'QRIS';
       else if (text.includes('transfer') || text.includes('bank')) method = 'BCA';
 
-      // 4. Deteksi Kategori Cerdas
       let category = type === 'Pemasukan' ? 'Gaji Pokok' : 'Makanan & Minuman';
       
       const catRules = [
@@ -2497,7 +2489,6 @@
       for (const rule of catRules) {
         if (rule.words.some(w => text.includes(w))) {
           category = rule.name;
-          // Sesuaikan tipe jika kategori pemasukan
           if (['Gaji Pokok', 'Freelance & Proyek', 'Bisnis & Usaha'].includes(category)) {
             type = 'Pemasukan';
           }
@@ -2505,22 +2496,18 @@
         }
       }
 
-      // 5. Ekstraksi Catatan Bersih (Membersihkan Stopwords)
       let cleanNote = text;
       const removeList = [
         'belanja', 'makanan', 'beli', 'bayar', 'buat', 'untuk', 'pakai', 'via', 'dengan', 
         'nominal', 'rp', 'rupiah', 'ribu', 'juta', 'ratus', 'gaji', 'pemasukan', 'pengeluaran',
         'bca', 'mandiri', 'bri', 'qris', 'gopay', 'ovo', 'shopeepay', 'tunai', 'cash'
       ];
-      // Hapus angka
       cleanNote = cleanNote.replace(/[\d.,]+/g, ' ');
-      // Hapus stopwords
       removeList.forEach(w => {
         cleanNote = cleanNote.replace(new RegExp('\\b' + w + '\\b', 'gi'), ' ');
       });
       cleanNote = cleanNote.trim().replace(/\s+/g, ' ');
 
-      // Format kapitalisasi catatan
       if (cleanNote.length > 0) {
         cleanNote = cleanNote.charAt(0).toUpperCase() + cleanNote.slice(1);
       } else {
@@ -2536,11 +2523,7 @@
       };
     }
 
-    /**
-     * Parser Angka Bahasa Indonesia (Contoh: "10.000", "10rb", "sepuluh ribu", "25 ribu", "1.5 juta")
-     */
     function extractIndonesianNumber(str) {
-      // 1. Cek pola angka langsung (10.000, 10000, 10 k, 10rb, 10 jt)
       const digitMatch = str.match(/(\d+(?:[.,]\d+)?)\s*(ribu|rb|k|juta|jt)?/i);
       if (digitMatch) {
         let num = parseFloat(digitMatch[1].replace(/\./g, '').replace(/,/g, '.'));
@@ -2550,7 +2533,6 @@
         if (num > 0) return Math.round(num);
       }
 
-      // 2. Cek pola verbal bahasa indonesia (sepuluh ribu, dua puluh lima ribu, seratus ribu)
       const words = str.split(/\s+/);
       const wordMap = {
         'nol': 0, 'satu': 1, 'se': 1, 'dua': 2, 'tiga': 3, 'empat': 4,
@@ -2585,9 +2567,6 @@
       return total;
     }
 
-    // --------------------------------------------------------------------------
-    // UTILITIES & FEEDBACK
-    // --------------------------------------------------------------------------
     function hapticFeedback() {
       if (window.navigator && window.navigator.vibrate) {
         window.navigator.vibrate(12);
@@ -2613,80 +2592,11 @@
         .replace(/'/g, '&#039;');
     }
 
-    // --------------------------------------------------------------------------
-    // PWA REGISTRATION (INLINE SERVICE WORKER & MANIFEST DYNAMIC GENERATOR)
-    // --------------------------------------------------------------------------
     function registerPWA() {
-      // 1. Dynamic Web App Manifest Injection if file not present
-      try {
-        const manifest = {
-          name: "Fajar Finance - Apple PWA",
-          short_name: "Finance",
-          description: "Pencatatan Pengeluaran & Pemasukan Bulanan Berstandar Apple",
-          start_url: "./index.html",
-          display: "standalone",
-          background_color: "#000000",
-          theme_color: "#000000",
-          orientation: "portrait-primary",
-          icons: [
-            {
-              src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='120' fill='%231C1C1E'/%3E%3Ctext x='50%25' y='58%25' text-anchor='middle' dominant-baseline='central' font-size='260' fill='%230A84FF'%3E%3C/text%3E%3C/svg%3E",
-              sizes: "192x192 512x512",
-              type: "image/svg+xml"
-            }
-          ]
-        };
-        const stringManifest = JSON.stringify(manifest);
-        const blob = new Blob([stringManifest], { type: 'application/json' });
-        const manifestURL = URL.createObjectURL(blob);
-        document.getElementById('manifestLink').setAttribute('href', manifestURL);
-      } catch (err) {
-        console.warn('Manifest generation failed:', err);
-      }
-
-      // 2. Service Worker for Offline Caching
       if ('serviceWorker' in navigator) {
-        const swCode = `
-          const CACHE_NAME = 'fajar-finance-apple-v2';
-          self.addEventListener('install', (e) => {
-            self.skipWaiting();
-          });
-          self.addEventListener('activate', (e) => {
-            e.waitUntil(clients.claim());
-          });
-          self.addEventListener('fetch', (e) => {
-            // Only cache GET requests that are not Google Script API calls
-            if (e.request.method === 'GET' && !e.request.url.includes('script.google.com')) {
-              e.respondWith(
-                caches.match(e.request).then((res) => {
-                  return res || fetch(e.request).then((fetchRes) => {
-                    return caches.open(CACHE_NAME).then((cache) => {
-                      try { cache.put(e.request, fetchRes.clone()); } catch(err) {}
-                      return fetchRes;
-                    });
-                  }).catch(() => caches.match(e.request));
-                })
-              );
-            }
-          });
-        `;
-
-        try {
-          const swBlob = new Blob([swCode], { type: 'application/javascript' });
-          const swUrl = URL.createObjectURL(swBlob);
-          navigator.serviceWorker.register(swUrl).then(() => {
-            console.log(' PWA Service Worker Registered Successfully');
-          }).catch(() => {
-            // Fallback for relative sw.js if blob registration restricted
-            navigator.serviceWorker.register('./sw.js').catch(()=>{});
-          });
-        } catch (e) {
-          // Fallback
-          navigator.serviceWorker.register('./sw.js').catch(()=>{});
-        }
+        navigator.serviceWorker.register('./sw.js').catch(()=>{});
       }
 
-      // 3. Listen for BeforeInstallPrompt event (Android / Chrome)
       let deferredPrompt = null;
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
