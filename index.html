@@ -935,10 +935,10 @@
         style="background: var(--card-subtle); border: 0.5px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
         <div>
           <div style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: var(--text);">
-            <span>⏱️</span> Simpan Otomatis 4 Detik
+            <span>⏱️</span> Simpan Otomatis 3 Detik
           </div>
           <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px; line-height: 1.4;">
-            Otomatis simpan transaksi suara setelah 4 detik tanpa harus klik tombol
+            Otomatis simpan transaksi suara setelah 3 detik tanpa harus klik tombol
           </div>
         </div>
         <label class="switch">
@@ -1224,7 +1224,7 @@
         autoSaveToggle.onchange = () => {
           state.autoSaveVoice = autoSaveToggle.checked;
           localStorage.setItem('VOICE_AUTOSAVE', state.autoSaveVoice);
-          showToast(state.autoSaveVoice ? '⏱️ Simpan Otomatis Aktif (4s)' : '⏸️ Simpan Otomatis Nonaktif');
+          showToast(state.autoSaveVoice ? '⏱️ Simpan Otomatis Aktif (3s)' : '⏸️ Simpan Otomatis Nonaktif');
         };
       }
 
@@ -1251,13 +1251,13 @@
     }
     if (localStorage.getItem('THEME')) document.documentElement.setAttribute('data-theme', localStorage.getItem('THEME'));
 
-    // ── AUTO-SAVE COUNTDOWN 4 DETIK ──
+    // ── AUTO-SAVE COUNTDOWN 3 DETIK ──
     let autoSaveTimer = null;
-    let autoSaveRemaining = 4;
+    let autoSaveRemaining = 3;
 
     function startAutoSaveCountdown() {
       clearAutoSaveCountdown();
-      autoSaveRemaining = 4;
+      autoSaveRemaining = 3;
       const saveBtn = document.getElementById('saveVoiceBtn');
       if (saveBtn) saveBtn.textContent = `✓ Simpan Sekarang (${autoSaveRemaining}s)`;
 
@@ -1918,6 +1918,12 @@
       }
     }
 
+    // Buat fingerprint data untuk deteksi perubahan tanpa re-render sia-sia
+    function _dataFingerprint(transactions) {
+      if (!transactions || transactions.length === 0) return '0:';
+      return transactions.length + ':' + (transactions[0].id || '') + ':' + (transactions[transactions.length - 1].id || '');
+    }
+
     async function fetchCloud() {
       if (_isFetching) return;
       _isFetching = true;
@@ -1926,9 +1932,16 @@
         const res = await fetch(`${state.apiUrl}?action=get_init_data&year=${state.year}&month=${state.month}&_t=${Date.now()}`);
         const data = await res.json();
         if (data.status === 'success' && data.transactions) {
-          state.transactions = data.transactions;
-          save();
-          render();
+          const oldPrint = _dataFingerprint(state.transactions);
+          const newPrint = _dataFingerprint(data.transactions);
+          if (oldPrint !== newPrint) {
+            // Ada perubahan data — update dan render ulang
+            state.transactions = data.transactions;
+            save();
+            render();
+            showToast('🔄 Data diperbarui');
+          }
+          // Kalau sama persis, tidak ada aksi (hemat resource)
         }
         updateDot(false);
       } catch (e) {
@@ -1941,10 +1954,10 @@
     function startAutoRefresh() {
       if (_autoRefreshTimer) clearInterval(_autoRefreshTimer);
       if (!state.apiUrl) return;
-      // Auto-refresh setiap 30 detik agar semua HP selalu sinkron
+      // Polling setiap 15 detik — cek perubahan data dari HP lain
       _autoRefreshTimer = setInterval(() => {
         if (state.apiUrl) fetchCloud();
-      }, 30000);
+      }, 15000);
     }
 
     async function testCloud() {
@@ -1983,4 +1996,3 @@
 </body>
 
 </html>
-
