@@ -1,0 +1,2200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <title>Fajar Finance — Apple Edition PWA</title>
+
+  <!-- Apple iOS Native PWA Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FajarFinance">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <!-- Apple Touch Icon (SVG Dynamic Data URI) -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230A84FF'/%3E%3Cstop offset='100%25' stop-color='%2330D158'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='120' fill='%231C1C1E'/%3E%3Ccircle cx='256' cy='256' r='180' fill='url(%23g)' opacity='0.25'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' dominant-baseline='central' font-family='-apple-system, sans-serif' font-size='220' font-weight='800' fill='%23FFFFFF'%3E%3C/text%3E%3C/svg%3E">
+
+  <!-- Manifest PWA (Inline Data URI & File fallback) -->
+  <link rel="manifest" href="manifest.json" id="manifestLink">
+
+  <!-- Google Fonts: Inter / Apple SF Fallback -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       APPLE DESIGN SYSTEM - HUMAN INTERFACE GUIDELINES (DARK / OBSIDIAN LUXURY)
+       ========================================================================== */
+    :root {
+      --bg-primary: #000000;
+      --bg-secondary: #121214;
+      --bg-card: rgba(28, 28, 30, 0.75);
+      --bg-card-hover: rgba(44, 44, 46, 0.85);
+      --bg-input: #1C1C1E;
+      --bg-sheet: #1C1C1E;
+      
+      --text-primary: #FFFFFF;
+      --text-secondary: #8E8E93;
+      --text-tertiary: #636366;
+      
+      --apple-blue: #0A84FF;
+      --apple-green: #30D158;
+      --apple-red: #FF453A;
+      --apple-orange: #FF9F0A;
+      --apple-purple: #BF5AF2;
+      --apple-indigo: #5E5CE6;
+      --apple-teal: #64D2FF;
+
+      --border-subtle: rgba(255, 255, 255, 0.12);
+      --border-focus: rgba(10, 132, 255, 0.5);
+      
+      --blur-glass: blur(28px) saturate(190%);
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+      
+      --shadow-card: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      --shadow-apple: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+
+      --safe-top: env(safe-area-inset-top, 20px);
+      --safe-bottom: env(safe-area-inset-bottom, 20px);
+    }
+
+    /* Light Mode Support with Apple Cupertino Light Aesthetics */
+    [data-theme="light"] {
+      --bg-primary: #F2F2F7;
+      --bg-secondary: #FFFFFF;
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --bg-card-hover: rgba(242, 242, 247, 0.95);
+      --bg-input: #E5E5EA;
+      --bg-sheet: #FFFFFF;
+      
+      --text-primary: #000000;
+      --text-secondary: #8E8E93;
+      --text-tertiary: #AEAEB2;
+
+      --apple-blue: #007AFF;
+      --apple-green: #34C759;
+      --apple-red: #FF3B30;
+      --apple-orange: #FF9500;
+
+      --border-subtle: rgba(0, 0, 0, 0.08);
+      --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    input, textarea, select {
+      user-select: auto;
+      -webkit-user-select: auto;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "SF Pro Text", "SF Pro Display", sans-serif;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+      letter-spacing: -0.015em;
+      transition: background-color 0.3s ease;
+    }
+
+    /* ================= APP CONTAINER ================= */
+    .app-viewport {
+      width: 100%;
+      max-width: 520px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: calc(90px + var(--safe-bottom));
+      box-shadow: 0 0 60px rgba(0,0,0,0.5);
+    }
+
+    @media (min-width: 900px) {
+      .app-viewport {
+        max-width: 860px;
+      }
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 20px;
+        align-items: start;
+      }
+    }
+
+    /* ================= STATUS / TOP HEADER ================= */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: var(--blur-glass);
+      -webkit-backdrop-filter: var(--blur-glass);
+      background-color: rgba(0, 0, 0, 0.7);
+      border-bottom: 0.5px solid var(--border-subtle);
+      padding: calc(var(--safe-top) + 12px) 20px 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s;
+    }
+
+    [data-theme="light"] .app-header {
+      background-color: rgba(242, 242, 247, 0.8);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .app-logo-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #0A84FF, #30D158);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFF;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: 0 4px 12px rgba(10, 132, 255, 0.35);
+    }
+
+    .brand-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--apple-green);
+      box-shadow: 0 0 8px var(--apple-green);
+      display: inline-block;
+    }
+    .status-dot.syncing {
+      background-color: var(--apple-orange);
+      box-shadow: 0 0 8px var(--apple-orange);
+      animation: pulse 1s infinite alternate;
+    }
+    .status-dot.offline {
+      background-color: var(--text-tertiary);
+      box-shadow: none;
+    }
+
+    @keyframes pulse {
+      from { opacity: 0.4; }
+      to { opacity: 1; }
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 0.5px solid var(--border-subtle);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .icon-btn:active {
+      transform: scale(0.92);
+      background: var(--bg-card-hover);
+    }
+
+    /* ================= MONTH / FILTER SELECTOR ================= */
+    .filter-bar {
+      padding: 16px 20px 8px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .month-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      backdrop-filter: var(--blur-glass);
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 0.5px solid var(--border-subtle);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .month-nav-btn {
+      background: none;
+      border: none;
+      color: var(--apple-blue);
+      font-size: 16px;
+      font-weight: 700;
+      padding: 4px 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+
+    /* ================= APPLE WALLET / HERO CARD ================= */
+    .hero-card-container {
+      padding: 10px 20px 18px 20px;
+    }
+
+    .apple-finance-card {
+      position: relative;
+      background: linear-gradient(135deg, rgba(28, 28, 30, 0.95) 0%, rgba(18, 18, 20, 0.98) 100%);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      overflow: hidden;
+      border: 0.5px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.6);
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    [data-theme="light"] .apple-finance-card {
+      background: linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%);
+      color: #FFFFFF;
+    }
+
+    .card-glass-glow {
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(10, 132, 255, 0.35) 0%, rgba(48, 209, 88, 0.15) 60%, transparent 80%);
+      pointer-events: none;
+      filter: blur(20px);
+    }
+
+    .card-top-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .balance-label {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 600;
+    }
+
+    .apple-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 600;
+    }
+
+    .main-balance {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #FFFFFF;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .main-balance span.currency {
+      font-size: 20px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .card-stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 0.5px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .stat-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .stat-badge.in { color: var(--apple-green); }
+    .stat-badge.out { color: var(--apple-red); }
+
+    .stat-val {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #FFFFFF;
+    }
+
+    /* Monthly Budget Meter */
+    .budget-meter-box {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 0.5px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .budget-info-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 7px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #30D158, #FF9F0A);
+      width: 0%;
+      transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    /* ================= SEGMENTED CONTROLS ================= */
+    .segment-wrapper {
+      padding: 0 20px 14px 20px;
+    }
+
+    .apple-segmented-control {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      display: flex;
+      border: 0.5px solid var(--border-subtle);
+      position: relative;
+    }
+
+    .segment-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 12px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .segment-btn.active {
+      background: var(--bg-input);
+      color: var(--text-primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-theme="light"] .segment-btn.active {
+      background: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ================= SECTIONS & LISTS ================= */
+    .content-section {
+      padding: 0 20px 20px 20px;
+    }
+
+    .section-header-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 16px 0 10px 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .transaction-group {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 0.5px solid var(--border-subtle);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .group-date-header {
+      padding: 10px 16px 6px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.02);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .transaction-row {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.15s ease;
+    }
+
+    .transaction-row:not(:last-child) {
+      border-bottom: 0.5px solid var(--border-subtle);
+    }
+
+    .transaction-row:active {
+      background: var(--bg-card-hover);
+    }
+
+    .tx-icon-squircle {
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-right: 14px;
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .tx-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tx-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+
+    .tx-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .method-tag {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .tx-amount {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      text-align: right;
+    }
+
+    .tx-amount.expense { color: var(--apple-red); }
+    .tx-amount.income { color: var(--apple-green); }
+
+    /* Empty State */
+    .empty-state {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+    .empty-state-icon {
+      font-size: 44px;
+      margin-bottom: 12px;
+      opacity: 0.7;
+    }
+
+    /* ================= CHARTS & ANALYTICS ================= */
+    .analytics-panel {
+      display: none;
+    }
+    .analytics-panel.active {
+      display: block;
+    }
+
+    .chart-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 0.5px solid var(--border-subtle);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .chart-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .category-bar-item {
+      margin-bottom: 12px;
+    }
+    .cat-bar-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+    .cat-bar-name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+    .cat-bar-sum {
+      font-weight: 700;
+    }
+    .cat-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .cat-bar-fill {
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.5s ease;
+    }
+
+    /* ================= BOTTOM TAB BAR (NATIVE APPLE STYLE) ================= */
+    .bottom-tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-width: 520px;
+      margin: 0 auto;
+      height: calc(64px + var(--safe-bottom));
+      padding-bottom: var(--safe-bottom);
+      backdrop-filter: var(--blur-glass);
+      -webkit-backdrop-filter: var(--blur-glass);
+      background-color: rgba(18, 18, 20, 0.85);
+      border-top: 0.5px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 80;
+    }
+
+    @media (min-width: 900px) {
+      .bottom-tab-bar {
+        max-width: 860px;
+      }
+    }
+
+    [data-theme="light"] .bottom-tab-bar {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+
+    .tab-item {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      color: var(--text-tertiary);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.2s, transform 0.15s;
+    }
+
+    .tab-item:active {
+      transform: scale(0.92);
+    }
+
+    .tab-item.active {
+      color: var(--apple-blue);
+    }
+
+    .tab-icon {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    /* Floating Center Add Button */
+    .tab-add-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--apple-blue), #2AC358);
+      border: 3px solid var(--bg-primary);
+      color: #FFFFFF;
+      font-size: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 18px rgba(10, 132, 255, 0.5);
+      cursor: pointer;
+      margin-top: -16px;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .tab-add-btn:active {
+      transform: scale(0.9) rotate(90deg);
+    }
+
+    /* ================= APPLE MODAL BOTTOM SHEET ================= */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .bottom-sheet {
+      width: 100%;
+      max-width: 520px;
+      background: var(--bg-sheet);
+      border-top-left-radius: var(--radius-xl);
+      border-top-right-radius: var(--radius-xl);
+      padding: 12px 20px calc(24px + var(--safe-bottom)) 20px;
+      border-top: 0.5px solid var(--border-subtle);
+      max-height: 90vh;
+      max-height: 90dvh;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+    }
+
+    .modal-overlay.active .bottom-sheet {
+      transform: translateY(0);
+    }
+
+    .sheet-handle-bar {
+      width: 40px;
+      height: 5px;
+      border-radius: 4px;
+      background: var(--text-tertiary);
+      margin: 4px auto 16px auto;
+      opacity: 0.5;
+    }
+
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .sheet-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .sheet-close-btn {
+      background: var(--bg-input);
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* Calculator Style Amount Input */
+    .sheet-amount-container {
+      text-align: center;
+      margin: 10px 0 20px 0;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      border: 0.5px solid var(--border-subtle);
+    }
+
+    .sheet-amount-display {
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+    .sheet-amount-display span.curr {
+      font-size: 22px;
+      color: var(--apple-blue);
+      margin-right: 4px;
+    }
+
+    .preset-chips {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .preset-chip {
+      background: var(--bg-card);
+      border: 0.5px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+    .preset-chip:active {
+      background: var(--apple-blue);
+      color: #FFF;
+    }
+
+    /* Form Fields in Sheet */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .apple-input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      background: var(--bg-input);
+      border: 0.5px solid var(--border-subtle);
+      color: var(--text-primary);
+      font-size: 15px;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .apple-input:focus {
+      border-color: var(--apple-blue);
+    }
+
+    /* Category Picker Grid */
+    .category-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      max-height: 180px;
+      overflow-y: auto;
+      padding: 4px 2px;
+    }
+
+    .cat-pick-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 4px;
+      border-radius: var(--radius-md);
+      background: var(--bg-input);
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .cat-pick-item.selected {
+      border-color: var(--apple-blue);
+      background: rgba(10, 132, 255, 0.15);
+    }
+    .cat-pick-icon {
+      font-size: 24px;
+    }
+    .cat-pick-name {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+    .cat-pick-item.selected .cat-pick-name {
+      color: var(--apple-blue);
+    }
+
+    /* Submit Action Button */
+    .apple-submit-btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      background: var(--apple-blue);
+      color: #FFFFFF;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(10, 132, 255, 0.4);
+      margin-top: 14px;
+      transition: transform 0.15s, opacity 0.2s;
+    }
+    .apple-submit-btn:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+    .apple-submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ================= TOAST NOTIFICATION (IOS BANNER) ================= */
+    .apple-toast {
+      position: fixed;
+      top: calc(var(--safe-top) + 12px);
+      left: 50%;
+      transform: translate(-50%, -120%);
+      background: rgba(30, 30, 30, 0.92);
+      backdrop-filter: var(--blur-glass);
+      border: 0.5px solid var(--border-subtle);
+      border-radius: 26px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 150;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      color: #FFF;
+      font-size: 13px;
+      font-weight: 600;
+      pointer-events: none;
+    }
+    .apple-toast.show {
+      transform: translate(-50%, 0);
+    }
+
+    /* ================= SETTINGS / CONFIG MODAL ================= */
+    .setup-guide-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 14px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+    .setup-guide-box ol {
+      padding-left: 18px;
+      margin-top: 6px;
+    }
+    .setup-guide-box li {
+      margin-bottom: 4px;
+    }
+
+    /* PWA Install Banner */
+    .pwa-install-banner {
+      background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(48, 209, 88, 0.2));
+      border: 0.5px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      margin: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .pwa-text {
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .pwa-install-btn {
+      background: #FFFFFF;
+      color: #000000;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- App Viewport (Cupertino Container) -->
+  <div class="app-viewport">
+    
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand-group">
+        <div class="app-logo-badge"></div>
+        <div>
+          <h1 class="brand-title">Fajar Finance</h1>
+          <div class="brand-subtitle">
+            <span class="status-dot" id="syncStatusDot"></span>
+            <span id="syncStatusText">Tersambung (Siap)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Theme Toggle -->
+        <button class="icon-btn" id="themeToggleBtn" title="Ganti Mode Gelap/Terang">🌗</button>
+        <!-- Manual Sync -->
+        <button class="icon-btn" id="manualSyncBtn" title="Sinkronkan dengan Google Sheets">🔄</button>
+        <!-- Settings -->
+        <button class="icon-btn" id="settingsBtn" title="Pengaturan API & Sheet">⚙️</button>
+      </div>
+    </header>
+
+    <!-- PWA Install Prompt Banner (Visible on mobile browser when installable) -->
+    <div class="pwa-install-banner" id="pwaBanner" style="display: none;">
+      <div class="pwa-text">
+        <strong>📱 Pasang di Layar Utama HP</strong><br>
+        Akses instan seperti aplikasi native iPhone/Android.
+      </div>
+      <button class="pwa-install-btn" id="pwaInstallBtn">Install</button>
+    </div>
+
+    <!-- Filter / Month Selector Bar -->
+    <div class="filter-bar">
+      <div class="month-pill">
+        <button class="month-nav-btn" id="prevMonthBtn">‹</button>
+        <span id="currentMonthLabel">Oktober 2026</span>
+        <button class="month-nav-btn" id="nextMonthBtn">›</button>
+      </div>
+      <div style="font-size: 12px; font-weight: 600; color: var(--apple-blue); cursor: pointer;" id="todayJumpBtn">
+        Bulan Ini
+      </div>
+    </div>
+
+    <!-- Hero Card (Apple Wallet Style) -->
+    <div class="hero-card-container">
+      <div class="apple-finance-card">
+        <div class="card-glass-glow"></div>
+        <div class="card-top-meta">
+          <div class="balance-label">Total Saldo Bulan Ini</div>
+          <div class="apple-chip" id="cardChipBadge"> Apple Sheet Sync</div>
+        </div>
+        <div class="main-balance" id="heroNetBalance">
+          <span class="currency">Rp</span> <span id="valNetBalance">0</span>
+        </div>
+
+        <div class="card-stats-row">
+          <div class="stat-box">
+            <span class="stat-badge in">▲ PEMASUKAN</span>
+            <span class="stat-val" id="valMonthIncome">Rp 0</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-badge out">▼ PENGELUARAN</span>
+            <span class="stat-val" id="valMonthExpense">Rp 0</span>
+          </div>
+        </div>
+
+        <!-- Monthly Budget Meter -->
+        <div class="budget-meter-box">
+          <div class="budget-info-row">
+            <span>Target Budget: <strong id="valTargetBudget">Rp 8.900.000</strong></span>
+            <span id="valBudgetPercent">0%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="budgetProgressBar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Segmented Navigation (Transaksi / Analisis) -->
+    <div class="segment-wrapper">
+      <div class="apple-segmented-control">
+        <button class="segment-btn active" id="tabBtnTransactions">
+          <span>📋</span> Transaksi
+        </button>
+        <button class="segment-btn" id="tabBtnAnalytics">
+          <span>📊</span> Analisis Bulanan
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content Area: Responsive Grid on Desktop/Tablet -->
+    <main class="content-section">
+      <!-- 1. TRANSACTIONS TAB -->
+      <div id="panelTransactions">
+        <div class="section-header-title">
+          <span>Riwayat Transaksi</span>
+          <span style="font-size: 12px; color: var(--apple-blue); cursor: pointer;" id="filterTypeToggle">Semua Tipe ▾</span>
+        </div>
+        
+        <div id="transactionsContainer">
+          <!-- Dynamic transaction cards grouped by date will be rendered here -->
+        </div>
+      </div>
+
+      <!-- 2. ANALYTICS TAB -->
+      <div id="panelAnalytics" class="analytics-panel">
+        <div class="chart-card">
+          <div class="chart-title">
+            <span>🍰</span> Distribusi Pengeluaran Kategori
+          </div>
+          <div id="categoryChartBars">
+            <!-- Dynamic Category Breakdown Bars -->
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title">
+            <span>📈</span> Ringkasan Rasio Finansial
+          </div>
+          <div style="font-size: 13px; line-height: 1.8; color: var(--text-secondary);">
+            <div style="display:flex; justify-content:space-between;">
+              <span>Tingkat Tabungan (Savings Rate):</span>
+              <strong style="color: var(--apple-green);" id="savingRateVal">0%</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span>Rata-rata Pengeluaran / Hari:</span>
+              <strong style="color: var(--text-primary);" id="dailyAvgVal">Rp 0</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span>Kategori Terbesar:</span>
+              <strong style="color: var(--apple-red);" id="topCategoryVal">-</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Bottom Tab Bar (Apple Native Floating Glass) -->
+    <nav class="bottom-tab-bar">
+      <button class="tab-item active" id="navHome">
+        <span class="tab-icon">🏠</span>
+        <span>Ringkasan</span>
+      </button>
+      <button class="tab-item" id="navStats">
+        <span class="tab-icon">📊</span>
+        <span>Statistik</span>
+      </button>
+      
+      <!-- Central Floating "+" Action -->
+      <button class="tab-add-btn" id="openAddModalBtn" title="Tambah Transaksi">+</button>
+
+      <button class="tab-item" id="navCategories">
+        <span class="tab-icon">🏷️</span>
+        <span>Kategori</span>
+      </button>
+      <button class="tab-item" id="navSettings">
+        <span class="tab-icon">⚙️</span>
+        <span>Settings</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ================= ADD TRANSACTION MODAL (APPLE BOTTOM SHEET) ================= -->
+  <div class="modal-overlay" id="addTxModal">
+    <div class="bottom-sheet">
+      <div class="sheet-handle-bar"></div>
+      <div class="sheet-header">
+        <div class="sheet-title" id="sheetModalTitle">Catat Transaksi</div>
+        <button class="sheet-close-btn" id="closeAddModalBtn">✕</button>
+      </div>
+
+      <!-- Segmented Type Selector -->
+      <div class="apple-segmented-control" style="margin-bottom: 16px;">
+        <button class="segment-btn active" id="typeExpenseBtn">▼ Pengeluaran</button>
+        <button class="segment-btn" id="typeIncomeBtn">▲ Pemasukan</button>
+      </div>
+
+      <!-- Amount Input Display -->
+      <div class="sheet-amount-container">
+        <div class="sheet-amount-display">
+          <span class="curr">Rp</span>
+          <span id="amountDisplayNumber">0</span>
+        </div>
+        <input type="number" id="hiddenRawAmount" placeholder="0" style="position: absolute; opacity: 0; pointer-events: none;">
+        
+        <!-- Quick Preset Additions -->
+        <div class="preset-chips">
+          <div class="preset-chip" onclick="addAmountPreset(20000)">+20rb</div>
+          <div class="preset-chip" onclick="addAmountPreset(50000)">+50rb</div>
+          <div class="preset-chip" onclick="addAmountPreset(100000)">+100rb</div>
+          <div class="preset-chip" onclick="addAmountPreset(500000)">+500rb</div>
+          <div class="preset-chip" onclick="clearAmount()">Reset</div>
+        </div>
+      </div>
+
+      <!-- Category Picker -->
+      <div class="form-group">
+        <label class="form-label">Pilih Kategori</label>
+        <div class="category-picker-grid" id="categoryPickerGrid">
+          <!-- Dynamic categories -->
+        </div>
+      </div>
+
+      <!-- Date & Payment Method -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label class="form-label">Tanggal</label>
+          <input type="date" class="apple-input" id="txDateInput">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Metode Pembayaran</label>
+          <select class="apple-input" id="txMethodInput">
+            <option value="Tunai">💵 Tunai / Cash</option>
+            <option value="BCA">💳 BCA</option>
+            <option value="Mandiri">💳 Mandiri</option>
+            <option value="BRI">💳 BRI</option>
+            <option value="QRIS">📱 QRIS / E-Wallet</option>
+            <option value="GoPay">🟢 GoPay</option>
+            <option value="OVO">🟣 OVO</option>
+            <option value="ShopeePay">🟠 ShopeePay</option>
+            <option value="Lainnya">📦 Lainnya</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Note Input -->
+      <div class="form-group">
+        <label class="form-label">Catatan (Opsional)</label>
+        <input type="text" class="apple-input" id="txNoteInput" placeholder="Contoh: Makan siang ramen, beli token listrik...">
+      </div>
+
+      <!-- Submit Button -->
+      <button class="apple-submit-btn" id="saveTransactionBtn">Simpan Transaksi</button>
+    </div>
+  </div>
+
+  <!-- ================= SETTINGS MODAL ================= -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="bottom-sheet">
+      <div class="sheet-handle-bar"></div>
+      <div class="sheet-header">
+        <div class="sheet-title">Pengaturan Google Sheet</div>
+        <button class="sheet-close-btn" id="closeSettingsModalBtn">✕</button>
+      </div>
+
+      <div class="setup-guide-box">
+        <strong>🚀 Cara Sambungkan ke Google Apps Script:</strong>
+        <ol>
+          <li>Buka Google Sheets baru di browser Anda.</li>
+          <li>Klik menu <strong>Extensions > Apps Script</strong>.</li>
+          <li>Salin kode dari <code>SETUP.gs</code> lalu klik <strong>Run > setupDatabase</strong> untuk format sheet otomatis.</li>
+          <li>Salin kode dari <code>CODE.gs</code>, lalu klik tombol biru <strong>Deploy > New Deployment</strong>.</li>
+          <li>Pilih tipe <strong>Web App</strong>, atur <em>Execute as: Me</em> dan <em>Who has access: Anyone</em>.</li>
+          <li>Salin <strong>Web App URL</strong> yang dihasilkan dan tempel di bawah ini.</li>
+        </ol>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Google Apps Script Web App URL</label>
+        <input type="url" class="apple-input" id="apiEndpointInput" placeholder="https://script.google.com/macros/s/.../exec">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Target Budget Pengeluaran Bulanan (IDR)</label>
+        <input type="number" class="apple-input" id="targetBudgetInput" value="8900000" placeholder="8900000">
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 14px;">
+        <button class="apple-submit-btn" style="flex: 1; background: var(--apple-green);" id="testApiBtn">Tes Koneksi</button>
+        <button class="apple-submit-btn" style="flex: 1;" id="saveSettingsBtn">Simpan Pengaturan</button>
+      </div>
+
+      <div style="margin-top: 20px; text-align: center;">
+        <button id="resetDemoDataBtn" style="background: none; border: none; color: var(--apple-red); font-size: 13px; font-weight: 600; cursor: pointer;">
+          Reset ke Data Demo Bawaan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Banner -->
+  <div class="apple-toast" id="appleToast">
+    <span id="toastIcon"></span>
+    <span id="toastMessage">Transaksi Berhasil Dicatat</span>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC (OPTIMISTIC UI + PWA SERVICE WORKER) ================= -->
+  <script>
+    // --------------------------------------------------------------------------
+    // STATE & CONFIGURATION
+    // --------------------------------------------------------------------------
+    const STORAGE_KEY = 'FAJAR_FINANCE_DATA_V2';
+    const SETTINGS_KEY = 'FAJAR_FINANCE_SETTINGS_V2';
+
+    let appState = {
+      apiUrl: localStorage.getItem('API_URL') || '',
+      targetBudget: Number(localStorage.getItem('TARGET_BUDGET')) || 8900000,
+      activeYear: new Date().getFullYear(),
+      activeMonth: new Date().getMonth() + 1,
+      selectedType: 'Pengeluaran',
+      selectedCategory: null,
+      currentAmount: 0,
+      filterType: 'ALL', // 'ALL', 'Pengeluaran', 'Pemasukan'
+      transactions: [],
+      categories: [],
+      summary: {
+        monthPemasukan: 0,
+        monthPengeluaran: 0,
+        totalSaldo: 0,
+        categoryExpenses: {}
+      }
+    };
+
+    // Preset Default Data
+    const DEFAULT_CATEGORIES = [
+      { id: "cat_makan", nama: "Makanan & Minuman", tipe: "Pengeluaran", icon: "🍔", warna: "#FF9500", budget: 2500000 },
+      { id: "cat_transport", nama: "Transportasi & Bensin", tipe: "Pengeluaran", icon: "🚗", warna: "#0A84FF", budget: 800000 },
+      { id: "cat_belanja", nama: "Belanja & Kebutuhan", tipe: "Pengeluaran", icon: "🛍️", warna: "#AF52DE", budget: 1200000 },
+      { id: "cat_tagihan", nama: "Tagihan & Listrik/Air", tipe: "Pengeluaran", icon: "⚡", warna: "#FF3B30", budget: 900000 },
+      { id: "cat_hiburan", nama: "Hiburan & Rekreasi", tipe: "Pengeluaran", icon: "🎮", warna: "#5E5CE6", budget: 500000 },
+      { id: "cat_kesehatan", nama: "Kesehatan & Medis", tipe: "Pengeluaran", icon: "💊", warna: "#30D158", budget: 400000 },
+      { id: "cat_edukasi", nama: "Pendidikan & Buku", tipe: "Pengeluaran", icon: "📚", warna: "#64D2FF", budget: 300000 },
+      { id: "cat_amal", nama: "Sedekah & Amal", tipe: "Pengeluaran", icon: "🤲", warna: "#34C759", budget: 500000 },
+      { id: "cat_keluarga", nama: "Keluarga & Anak", tipe: "Pengeluaran", icon: "🏡", warna: "#FF2D55", budget: 1500000 },
+      { id: "cat_lain", nama: "Lain-lain", tipe: "Pengeluaran", icon: "📦", warna: "#8E8E93", budget: 300000 },
+      { id: "cat_gaji", nama: "Gaji Pokok", tipe: "Pemasukan", icon: "💼", warna: "#30D158", budget: 0 },
+      { id: "cat_bisnis", nama: "Bisnis & Usaha", tipe: "Pemasukan", icon: "📈", warna: "#34C759", budget: 0 },
+      { id: "cat_freelance", nama: "Freelance & Proyek", tipe: "Pemasukan", icon: "💻", warna: "#0A84FF", budget: 0 },
+      { id: "cat_investasi", nama: "Investasi & Dividen", tipe: "Pemasukan", icon: "💰", warna: "#FFD60A", budget: 0 },
+      { id: "cat_bonus", nama: "Bonus & Hadiah", tipe: "Pemasukan", icon: "🎁", warna: "#FF9F0A", budget: 0 }
+    ];
+
+    const DUMMY_TRANSACTIONS = [
+      { id: "TRX-DEMO1", tanggal: getFormattedDate(0), jenis: "Pemasukan", kategori: "Gaji Pokok", jumlah: 12500000, metode: "BCA", catatan: "Gaji Bulanan", createdAt: new Date().toISOString() },
+      { id: "TRX-DEMO2", tanggal: getFormattedDate(0), jenis: "Pengeluaran", kategori: "Makanan & Minuman", jumlah: 85000, metode: "QRIS", catatan: "Kopi & Brunch", createdAt: new Date().toISOString() },
+      { id: "TRX-DEMO3", tanggal: getFormattedDate(1), jenis: "Pengeluaran", kategori: "Transportasi & Bensin", jumlah: 150000, metode: "Tunai", catatan: "Isi Bensin Pertamax", createdAt: new Date().toISOString() },
+      { id: "TRX-DEMO4", tanggal: getFormattedDate(2), jenis: "Pengeluaran", kategori: "Tagihan & Listrik/Air", jumlah: 650000, metode: "BCA", catatan: "Token Listrik & WiFi", createdAt: new Date().toISOString() },
+      { id: "TRX-DEMO5", tanggal: getFormattedDate(3), jenis: "Pemasukan", kategori: "Freelance & Proyek", jumlah: 2500000, metode: "Mandiri", catatan: "DP Pembuatan Web App", createdAt: new Date().toISOString() }
+    ];
+
+    function getFormattedDate(daysAgo) {
+      const d = new Date();
+      d.setDate(d.getDate() - daysAgo);
+      return d.toISOString().split('T')[0];
+    }
+
+    // --------------------------------------------------------------------------
+    // INITIALIZATION & CACHE LOADING (0ms Instant Launch)
+    // --------------------------------------------------------------------------
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCachedData();
+      initUI();
+      registerPWA();
+
+      // If API URL is set, fetch fresh data silently in background
+      if (appState.apiUrl) {
+        fetchFromGoogleSheets();
+      } else {
+        updateSyncStatus('offline', 'Mode Demo (Belum Ada URL Sheet)');
+      }
+    });
+
+    function loadCachedData() {
+      const cached = localStorage.getItem(STORAGE_KEY);
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          appState.transactions = parsed.transactions || [];
+          appState.categories = parsed.categories || DEFAULT_CATEGORIES;
+        } catch (e) {
+          appState.transactions = DUMMY_TRANSACTIONS;
+          appState.categories = DEFAULT_CATEGORIES;
+        }
+      } else {
+        appState.transactions = DUMMY_TRANSACTIONS;
+        appState.categories = DEFAULT_CATEGORIES;
+        saveToCache();
+      }
+      recalculateMonthlySummary();
+      renderAll();
+    }
+
+    function saveToCache() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        transactions: appState.transactions,
+        categories: appState.categories
+      }));
+    }
+
+    // --------------------------------------------------------------------------
+    // RECALCULATE SUMMARY & STATS
+    // --------------------------------------------------------------------------
+    function recalculateMonthlySummary() {
+      let mIn = 0;
+      let mOut = 0;
+      let catExpenses = {};
+      const targetY = appState.activeYear;
+      const targetM = appState.activeMonth;
+
+      appState.transactions.forEach(t => {
+        const parts = t.tanggal.split('-');
+        if (parts.length === 3) {
+          const y = parseInt(parts[0], 10);
+          const m = parseInt(parts[1], 10);
+
+          if (y === targetY && m === targetM) {
+            if (t.jenis === 'Pemasukan') {
+              mIn += Number(t.jumlah) || 0;
+            } else {
+              mOut += Number(t.jumlah) || 0;
+              catExpenses[t.kategori] = (catExpenses[t.kategori] || 0) + Number(t.jumlah);
+            }
+          }
+        }
+      });
+
+      appState.summary = {
+        monthPemasukan: mIn,
+        monthPengeluaran: mOut,
+        totalSaldo: mIn - mOut,
+        categoryExpenses: catExpenses
+      };
+    }
+
+    // --------------------------------------------------------------------------
+    // UI RENDERING FUNCTIONS
+    // --------------------------------------------------------------------------
+    function renderAll() {
+      renderHeaderMonth();
+      renderHeroCard();
+      renderTransactionsList();
+      renderAnalyticsChart();
+    }
+
+    const MONTH_NAMES = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+
+    function renderHeaderMonth() {
+      document.getElementById('currentMonthLabel').textContent = 
+        `${MONTH_NAMES[appState.activeMonth - 1]} ${appState.activeYear}`;
+    }
+
+    function formatIDR(num) {
+      return new Intl.NumberFormat('id-ID').format(Math.round(num || 0));
+    }
+
+    function renderHeroCard() {
+      const net = appState.summary.totalSaldo;
+      const netEl = document.getElementById('valNetBalance');
+      netEl.textContent = formatIDR(net);
+      netEl.style.color = net < 0 ? 'var(--apple-red)' : '#FFFFFF';
+
+      document.getElementById('valMonthIncome').textContent = 'Rp ' + formatIDR(appState.summary.monthPemasukan);
+      document.getElementById('valMonthExpense').textContent = 'Rp ' + formatIDR(appState.summary.monthPengeluaran);
+      document.getElementById('valTargetBudget').textContent = 'Rp ' + formatIDR(appState.targetBudget);
+
+      // Budget Progress
+      let percent = 0;
+      if (appState.targetBudget > 0) {
+        percent = Math.min(100, Math.round((appState.summary.monthPengeluaran / appState.targetBudget) * 100));
+      }
+      document.getElementById('valBudgetPercent').textContent = percent + '%';
+      const fillBar = document.getElementById('budgetProgressBar');
+      fillBar.style.width = percent + '%';
+
+      if (percent > 90) {
+        fillBar.style.background = 'var(--apple-red)';
+      } else if (percent > 75) {
+        fillBar.style.background = 'var(--apple-orange)';
+      } else {
+        fillBar.style.background = 'linear-gradient(90deg, #30D158, #0A84FF)';
+      }
+    }
+
+    function renderTransactionsList() {
+      const container = document.getElementById('transactionsContainer');
+      container.innerHTML = '';
+
+      // Filter transactions for active month & active type filter
+      const filtered = appState.transactions.filter(t => {
+        const parts = t.tanggal.split('-');
+        if (parts.length === 3) {
+          const y = parseInt(parts[0], 10);
+          const m = parseInt(parts[1], 10);
+          if (y !== appState.activeYear || m !== appState.activeMonth) return false;
+          if (appState.filterType !== 'ALL' && t.jenis !== appState.filterType) return false;
+          return true;
+        }
+        return false;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🕊️</div>
+            <p><strong>Belum ada transaksi di bulan ini.</strong></p>
+            <p style="font-size: 13px; margin-top: 6px;">Ketuk tombol <strong>+</strong> di bawah untuk mencatat.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Group by date
+      const grouped = {};
+      filtered.forEach(t => {
+        if (!grouped[t.tanggal]) grouped[t.tanggal] = [];
+        grouped[t.tanggal].push(t);
+      });
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+      // Sort dates descending
+      const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
+
+      sortedDates.forEach(dateStr => {
+        let label = dateStr;
+        if (dateStr === todayStr) label = 'Hari Ini';
+        else if (dateStr === yesterdayStr) label = 'Kemarin';
+        else {
+          const d = new Date(dateStr + "T00:00:00");
+          label = `${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        const groupEl = document.createElement('div');
+        groupEl.className = 'transaction-group';
+
+        const headerEl = document.createElement('div');
+        headerEl.className = 'group-date-header';
+        headerEl.innerHTML = `<span>${label}</span><span>${grouped[dateStr].length} transaksi</span>`;
+        groupEl.appendChild(headerEl);
+
+        grouped[dateStr].forEach(t => {
+          const cat = appState.categories.find(c => c.nama === t.kategori) || { icon: '🏷️', warna: '#8E8E93' };
+          const isExpense = t.jenis === 'Pengeluaran';
+          const row = document.createElement('div');
+          row.className = 'transaction-row';
+          row.innerHTML = `
+            <div class="tx-icon-squircle" style="background: ${cat.warna}20; color: ${cat.warna};">
+              ${cat.icon}
+            </div>
+            <div class="tx-details">
+              <div class="tx-title">${escapeHtml(t.kategori)}</div>
+              <div class="tx-subtitle">
+                <span class="method-tag">${escapeHtml(t.metode || 'Tunai')}</span>
+                <span>${t.catatan ? escapeHtml(t.catatan) : ''}</span>
+              </div>
+            </div>
+            <div class="tx-amount ${isExpense ? 'expense' : 'income'}">
+              ${isExpense ? '-' : '+'}Rp ${formatIDR(t.jumlah)}
+            </div>
+          `;
+
+          // Quick tap to confirm deletion or view detail
+          row.addEventListener('click', () => {
+            promptDeleteTransaction(t);
+          });
+
+          groupEl.appendChild(row);
+        });
+
+        container.appendChild(groupEl);
+      });
+    }
+
+    function renderAnalyticsChart() {
+      const container = document.getElementById('categoryChartBars');
+      container.innerHTML = '';
+
+      const expenses = appState.summary.categoryExpenses;
+      const totalExpense = appState.summary.monthPengeluaran;
+
+      const keys = Object.keys(expenses);
+      if (keys.length === 0 || totalExpense === 0) {
+        container.innerHTML = '<div style="color: var(--text-secondary); font-size: 13px; text-align: center; padding: 20px;">Belum ada pengeluaran di bulan ini.</div>';
+        document.getElementById('topCategoryVal').textContent = '-';
+        document.getElementById('savingRateVal').textContent = '0%';
+        document.getElementById('dailyAvgVal').textContent = 'Rp 0';
+        return;
+      }
+
+      // Sort categories highest to lowest
+      keys.sort((a, b) => expenses[b] - expenses[a]);
+
+      let topCat = keys[0];
+      document.getElementById('topCategoryVal').textContent = `${topCat} (Rp ${formatIDR(expenses[topCat])})`;
+
+      // Savings rate
+      if (appState.summary.monthPemasukan > 0) {
+        const rate = Math.round(((appState.summary.monthPemasukan - totalExpense) / appState.summary.monthPemasukan) * 100);
+        document.getElementById('savingRateVal').textContent = rate + '%';
+      } else {
+        document.getElementById('savingRateVal').textContent = '0%';
+      }
+
+      // Daily Average
+      const now = new Date();
+      let dayCount = 30;
+      if (appState.activeMonth === (now.getMonth() + 1) && appState.activeYear === now.getFullYear()) {
+        dayCount = Math.max(1, now.getDate());
+      }
+      const dailyAvg = Math.round(totalExpense / dayCount);
+      document.getElementById('dailyAvgVal').textContent = 'Rp ' + formatIDR(dailyAvg);
+
+      keys.forEach(catName => {
+        const amount = expenses[catName];
+        const percent = Math.round((amount / totalExpense) * 100);
+        const cat = appState.categories.find(c => c.nama === catName) || { icon: '🏷️', warna: '#0A84FF' };
+
+        const bar = document.createElement('div');
+        bar.className = 'category-bar-item';
+        bar.innerHTML = `
+          <div class="cat-bar-header">
+            <span class="cat-bar-name"><span>${cat.icon}</span> ${escapeHtml(catName)}</span>
+            <span class="cat-bar-sum">Rp ${formatIDR(amount)} <span style="color: var(--text-tertiary); font-weight: normal; font-size: 11px;">(${percent}%)</span></span>
+          </div>
+          <div class="cat-bar-track">
+            <div class="cat-bar-fill" style="width: ${percent}%; background: ${cat.warna};"></div>
+          </div>
+        `;
+        container.appendChild(bar);
+      });
+    }
+
+    function renderCategoryPicker() {
+      const grid = document.getElementById('categoryPickerGrid');
+      grid.innerHTML = '';
+
+      const relevant = appState.categories.filter(c => c.tipe === appState.selectedType);
+      if (relevant.length === 0) return;
+
+      if (!appState.selectedCategory || !relevant.find(c => c.nama === appState.selectedCategory)) {
+        appState.selectedCategory = relevant[0].nama;
+      }
+
+      relevant.forEach(c => {
+        const item = document.createElement('div');
+        item.className = 'cat-pick-item' + (c.nama === appState.selectedCategory ? ' selected' : '');
+        item.innerHTML = `
+          <div class="cat-pick-icon">${c.icon}</div>
+          <div class="cat-pick-name">${escapeHtml(c.nama)}</div>
+        `;
+        item.addEventListener('click', () => {
+          hapticFeedback();
+          appState.selectedCategory = c.nama;
+          document.querySelectorAll('.cat-pick-item').forEach(el => el.classList.remove('selected'));
+          item.classList.add('selected');
+        });
+        grid.appendChild(item);
+      });
+    }
+
+    // --------------------------------------------------------------------------
+    // MODAL & USER INTERACTIONS
+    // --------------------------------------------------------------------------
+    function initUI() {
+      // Month navigation
+      document.getElementById('prevMonthBtn').addEventListener('click', () => {
+        hapticFeedback();
+        if (appState.activeMonth === 1) {
+          appState.activeMonth = 12;
+          appState.activeYear--;
+        } else {
+          appState.activeMonth--;
+        }
+        recalculateMonthlySummary();
+        renderAll();
+      });
+
+      document.getElementById('nextMonthBtn').addEventListener('click', () => {
+        hapticFeedback();
+        if (appState.activeMonth === 12) {
+          appState.activeMonth = 1;
+          appState.activeYear++;
+        } else {
+          appState.activeMonth++;
+        }
+        recalculateMonthlySummary();
+        renderAll();
+      });
+
+      document.getElementById('todayJumpBtn').addEventListener('click', () => {
+        hapticFeedback();
+        const now = new Date();
+        appState.activeYear = now.getFullYear();
+        appState.activeMonth = now.getMonth() + 1;
+        recalculateMonthlySummary();
+        renderAll();
+        showToast('Bulan Ini Ditampilkan');
+      });
+
+      // Filter Type Toggle
+      document.getElementById('filterTypeToggle').addEventListener('click', () => {
+        hapticFeedback();
+        if (appState.filterType === 'ALL') {
+          appState.filterType = 'Pengeluaran';
+          document.getElementById('filterTypeToggle').textContent = 'Pengeluaran Saja ▾';
+        } else if (appState.filterType === 'Pengeluaran') {
+          appState.filterType = 'Pemasukan';
+          document.getElementById('filterTypeToggle').textContent = 'Pemasukan Saja ▾';
+        } else {
+          appState.filterType = 'ALL';
+          document.getElementById('filterTypeToggle').textContent = 'Semua Tipe ▾';
+        }
+        renderTransactionsList();
+      });
+
+      // Segmented Tabs
+      const tabTx = document.getElementById('tabBtnTransactions');
+      const tabAn = document.getElementById('tabBtnAnalytics');
+      const panelTx = document.getElementById('panelTransactions');
+      const panelAn = document.getElementById('panelAnalytics');
+
+      tabTx.addEventListener('click', () => {
+        hapticFeedback();
+        tabTx.classList.add('active');
+        tabAn.classList.remove('active');
+        panelTx.style.display = 'block';
+        panelAn.classList.remove('active');
+      });
+
+      tabAn.addEventListener('click', () => {
+        hapticFeedback();
+        tabAn.classList.add('active');
+        tabTx.classList.remove('active');
+        panelTx.style.display = 'none';
+        panelAn.classList.add('active');
+      });
+
+      // Bottom Nav Items
+      document.getElementById('navHome').addEventListener('click', () => {
+        hapticFeedback();
+        tabTx.click();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      document.getElementById('navStats').addEventListener('click', () => {
+        hapticFeedback();
+        tabAn.click();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      document.getElementById('navCategories').addEventListener('click', () => {
+        hapticFeedback();
+        tabAn.click();
+      });
+      document.getElementById('navSettings').addEventListener('click', () => {
+        hapticFeedback();
+        openSettingsModal();
+      });
+
+      // Add Modal Open/Close
+      document.getElementById('openAddModalBtn').addEventListener('click', openAddModal);
+      document.getElementById('closeAddModalBtn').addEventListener('click', closeAddModal);
+
+      // Add Modal Type Switch
+      const expBtn = document.getElementById('typeExpenseBtn');
+      const incBtn = document.getElementById('typeIncomeBtn');
+
+      expBtn.addEventListener('click', () => {
+        hapticFeedback();
+        appState.selectedType = 'Pengeluaran';
+        expBtn.classList.add('active');
+        incBtn.classList.remove('active');
+        document.getElementById('amountDisplayNumber').style.color = 'var(--apple-red)';
+        renderCategoryPicker();
+      });
+
+      incBtn.addEventListener('click', () => {
+        hapticFeedback();
+        appState.selectedType = 'Pemasukan';
+        incBtn.classList.add('active');
+        expBtn.classList.remove('active');
+        document.getElementById('amountDisplayNumber').style.color = 'var(--apple-green)';
+        renderCategoryPicker();
+      });
+
+      // Save Transaction Click
+      document.getElementById('saveTransactionBtn').addEventListener('click', handleSaveTransaction);
+
+      // Amount Display Click to focus hidden raw amount input for mobile keyboard
+      document.querySelector('.sheet-amount-container').addEventListener('click', () => {
+        const raw = document.getElementById('hiddenRawAmount');
+        raw.style.display = 'block';
+        raw.focus();
+      });
+
+      document.getElementById('hiddenRawAmount').addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10) || 0;
+        appState.currentAmount = val;
+        updateAmountDisplay();
+      });
+
+      // Settings Modal
+      document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
+      document.getElementById('closeSettingsModalBtn').addEventListener('click', closeSettingsModal);
+      document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
+      document.getElementById('testApiBtn').addEventListener('click', testApiConnection);
+      document.getElementById('manualSyncBtn').addEventListener('click', () => {
+        hapticFeedback();
+        fetchFromGoogleSheets();
+      });
+
+      document.getElementById('resetDemoDataBtn').addEventListener('click', () => {
+        if (confirm('Reset ke data demo bawaan? Data lokal akan diganti.')) {
+          localStorage.removeItem(STORAGE_KEY);
+          loadCachedData();
+          closeSettingsModal();
+          showToast('Data demo berhasil dimuat');
+        }
+      });
+
+      // Dark / Light Theme Toggle
+      document.getElementById('themeToggleBtn').addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('THEME_MODE', next);
+        showToast(next === 'light' ? '☀️ Mode Terang Aktif' : '🌙 Mode Gelap Apple Aktif');
+      });
+
+      const savedTheme = localStorage.getItem('THEME_MODE');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    }
+
+    function openAddModal() {
+      hapticFeedback();
+      appState.currentAmount = 0;
+      updateAmountDisplay();
+      document.getElementById('hiddenRawAmount').value = '';
+      document.getElementById('txNoteInput').value = '';
+      document.getElementById('txDateInput').value = new Date().toISOString().split('T')[0];
+      
+      // Default type: Pengeluaran
+      document.getElementById('typeExpenseBtn').click();
+      document.getElementById('addTxModal').classList.add('active');
+    }
+
+    function closeAddModal() {
+      hapticFeedback();
+      document.getElementById('addTxModal').classList.remove('active');
+    }
+
+    function addAmountPreset(amount) {
+      hapticFeedback();
+      appState.currentAmount += amount;
+      updateAmountDisplay();
+    }
+
+    function clearAmount() {
+      hapticFeedback();
+      appState.currentAmount = 0;
+      document.getElementById('hiddenRawAmount').value = '';
+      updateAmountDisplay();
+    }
+
+    function updateAmountDisplay() {
+      document.getElementById('amountDisplayNumber').textContent = formatIDR(appState.currentAmount);
+    }
+
+    function openSettingsModal() {
+      document.getElementById('apiEndpointInput').value = appState.apiUrl;
+      document.getElementById('targetBudgetInput').value = appState.targetBudget;
+      document.getElementById('settingsModal').classList.add('active');
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settingsModal').classList.remove('active');
+    }
+
+    function saveSettings() {
+      hapticFeedback();
+      const url = document.getElementById('apiEndpointInput').value.trim();
+      const budget = Number(document.getElementById('targetBudgetInput').value) || 8900000;
+
+      appState.apiUrl = url;
+      appState.targetBudget = budget;
+
+      localStorage.setItem('API_URL', url);
+      localStorage.setItem('TARGET_BUDGET', budget);
+
+      closeSettingsModal();
+      showToast('Pengaturan Berhasil Disimpan');
+      recalculateMonthlySummary();
+      renderAll();
+
+      if (url) {
+        fetchFromGoogleSheets();
+      }
+    }
+
+    // --------------------------------------------------------------------------
+    // TRANSACTION ACTIONS (OPTIMISTIC + GOOGLE SHEETS POST)
+    // --------------------------------------------------------------------------
+    function handleSaveTransaction() {
+      if (appState.currentAmount <= 0) {
+        alert('Harap masukkan jumlah nominal terlebih dahulu!');
+        return;
+      }
+
+      hapticFeedback();
+
+      const newTx = {
+        id: 'TRX-' + Math.floor(100000 + Math.random() * 900000),
+        tanggal: document.getElementById('txDateInput').value || new Date().toISOString().split('T')[0],
+        jenis: appState.selectedType,
+        kategori: appState.selectedCategory || 'Lain-lain',
+        jumlah: appState.currentAmount,
+        metode: document.getElementById('txMethodInput').value || 'Tunai',
+        catatan: document.getElementById('txNoteInput').value.trim(),
+        createdAt: new Date().toISOString()
+      };
+
+      // 1. OPTIMISTIC UPDATE: Add immediately to local state for 0ms latency
+      appState.transactions.unshift(newTx);
+      saveToCache();
+      recalculateMonthlySummary();
+      renderAll();
+      closeAddModal();
+      showToast(`+Rp ${formatIDR(newTx.jumlah)} (${newTx.kategori}) Tersimpan`);
+
+      // 2. BACKGROUND POST TO GOOGLE APPS SCRIPT
+      if (appState.apiUrl) {
+        postToGoogleSheets(newTx);
+      }
+    }
+
+    async function postToGoogleSheets(txData) {
+      updateSyncStatus('syncing', 'Menyimpan ke Google Sheets...');
+      try {
+        const payload = {
+          action: 'add_transaction',
+          id: txData.id,
+          tanggal: txData.tanggal,
+          jenis: txData.jenis,
+          kategori: txData.kategori,
+          jumlah: txData.jumlah,
+          metode: txData.metode,
+          catatan: txData.catatan
+        };
+
+        // Note: Using text/plain avoids CORS preflight OPTIONS in Google Apps Script!
+        const response = await fetch(appState.apiUrl, {
+          method: 'POST',
+          mode: 'cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+
+        const res = await response.json();
+        if (res.status === 'success') {
+          updateSyncStatus('online', 'Tersinkron dengan Sheet');
+        } else {
+          updateSyncStatus('offline', 'Sheet error: ' + (res.message || ''));
+        }
+      } catch (err) {
+        console.error('GAS Post error:', err);
+        updateSyncStatus('offline', 'Tersimpan Offline (Gagal Kirim)');
+      }
+    }
+
+    function promptDeleteTransaction(tx) {
+      hapticFeedback();
+      if (confirm(`Hapus transaksi:\n"${tx.kategori} - Rp ${formatIDR(tx.jumlah)}"?`)) {
+        appState.transactions = appState.transactions.filter(t => t.id !== tx.id);
+        saveToCache();
+        recalculateMonthlySummary();
+        renderAll();
+        showToast('Transaksi dihapus');
+
+        if (appState.apiUrl) {
+          deleteFromGoogleSheets(tx.id);
+        }
+      }
+    }
+
+    async function deleteFromGoogleSheets(id) {
+      updateSyncStatus('syncing', 'Menghapus di Sheet...');
+      try {
+        await fetch(appState.apiUrl, {
+          method: 'POST',
+          mode: 'cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'delete_transaction', id: id })
+        });
+        updateSyncStatus('online', 'Tersinkron');
+      } catch (e) {
+        updateSyncStatus('offline', 'Gagal hapus di Cloud');
+      }
+    }
+
+    // --------------------------------------------------------------------------
+    // API SYNC ENGINE (GET BATCH)
+    // --------------------------------------------------------------------------
+    async function fetchFromGoogleSheets() {
+      if (!appState.apiUrl) return;
+
+      updateSyncStatus('syncing', 'Mengambil Data Sheet...');
+      try {
+        const url = `${appState.apiUrl}?action=get_init_data&year=${appState.activeYear}&month=${appState.activeMonth}&_t=${Date.now()}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.status === 'success') {
+          if (data.transactions && Array.isArray(data.transactions)) {
+            appState.transactions = data.transactions;
+          }
+          if (data.categories && Array.isArray(data.categories)) {
+            appState.categories = data.categories;
+          }
+          saveToCache();
+          recalculateMonthlySummary();
+          renderAll();
+          updateSyncStatus('online', 'Tersambung (Cloud)');
+          showToast('Data Google Sheet Terupdate');
+        } else {
+          updateSyncStatus('offline', data.message || 'Error API');
+        }
+      } catch (err) {
+        console.error('Fetch error:', err);
+        updateSyncStatus('offline', 'Gagal Konek ke Sheet (Cek URL)');
+      }
+    }
+
+    async function testApiConnection() {
+      const url = document.getElementById('apiEndpointInput').value.trim();
+      if (!url) {
+        alert('Masukkan URL Web App Apps Script terlebih dahulu!');
+        return;
+      }
+      showToast('Menguji koneksi...');
+      try {
+        const res = await fetch(`${url}?action=ping&_t=${Date.now()}`);
+        const json = await res.json();
+        if (json.status === 'success') {
+          alert('✅ KONEKSI SUKSES!\nBackend Google Apps Script siap digunakan.');
+        } else {
+          alert('⚠️ Respons diterima tetapi status error: ' + json.message);
+        }
+      } catch (e) {
+        alert('❌ GAGAL TERHUBUNG!\nPastikan:\n1. URL sudah benar.\n2. Deployment diset "Who has access: Anyone".\n\nDetail error: ' + e.message);
+      }
+    }
+
+    function updateSyncStatus(state, text) {
+      const dot = document.getElementById('syncStatusDot');
+      const label = document.getElementById('syncStatusText');
+      
+      dot.className = 'status-dot';
+      if (state === 'syncing') dot.classList.add('syncing');
+      else if (state === 'offline') dot.classList.add('offline');
+      
+      label.textContent = text;
+    }
+
+    // --------------------------------------------------------------------------
+    // UTILITIES & FEEDBACK
+    // --------------------------------------------------------------------------
+    function hapticFeedback() {
+      if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(12);
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('appleToast');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2400);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // --------------------------------------------------------------------------
+    // PWA REGISTRATION (INLINE SERVICE WORKER & MANIFEST DYNAMIC GENERATOR)
+    // --------------------------------------------------------------------------
+    function registerPWA() {
+      // 1. Dynamic Web App Manifest Injection if file not present
+      try {
+        const manifest = {
+          name: "Fajar Finance - Apple PWA",
+          short_name: "Finance",
+          description: "Pencatatan Pengeluaran & Pemasukan Bulanan Berstandar Apple",
+          start_url: "./index.html",
+          display: "standalone",
+          background_color: "#000000",
+          theme_color: "#000000",
+          orientation: "portrait-primary",
+          icons: [
+            {
+              src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='120' fill='%231C1C1E'/%3E%3Ctext x='50%25' y='58%25' text-anchor='middle' dominant-baseline='central' font-size='260' fill='%230A84FF'%3E%3C/text%3E%3C/svg%3E",
+              sizes: "192x192 512x512",
+              type: "image/svg+xml"
+            }
+          ]
+        };
+        const stringManifest = JSON.stringify(manifest);
+        const blob = new Blob([stringManifest], { type: 'application/json' });
+        const manifestURL = URL.createObjectURL(blob);
+        document.getElementById('manifestLink').setAttribute('href', manifestURL);
+      } catch (err) {
+        console.warn('Manifest generation failed:', err);
+      }
+
+      // 2. Service Worker for Offline Caching
+      if ('serviceWorker' in navigator) {
+        const swCode = `
+          const CACHE_NAME = 'fajar-finance-apple-v2';
+          self.addEventListener('install', (e) => {
+            self.skipWaiting();
+          });
+          self.addEventListener('activate', (e) => {
+            e.waitUntil(clients.claim());
+          });
+          self.addEventListener('fetch', (e) => {
+            // Only cache GET requests that are not Google Script API calls
+            if (e.request.method === 'GET' && !e.request.url.includes('script.google.com')) {
+              e.respondWith(
+                caches.match(e.request).then((res) => {
+                  return res || fetch(e.request).then((fetchRes) => {
+                    return caches.open(CACHE_NAME).then((cache) => {
+                      try { cache.put(e.request, fetchRes.clone()); } catch(err) {}
+                      return fetchRes;
+                    });
+                  }).catch(() => caches.match(e.request));
+                })
+              );
+            }
+          });
+        `;
+
+        try {
+          const swBlob = new Blob([swCode], { type: 'application/javascript' });
+          const swUrl = URL.createObjectURL(swBlob);
+          navigator.serviceWorker.register(swUrl).then(() => {
+            console.log(' PWA Service Worker Registered Successfully');
+          }).catch(() => {
+            // Fallback for relative sw.js if blob registration restricted
+            navigator.serviceWorker.register('./sw.js').catch(()=>{});
+          });
+        } catch (e) {
+          // Fallback
+          navigator.serviceWorker.register('./sw.js').catch(()=>{});
+        }
+      }
+
+      // 3. Listen for BeforeInstallPrompt event (Android / Chrome)
+      let deferredPrompt = null;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        const banner = document.getElementById('pwaBanner');
+        if (banner) banner.style.display = 'flex';
+
+        document.getElementById('pwaInstallBtn').addEventListener('click', () => {
+          banner.style.display = 'none';
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then(() => {
+            deferredPrompt = null;
+          });
+        });
+      });
+    }
+  </script>
+</body>
+</html>
