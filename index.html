@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
   <title>Finance Kita</title>
 
@@ -54,7 +56,9 @@
       -webkit-user-select: none;
     }
 
-    input, select, textarea {
+    input,
+    select,
+    textarea {
       user-select: text !important;
       -webkit-user-select: text !important;
       font-family: inherit;
@@ -126,12 +130,22 @@
       background: var(--green);
       box-shadow: 0 0 6px var(--green);
     }
+
     .dot.sync {
       background: #FF9F0A;
       box-shadow: 0 0 6px #FF9F0A;
       animation: pulse 1s infinite alternate;
     }
-    @keyframes pulse { from { opacity: 0.4; } to { opacity: 1; } }
+
+    @keyframes pulse {
+      from {
+        opacity: 0.4;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
 
     /* ================= MONTH SELECTOR ================= */
     .month-pill {
@@ -146,7 +160,7 @@
       font-size: 14px;
       font-weight: 600;
       margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     }
 
     .month-nav {
@@ -193,10 +207,16 @@
       border: 0.5px solid var(--border);
       font-size: 12px;
       font-weight: 600;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     }
-    .stat-in { color: var(--green); }
-    .stat-out { color: var(--red); }
+
+    .stat-in {
+      color: var(--green);
+    }
+
+    .stat-out {
+      color: var(--red);
+    }
 
     /* ================= TRANSACTIONS LIST ================= */
     .list-header {
@@ -217,7 +237,7 @@
       border: 0.5px solid var(--border);
       overflow: hidden;
       margin-bottom: 16px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
     }
 
     .group-date {
@@ -237,8 +257,14 @@
       cursor: pointer;
       transition: background 0.15s;
     }
-    .tx-item:not(:last-child) { border-bottom: 0.5px solid var(--border); }
-    .tx-item:active { background: var(--card-subtle); }
+
+    .tx-item:not(:last-child) {
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .tx-item:active {
+      background: var(--card-subtle);
+    }
 
     .tx-icon {
       font-size: 22px;
@@ -278,8 +304,14 @@
       text-align: right;
       letter-spacing: -0.01em;
     }
-    .val-out { color: var(--red); }
-    .val-in { color: var(--green); }
+
+    .val-out {
+      color: var(--red);
+    }
+
+    .val-in {
+      color: var(--green);
+    }
 
     .empty-box {
       text-align: center;
@@ -329,7 +361,11 @@
       cursor: pointer;
       transition: color 0.15s, transform 0.15s;
     }
-    .nav-btn:active { transform: scale(0.92); color: var(--text); }
+
+    .nav-btn:active {
+      transform: scale(0.92);
+      color: var(--text);
+    }
 
     .nav-icon {
       font-size: 20px;
@@ -355,13 +391,21 @@
       animation: siriPulse 2s infinite alternate;
       flex-shrink: 0;
     }
+
     .center-voice-btn:active {
       transform: scale(0.88) rotate(15deg);
     }
 
     @keyframes siriPulse {
-      0%   { transform: scale(0.96); box-shadow: 0 4px 18px rgba(10, 132, 255, 0.45); }
-      100% { transform: scale(1.06); box-shadow: 0 8px 32px rgba(10, 132, 255, 0.7), 0 0 20px rgba(48, 209, 88, 0.55); }
+      0% {
+        transform: scale(0.96);
+        box-shadow: 0 4px 18px rgba(10, 132, 255, 0.45);
+      }
+
+      100% {
+        transform: scale(1.06);
+        box-shadow: 0 8px 32px rgba(10, 132, 255, 0.7), 0 0 20px rgba(48, 209, 88, 0.55);
+      }
     }
 
     /* ================= MODAL BOTTOM SHEETS ================= */
@@ -378,7 +422,11 @@
       justify-content: center;
       align-items: flex-end;
     }
-    .modal.active { opacity: 1; visibility: visible; }
+
+    .modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
 
     .sheet {
       width: 100%;
@@ -395,7 +443,10 @@
       -webkit-overflow-scrolling: touch;
       position: relative;
     }
-    .modal.active .sheet { transform: translateY(0); }
+
+    .modal.active .sheet {
+      transform: translateY(0);
+    }
 
     .sheet-header-row {
       display: flex;
@@ -451,10 +502,28 @@
       cursor: pointer;
       box-shadow: 0 0 30px rgba(10, 132, 255, 0.5);
       animation: siriSpin 3s linear infinite;
-      transition: transform 0.15s;
+      transition: transform 0.15s, box-shadow 0.25s;
     }
-    .siri-circle:active { transform: scale(0.9); }
-    @keyframes siriSpin { to { transform: rotate(360deg); } }
+
+    .siri-circle.listening {
+      box-shadow: 0 0 40px rgba(48, 209, 88, 0.75), 0 0 20px rgba(10, 132, 255, 0.5);
+      animation: siriSpin 2s linear infinite, siriBreath 1.3s ease-in-out infinite alternate;
+    }
+
+    @keyframes siriBreath {
+      0%   { transform: scale(0.96); }
+      100% { transform: scale(1.08); }
+    }
+
+    .siri-circle:active {
+      transform: scale(0.9);
+    }
+
+    @keyframes siriSpin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
     .transcript-box {
       background: var(--card-subtle);
@@ -484,8 +553,23 @@
       border-radius: 10px;
       border: 0.5px solid var(--border);
     }
-    .parsed-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 2px; }
-    .parsed-val { font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .parsed-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .parsed-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
     .btn-submit {
       width: 100%;
@@ -499,11 +583,25 @@
       cursor: pointer;
       transition: opacity 0.15s, transform 0.1s;
     }
-    .btn-submit:active { opacity: 0.9; transform: scale(0.99); }
+
+    .btn-submit:active {
+      opacity: 0.9;
+      transform: scale(0.99);
+    }
 
     /* SIMPLE INPUTS */
-    .form-group { margin-bottom: 12px; }
-    .form-label { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; display: block; }
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      display: block;
+    }
+
     .clean-input {
       width: 100%;
       padding: 12px 14px;
@@ -515,15 +613,37 @@
       outline: none;
       transition: border 0.2s;
     }
+
     .clean-input:focus {
       border-color: var(--blue);
     }
 
     /* BAR CHART IN ANALYSIS */
-    .cat-bar-item { margin-bottom: 12px; }
-    .cat-bar-top { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
-    .cat-bar-track { width: 100%; height: 6px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
-    .cat-bar-fill { height: 100%; background: var(--blue); border-radius: 4px; transition: width 0.4s ease; }
+    .cat-bar-item {
+      margin-bottom: 12px;
+    }
+
+    .cat-bar-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .cat-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .cat-bar-fill {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
 
     /* TOAST */
     .toast {
@@ -541,15 +661,19 @@
       z-index: 200;
       transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
       pointer-events: none;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
-    .toast.show { transform: translate(-50%, 0); }
+
+    .toast.show {
+      transform: translate(-50%, 0);
+    }
   </style>
 </head>
+
 <body>
 
   <div class="container">
-    
+
     <!-- Top Header (Clean Minimalist) -->
     <header class="top-bar">
       <div class="brand">
@@ -632,7 +756,8 @@
 
       <div class="siri-circle" id="siriOrb">🎙️</div>
 
-      <div style="text-align: center; font-size: 13px; font-weight: 600; color: var(--blue); margin-bottom: 12px;" id="voiceStatus">
+      <div style="text-align: center; font-size: 13px; font-weight: 600; color: var(--blue); margin-bottom: 12px;"
+        id="voiceStatus">
         Sedang mendengarkan...
       </div>
 
@@ -662,7 +787,8 @@
       <button class="btn-submit" id="saveVoiceBtn" style="display: none; background: var(--green);">
         ✓ Simpan Sekarang
       </button>
-      <button class="btn-submit" id="retryVoiceBtn" style="display: none; background: var(--card-subtle); color: var(--text); margin-top: 8px;">
+      <button class="btn-submit" id="retryVoiceBtn"
+        style="display: none; background: var(--card-subtle); color: var(--text); margin-top: 8px;">
         🔄 Coba Bicara Lagi
       </button>
     </div>
@@ -680,7 +806,8 @@
 
       <div style="display: flex; gap: 8px; margin-bottom: 14px;">
         <button class="btn-submit" id="btnTypeExpense" style="background: var(--red); flex: 1;">Pengeluaran</button>
-        <button class="btn-submit" id="btnTypeIncome" style="background: var(--card-subtle); color: var(--text-muted); flex: 1;">Pemasukan</button>
+        <button class="btn-submit" id="btnTypeIncome"
+          style="background: var(--card-subtle); color: var(--text-muted); flex: 1;">Pemasukan</button>
       </div>
 
       <div class="form-group">
@@ -724,7 +851,8 @@
         <button class="sheet-close-btn" onclick="closeAllModals()">✕</button>
       </div>
 
-      <div style="background: var(--card-subtle); padding: 14px; border-radius: 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.8;">
+      <div
+        style="background: var(--card-subtle); padding: 14px; border-radius: 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.8;">
         <div style="display:flex; justify-content:space-between;">
           <span style="color:var(--text-muted)">Tabungan Bersih:</span>
           <strong id="anNetVal" style="color:var(--green)">Rp 0</strong>
@@ -735,7 +863,8 @@
         </div>
       </div>
 
-      <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.05em;">
+      <div
+        style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.05em;">
         Distribusi Pengeluaran
       </div>
       <div id="categoryBarsContainer">
@@ -755,29 +884,50 @@
       </div>
 
       <!-- Gemini AI Section -->
-      <div style="background: linear-gradient(135deg, rgba(10,132,255,0.12), rgba(191,90,242,0.12)); border: 0.5px solid rgba(10,132,255,0.3); border-radius: 14px; padding: 14px; margin-bottom: 14px;">
+      <div
+        style="background: linear-gradient(135deg, rgba(10,132,255,0.12), rgba(191,90,242,0.12)); border: 0.5px solid rgba(10,132,255,0.3); border-radius: 14px; padding: 14px; margin-bottom: 14px;">
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
           <span style="font-size:18px;">✨</span>
           <div>
             <div style="font-size:13px; font-weight:700; color:var(--text);">Gemini AI — Gratis Selamanya</div>
             <div style="font-size:11px; color:var(--text-muted);">Memahami konteks suara seperti manusia</div>
           </div>
-          <span id="aiBadge" style="margin-left:auto; font-size:10px; font-weight:700; padding:3px 8px; border-radius:8px; background:var(--card-subtle); color:var(--text-muted);">LOKAL</span>
+          <span id="aiBadge"
+            style="margin-left:auto; font-size:10px; font-weight:700; padding:3px 8px; border-radius:8px; background:var(--card-subtle); color:var(--text-muted);">LOKAL</span>
         </div>
         <div class="form-group" style="margin-bottom:8px;">
-          <label class="form-label">Gemini API Key <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--blue); text-decoration:none;">→ Dapatkan Gratis</a></label>
+          <label class="form-label">Gemini API Key <a href="https://aistudio.google.com/app/apikey" target="_blank"
+              style="color:var(--blue); text-decoration:none;">→ Dapatkan Gratis</a></label>
           <input type="password" class="clean-input" id="inputGeminiKey" placeholder="AIza..." autocomplete="off">
         </div>
-        <button class="btn-submit" id="saveGeminiBtn" style="background: linear-gradient(135deg,#0A84FF,#BF5AF2); margin-bottom: 0;">Aktifkan AI</button>
+        <button class="btn-submit" id="saveGeminiBtn"
+          style="background: linear-gradient(135deg,#0A84FF,#BF5AF2); margin-bottom: 0;">Aktifkan AI</button>
       </div>
 
       <div class="form-group">
         <label class="form-label">URL Web App Apps Script (Google Sheet)</label>
-        <input type="url" class="clean-input" id="inputApiUrl" placeholder="https://script.google.com/macros/s/.../exec">
+        <input type="url" class="clean-input" id="inputApiUrl"
+          placeholder="https://script.google.com/macros/s/.../exec">
       </div>
 
       <button class="btn-submit" id="saveSettingsBtn" style="margin-bottom: 10px;">Simpan URL Sheet</button>
-      <button class="btn-submit" id="testApiBtn" style="background: var(--card-subtle); color: var(--text);">Tes Koneksi Sheet</button>
+      <button class="btn-submit" id="testApiBtn"
+        style="background: var(--card-subtle); color: var(--text); margin-bottom: 10px;">Tes Koneksi Sheet</button>
+
+      <!-- Share Link Section -->
+      <div id="shareLinkSection"
+        style="background: linear-gradient(135deg, rgba(48,209,88,0.1), rgba(10,132,255,0.1)); border: 0.5px solid rgba(48,209,88,0.3); border-radius: 14px; padding: 14px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+          <span style="font-size:18px;">🔗</span>
+          <div>
+            <div style="font-size:13px; font-weight:700; color:var(--text);">Bagikan ke Istri / Keluarga</div>
+            <div style="font-size:11px; color:var(--text-muted);">Buka link ini di HP lain → langsung terkonfigurasi
+            </div>
+          </div>
+        </div>
+        <button class="btn-submit" id="copyShareLinkBtn" style="background: var(--green); margin-bottom: 0;">📋 Salin
+          Link Berbagi</button>
+      </div>
     </div>
   </div>
 
@@ -787,7 +937,9 @@
   <!-- ================= LIGHTWEIGHT FAST JAVASCRIPT ================= -->
   <script>
     const STORAGE_KEY = 'FINANCE_KITA_CLEAN';
-    const MONTHS = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    const MONTHS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+    const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycbwHrWLN_TzBtXuYDjSoiisP_fLr7eATGsj8nGhRkPa61GfBHQJVQAfjBFlNn9SsJNTesA/exec';
 
     // ── AUTO-FILL dari URL Parameter ──
     // Contoh link: index.html?k=AIzaSy...&s=https://script.google.com/...
@@ -804,6 +956,8 @@
       if (urlSheet && urlSheet.startsWith('http')) {
         localStorage.setItem('API_URL', urlSheet);
         changed = true;
+      } else if (!localStorage.getItem('API_URL')) {
+        localStorage.setItem('API_URL', DEFAULT_API_URL);
       }
       if (changed) {
         // Bersihkan URL agar API key tidak terlihat di address bar
@@ -815,7 +969,7 @@
     })();
 
     let state = {
-      apiUrl: localStorage.getItem('API_URL') || '',
+      apiUrl: localStorage.getItem('API_URL') || DEFAULT_API_URL,
       geminiKey: localStorage.getItem('GEMINI_KEY') || '',
       year: new Date().getFullYear(),
       month: new Date().getMonth() + 1,
@@ -837,7 +991,7 @@
     function loadData() {
       const cached = localStorage.getItem(STORAGE_KEY);
       if (cached) {
-        try { state.transactions = JSON.parse(cached); } catch(e){}
+        try { state.transactions = JSON.parse(cached); } catch (e) { }
       } else {
         state.transactions = [
           { id: 'T1', tanggal: today(), jenis: 'Pengeluaran', kategori: 'Makanan & Minuman', jumlah: 15000, catatan: 'Makan Pentol', icon: '🍔' },
@@ -890,7 +1044,7 @@
         gain2.connect(ctx.destination);
         osc2.start(now + 0.08);
         osc2.stop(now + 0.45);
-      } catch(e) {}
+      } catch (e) { }
     }
 
     function render() {
@@ -936,7 +1090,7 @@
           grouped[t.tanggal].push(t);
         });
 
-        const dates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
+        const dates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
         dates.forEach(d => {
           const box = document.createElement('div');
           box.className = 'group-box';
@@ -985,7 +1139,7 @@
       if (catKeys.length === 0 || expense === 0) {
         barContainer.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:10px;">Belum ada pengeluaran.</div>';
       } else {
-        catKeys.sort((a,b) => catTotals[b] - catTotals[a]);
+        catKeys.sort((a, b) => catTotals[b] - catTotals[a]);
         catKeys.forEach(k => {
           const val = catTotals[k];
           const pct = Math.round((val / expense) * 100);
@@ -1063,6 +1217,52 @@
       };
 
       document.getElementById('testApiBtn').onclick = testCloud;
+
+      // Share Link
+      document.getElementById('copyShareLinkBtn').onclick = copyShareLink;
+    }
+
+    // ── SALIN LINK BERBAGI ──
+    function copyShareLink() {
+      const key = state.geminiKey;
+      const sheet = state.apiUrl;
+
+      if (!key && !sheet) {
+        showToast('⚠️ Belum ada API Key atau URL Sheet yang tersimpan');
+        return;
+      }
+
+      const base = window.location.origin + window.location.pathname;
+      const params = new URLSearchParams();
+      if (key) params.set('k', key);
+      if (sheet) params.set('s', sheet);
+
+      const shareUrl = `${base}?${params.toString()}`;
+
+      // Salin ke clipboard
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareUrl)
+          .then(() => showToast('📋 Link berhasil disalin! Kirim ke istri via WhatsApp.'))
+          .catch(() => fallbackCopy(shareUrl));
+      } else {
+        fallbackCopy(shareUrl);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast('📋 Link berhasil disalin! Kirim ke istri via WhatsApp.');
+      } catch (e) {
+        showToast('⚠️ Tidak bisa salin otomatis, salin manual dari URL bar.');
+      }
+      document.body.removeChild(ta);
     }
 
     function toggleTheme() {
@@ -1092,9 +1292,9 @@
     // ── GEMINI AI PARSER (Gratis, 1500 req/hari) ──
     // Model: gemini-1.5-flash | Paham Bahasa Indonesia & konteks keuangan
     const GEMINI_CATEGORIES = [
-      'Makanan & Minuman','Transportasi & Bensin','Belanja & Kebutuhan',
-      'Tagihan & Listrik/Air','Hiburan & Rekreasi','Kesehatan & Medis','Sedekah & Amal',
-      'Gaji Pokok','Freelance & Proyek','Bisnis & Usaha','Lain-lain'
+      'Makanan & Minuman', 'Transportasi & Bensin', 'Belanja & Kebutuhan',
+      'Tagihan & Listrik/Air', 'Hiburan & Rekreasi', 'Kesehatan & Medis', 'Sedekah & Amal',
+      'Gaji Pokok', 'Freelance & Proyek', 'Bisnis & Usaha', 'Lain-lain'
     ];
 
     async function parseWithGemini(transcript) {
@@ -1137,7 +1337,7 @@ Aturan:
         }
         const data = await res.json();
         const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-        const jsonStr = rawText.replace(/```json?/gi,'').replace(/```/g,'').trim();
+        const jsonStr = rawText.replace(/```json?/gi, '').replace(/```/g, '').trim();
         const parsed = JSON.parse(jsonStr);
         if (!parsed.type) throw new Error('Invalid AI response: missing type');
         return {
@@ -1228,25 +1428,91 @@ Aturan:
     // ================= ULTRA-OPTIMAL VOICE RECOGNITION =================
     let recognition = null;
     let isListening = false;
+    let startRetryTimeout = null;
 
     function initVoice() {
+      const orb = document.getElementById('siriOrb');
+      if (orb) orb.onclick = startVoice;
+      const retryBtn = document.getElementById('retryVoiceBtn');
+      if (retryBtn) retryBtn.onclick = startVoice;
+      const saveBtn = document.getElementById('saveVoiceBtn');
+      if (saveBtn) saveBtn.onclick = confirmSaveVoice;
+    }
+
+    function showVoiceError(msg) {
+      const el = document.getElementById('voiceStatus');
+      if (el) {
+        el.textContent = '⚠️ ' + msg;
+        el.style.color = 'var(--red)';
+      }
+      const orb = document.getElementById('siriOrb');
+      if (orb) orb.classList.remove('listening');
+    }
+
+    function stopVoice() {
+      if (startRetryTimeout) {
+        clearTimeout(startRetryTimeout);
+        startRetryTimeout = null;
+      }
+      isListening = false;
+      const orb = document.getElementById('siriOrb');
+      if (orb) orb.classList.remove('listening');
+
+      if (recognition) {
+        const oldRec = recognition;
+        recognition = null;
+        // Lepas semua callback lama agar event abort/end asynchronous tidak memicu error atau merusak UI
+        oldRec.onstart = null;
+        oldRec.onaudiostart = null;
+        oldRec.onspeechstart = null;
+        oldRec.onresult = null;
+        oldRec.onerror = null;
+        oldRec.onend = null;
+        try {
+          oldRec.abort();
+        } catch (e) { }
+      }
+    }
+
+    function startVoice() {
       const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!Speech) return;
+      if (!Speech) {
+        alert('Gunakan Google Chrome (Android/PC) atau Safari (iPhone) untuk fitur suara.');
+        return;
+      }
 
-      recognition = new Speech();
-      recognition.lang = 'id-ID';
-      recognition.continuous = false;
-      recognition.interimResults = true;
-      recognition.maxAlternatives = 1;
+      // 1. Hentikan dan bersihkan sesi sebelumnya secara total
+      stopVoice();
 
-      recognition.onstart = () => {
+      // 2. Reset tampilan UI
+      state.detectedVoice = null;
+      document.getElementById('parsedGrid').style.display = 'none';
+      document.getElementById('saveVoiceBtn').style.display = 'none';
+      document.getElementById('retryVoiceBtn').style.display = 'none';
+      document.getElementById('transcriptBox').textContent = '"Contoh: Belanja makanan pentol 10.000"';
+      document.getElementById('voiceStatus').textContent = '🎙️ Menghubungkan mikrofon...';
+      document.getElementById('voiceStatus').style.color = 'var(--blue)';
+
+      // 3. Buat instance SpeechRecognition baru setiap kali mulai (hindari reuse bug di Chrome/WebKit)
+      const rec = new Speech();
+      rec.lang = 'id-ID';
+      rec.continuous = false;
+      rec.interimResults = true;
+      rec.maxAlternatives = 1;
+      recognition = rec;
+
+      rec.onstart = () => {
+        if (recognition !== rec) return;
         isListening = true;
+        const orb = document.getElementById('siriOrb');
+        if (orb) orb.classList.add('listening');
         document.getElementById('voiceStatus').textContent = '🎙️ Mendengarkan... Katakan sekarang!';
         document.getElementById('voiceStatus').style.color = 'var(--green)';
         if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(10);
       };
 
-      recognition.onresult = async (e) => {
+      rec.onresult = async (e) => {
+        if (recognition !== rec) return;
         let interimText = '';
         let finalText = '';
         let isFinal = false;
@@ -1285,6 +1551,7 @@ Aturan:
           document.getElementById('voiceStatus').style.color = 'var(--purple)';
           try {
             const aiResult = await parseWithGemini(textToProcess);
+            if (recognition !== rec) return;
             if (aiResult.amount > 0) {
               updateVoiceResult(aiResult);
             } else {
@@ -1293,6 +1560,7 @@ Aturan:
               else showVoiceError('Nominal tidak terdengar jelas. Coba lagi.');
             }
           } catch (err) {
+            if (recognition !== rec) return;
             console.warn('Gemini fallback:', err.message);
             const local = parseSpeech(textToProcess);
             if (local.amount > 0) {
@@ -1309,54 +1577,46 @@ Aturan:
         }
       };
 
-
-      recognition.onerror = (e) => {
+      rec.onerror = (e) => {
+        if (recognition !== rec) return;
         isListening = false;
+        const orb = document.getElementById('siriOrb');
+        if (orb) orb.classList.remove('listening');
         if (e.error === 'not-allowed') showVoiceError('Izin mikrofon ditolak di browser.');
-        else if (e.error !== 'aborted') showVoiceError('Gagal mendengar. Ketuk bola untuk coba lagi.');
+        else if (e.error === 'no-speech') showVoiceError('Tidak ada suara terdeteksi. Ketuk bola untuk coba lagi.');
+        else if (e.error !== 'aborted') showVoiceError('Gagal mendengar (' + e.error + '). Ketuk bola untuk coba lagi.');
       };
 
-      recognition.onend = () => {
+      rec.onend = () => {
+        if (recognition !== rec) return;
         isListening = false;
+        const orb = document.getElementById('siriOrb');
+        if (orb) orb.classList.remove('listening');
         if (!state.detectedVoice || state.detectedVoice.amount <= 0) {
-          document.getElementById('voiceStatus').textContent = 'Ketuk lingkaran untuk bicara lagi';
-          document.getElementById('voiceStatus').style.color = 'var(--blue)';
+          const vStatus = document.getElementById('voiceStatus');
+          if (vStatus && !vStatus.textContent.includes('⏳') && !vStatus.textContent.includes('⚠️')) {
+            vStatus.textContent = 'Ketuk lingkaran untuk bicara lagi';
+            vStatus.style.color = 'var(--blue)';
+          }
         }
       };
 
-      document.getElementById('siriOrb').onclick    = startVoice;
-      document.getElementById('retryVoiceBtn').onclick = startVoice;
-      document.getElementById('saveVoiceBtn').onclick  = confirmSaveVoice;
-    }
-
-    function showVoiceError(msg) {
-      const el = document.getElementById('voiceStatus');
-      el.textContent = '⚠️ ' + msg;
-      el.style.color = 'var(--red)';
-    }
-
-    function startVoice() {
-      if (!recognition) {
-        alert('Gunakan Google Chrome (Android/PC) atau Safari (iPhone) untuk fitur suara.');
-        return;
+      // 4. Jalankan pengenalan suara dengan proteksi transisi audio hardware
+      try {
+        rec.start();
+      } catch (err) {
+        console.warn('Initial recognition.start catch:', err.message);
+        startRetryTimeout = setTimeout(() => {
+          if (recognition === rec && !isListening) {
+            try {
+              rec.start();
+            } catch (retryErr) {
+              console.warn('Retry recognition.start failed:', retryErr.message);
+              showVoiceError('Ketuk lingkaran untuk mengaktifkan mikrofon.');
+            }
+          }
+        }, 120);
       }
-      // Abort sesi sebelumnya jika masih aktif (cegah InvalidStateError)
-      if (isListening) { try { recognition.abort(); } catch(e){} isListening = false; }
-      state.detectedVoice = null;
-      document.getElementById('parsedGrid').style.display = 'none';
-      document.getElementById('saveVoiceBtn').style.display = 'none';
-      document.getElementById('retryVoiceBtn').style.display = 'none';
-      document.getElementById('transcriptBox').textContent = '"Contoh: Belanja makanan pentol 10.000"';
-      document.getElementById('voiceStatus').textContent = 'Sedang mendengarkan...';
-      document.getElementById('voiceStatus').style.color = 'var(--blue)';
-      try { recognition.start(); } catch(e) { console.warn('recognition.start:', e.message); }
-    }
-
-    function stopVoice() {
-      if (recognition && isListening) {
-        try { recognition.abort(); } catch(e){}
-      }
-      isListening = false;
     }
 
 
@@ -1460,12 +1720,12 @@ Aturan:
       let note = text
         .replace(/(\d[\d.,]*)\s*(ribu|rb|k|juta|jt|ratus|puluh|belas)?/gi, ' ')
         .replace(/\b(rp|rupiah|idr)\b/gi, ' ');
-      
+
       const stopWords = [
-        'belanja','beli','bayar','buat','untuk','pakai','via','dengan','ke','di','dan','yang','ada',
-        'mau','minta','tolong','catatan','nominal','rp','rupiah','ribu','juta','ratus','rb',
-        'pengeluaran','pemasukan','income','expense','uang','duit','modal',
-        'bca','mandiri','bri','bni','qris','gopay','ovo','shopeepay','dana','tunai','cash','transfer'
+        'belanja', 'beli', 'bayar', 'buat', 'untuk', 'pakai', 'via', 'dengan', 'ke', 'di', 'dan', 'yang', 'ada',
+        'mau', 'minta', 'tolong', 'catatan', 'nominal', 'rp', 'rupiah', 'ribu', 'juta', 'ratus', 'rb',
+        'pengeluaran', 'pemasukan', 'income', 'expense', 'uang', 'duit', 'modal',
+        'bca', 'mandiri', 'bri', 'bni', 'qris', 'gopay', 'ovo', 'shopeepay', 'dana', 'tunai', 'cash', 'transfer'
       ];
       stopWords.forEach(w => {
         note = note.replace(new RegExp('(^|\\s)' + w + '($|\\s)', 'gi'), ' ');
@@ -1527,11 +1787,11 @@ Aturan:
 
       // ── Langkah 3: Fallback Parser kata verbal Indonesia ──
       const wordMap = {
-        'nol':0,'satu':1,'se':1,'dua':2,'tiga':3,'empat':4,'lima':5,'enam':6,
-        'tujuh':7,'delapan':8,'sembilan':9,'sepuluh':10,'sebelas':11,
-        'dua belas':12,'tiga belas':13,'empat belas':14,'lima belas':15,
-        'enam belas':16,'tujuh belas':17,'delapan belas':18,'sembilan belas':19,
-        'seratus':100,'seribu':1000,'sejuta':1000000
+        'nol': 0, 'satu': 1, 'se': 1, 'dua': 2, 'tiga': 3, 'empat': 4, 'lima': 5, 'enam': 6,
+        'tujuh': 7, 'delapan': 8, 'sembilan': 9, 'sepuluh': 10, 'sebelas': 11,
+        'dua belas': 12, 'tiga belas': 13, 'empat belas': 14, 'lima belas': 15,
+        'enam belas': 16, 'tujuh belas': 17, 'delapan belas': 18, 'sembilan belas': 19,
+        'seratus': 100, 'seribu': 1000, 'sejuta': 1000000
       };
       const words = strClean.split(/\s+/);
       let current = 0, wordTotal = 0;
@@ -1583,7 +1843,7 @@ Aturan:
           body: JSON.stringify(payload)
         });
         updateDot(false);
-      } catch(e){ updateDot(false); }
+      } catch (e) { updateDot(false); }
     }
 
     async function fetchCloud() {
@@ -1597,7 +1857,7 @@ Aturan:
           render();
         }
         updateDot(false);
-      } catch(e){ updateDot(false); }
+      } catch (e) { updateDot(false); }
     }
 
     async function testCloud() {
@@ -1607,7 +1867,7 @@ Aturan:
         const res = await fetch(`${url}?action=ping&_t=${Date.now()}`);
         const json = await res.json();
         alert(json.status === 'success' ? '✅ Koneksi Sukses!' : 'Gagal: ' + json.message);
-      } catch(e){ alert('Gagal koneksi: ' + e.message); }
+      } catch (e) { alert('Gagal koneksi: ' + e.message); }
     }
 
     function updateDot(isSyncing) {
@@ -1634,4 +1894,5 @@ Aturan:
     }
   </script>
 </body>
+
 </html>
