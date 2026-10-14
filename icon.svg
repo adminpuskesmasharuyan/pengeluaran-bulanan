@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#181920" />
+      <stop offset="50%" stop-color="#0E0F14" />
+      <stop offset="100%" stop-color="#050608" />
+    </linearGradient>
+
+    <!-- Glass Rim Glow -->
+    <linearGradient id="rimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A84FF" stop-opacity="0.8" />
+      <stop offset="40%" stop-color="#30D158" stop-opacity="0.4" />
+      <stop offset="80%" stop-color="#BF5AF2" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#0A84FF" stop-opacity="0.2" />
+    </linearGradient>
+
+    <!-- Core Soundwave / Crest Gradient -->
+    <linearGradient id="coreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A84FF" />
+      <stop offset="45%" stop-color="#30D158" />
+      <stop offset="100%" stop-color="#FFD60A" />
+    </linearGradient>
+
+    <!-- Siri Voice Wave Gradient -->
+    <linearGradient id="voiceWave" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#30D158" />
+      <stop offset="50%" stop-color="#0A84FF" />
+      <stop offset="100%" stop-color="#BF5AF2" />
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="subtleGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- iOS Squircle Base -->
+  <rect x="8" y="8" width="496" height="496" rx="116" fill="url(#bgGrad)" stroke="url(#rimGrad)" stroke-width="6" />
+
+  <!-- Inner Ambient Radial Glow -->
+  <circle cx="256" cy="230" r="150" fill="url(#coreGrad)" opacity="0.15" filter="url(#glow)" />
+
+  <!-- Voice Ring Concentric Waves -->
+  <circle cx="256" cy="240" r="180" fill="none" stroke="url(#rimGrad)" stroke-width="2" opacity="0.3" stroke-dasharray="8 12" />
+  <circle cx="256" cy="240" r="140" fill="none" stroke="url(#rimGrad)" stroke-width="3" opacity="0.45" />
+
+  <!-- Central Dynamic Financial Voice Crest -->
+  <!-- Soundwave Bars morphing into Wallet / Growth Chart -->
+  <g filter="url(#subtleGlow)">
+    <!-- Wave 1 (Left mini) -->
+    <rect x="156" y="210" width="16" height="60" rx="8" fill="url(#voiceWave)" opacity="0.75" />
+    <!-- Wave 2 (Left mid) -->
+    <rect x="188" y="170" width="18" height="140" rx="9" fill="url(#voiceWave)" opacity="0.9" />
+    <!-- Wave 3 (Center High - Soundwave + Pillar) -->
+    <rect x="222" y="125" width="22" height="230" rx="11" fill="url(#coreGrad)" />
+    <!-- Wave 4 (Center Right High) -->
+    <rect x="260" y="150" width="22" height="180" rx="11" fill="url(#coreGrad)" />
+    <!-- Wave 5 (Right Mid) -->
+    <rect x="298" y="190" width="18" height="100" rx="9" fill="url(#voiceWave)" opacity="0.9" />
+    <!-- Wave 6 (Right mini) -->
+    <rect x="332" y="225" width="16" height="30" rx="8" fill="url(#voiceWave)" opacity="0.7" />
+  </g>
+
+  <!-- Soundwave Connecting Golden Arc (Growth Curve) -->
+  <path d="M 164 210 Q 233 80 340 225" fill="none" stroke="#FFD60A" stroke-width="6" stroke-linecap="round" opacity="0.85" filter="url(#subtleGlow)" />
+
+  <!-- Luxury Microphone Accent -->
+  <circle cx="256" cy="240" r="38" fill="#121318" stroke="url(#coreGrad)" stroke-width="4" filter="url(#subtleGlow)" />
+  <!-- Minimalist Mic Head Icon -->
+  <rect x="249" y="222" width="14" height="22" rx="7" fill="#FFFFFF" />
+  <path d="M 243 232 C 243 241 269 241 269 232" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
+  <line x1="256" y1="243" x2="256" y2="252" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
+
+  <!-- App Label "FINANCE KITA" Bottom Subtle Badge -->
+  <text x="256" y="424" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif" font-size="28" font-weight="800" letter-spacing="4" fill="#FFFFFF" opacity="0.95">FINANCE KITA</text>
+  <text x="256" y="448" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif" font-size="13" font-weight="600" letter-spacing="2" fill="#30D158" opacity="0.9"> VOICE EDITION</text>
+</svg>
