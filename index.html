@@ -660,7 +660,7 @@
       </div>
 
       <button class="btn-submit" id="saveVoiceBtn" style="display: none; background: var(--green);">
-        ✓ Simpan Sekarang (<span id="autoCountdown">3s</span>)
+        ✓ Simpan Sekarang
       </button>
       <button class="btn-submit" id="retryVoiceBtn" style="display: none; background: var(--card-subtle); color: var(--text); margin-top: 8px;">
         🔄 Coba Bicara Lagi
@@ -799,8 +799,7 @@
       detectedVoice: null
     };
 
-    let countdownTimer = null;
-    let countdownSec = 3;
+
 
     document.addEventListener('DOMContentLoaded', () => {
       loadData();
@@ -1064,61 +1063,66 @@
     }
 
     // ── GEMINI AI PARSER (Gratis, 1500 req/hari) ──
-    // Model: gemini-1.5-flash | Paham Bahasa Indonesia & konteks keuangan
-    async function parseWithGemini(transcript) {
-      const CATEGORIES = ['Makanan & Minuman','Transportasi & Bensin','Belanja & Kebutuhan',
-        'Tagihan & Listrik/Air','Hiburan & Rekreasi','Kesehatan & Medis','Sedekah & Amal',
-        'Gaji Pokok','Freelance & Proyek','Bisnis & Usaha','Lain-lain'];
+    // Model: gemini-2.0-flash-lite | Paham Bahasa Indonesia & konteks keuangan
+    const GEMINI_CATEGORIES = [
+      'Makanan & Minuman','Transportasi & Bensin','Belanja & Kebutuhan',
+      'Tagihan & Listrik/Air','Hiburan & Rekreasi','Kesehatan & Medis','Sedekah & Amal',
+      'Gaji Pokok','Freelance & Proyek','Bisnis & Usaha','Lain-lain'
+    ];
 
-      const prompt = `Kamu adalah asisten keuangan pintar yang memahami Bahasa Indonesia sehari-hari.
-Analisis transkrip suara berikut dan ekstrak informasi transaksi keuangan.
+    async function parseWithGemini(transcript) {
+      const prompt = `Kamu adalah asisten keuangan pintar Bahasa Indonesia.
+Ekstrak transaksi keuangan dari transkrip berikut.
 
 Transkrip: "${transcript}"
 
-Kembalikan HANYA objek JSON valid (tanpa markdown, tanpa penjelasan) dengan format:
-{
-  "type": "Pengeluaran" atau "Pemasukan",
-  "amount": <angka bulat dalam Rupiah, 0 jika tidak ada>,
-  "category": "<salah satu dari: ${CATEGORIES.join(', ')}>",
-  "note": "<deskripsi singkat transaksi, maksimal 5 kata>",
-  "confidence": "Sangat Yakin" atau "Cukup Yakin" atau "Lumayan Yakin" atau "Tebakan"
-}
+Kembalikan HANYA JSON (tanpa markdown):
+{"type":"Pengeluaran"|"Pemasukan","amount":<angka Rupiah>,"category":"<dari: ${GEMINI_CATEGORIES.join('|')}>","note":"<max 5 kata>","confidence":"Sangat Yakin"|"Cukup Yakin"|"Lumayan Yakin"|"Tebakan"}
 
-Aturan penting:
-- "beli", "bayar", "belanja", "makan", "ongkos", "isi bensin" → Pengeluaran
-- "gaji", "terima", "dapat", "cair", "freelance", "omset", "jualan", "transfer masuk" → Pemasukan
-- Angka bisa ditulis verbal ("dua puluh ribu") atau campuran ("20rb", "20 ribu")
-- Jika ada angka kuantitas (misal "5 liter") ABAIKAN, ambil harga yang lebih besar
-- note harus dalam Bahasa Indonesia yang natural`;
+Aturan:
+- beli/bayar/belanja/makan/bensin → Pengeluaran
+- gaji/terima/dapat/cair/jualan → Pemasukan
+- Angka verbal ("dua puluh ribu") atau singkat ("20rb") → konversi ke Rupiah
+- Abaikan satuan kuantitas (liter, kg, buah), ambil harga terbesar
+- amount=0 jika tidak ada nominal`;
 
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${state.geminiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.1, maxOutputTokens: 200 }
-          })
-        }
-      );
-      if (!res.ok) throw new Error('Gemini API error: ' + res.status);
-      const data = await res.json();
-      const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      // Bersihkan markdown code block jika ada
-      const jsonStr = rawText.replace(/```json?/gi,'').replace(/```/g,'').trim();
-      const parsed = JSON.parse(jsonStr);
-      // Validasi field
-      if (!parsed.type || !parsed.amount) throw new Error('Invalid AI response');
-      return {
-        type: parsed.type,
-        amount: Math.round(Number(parsed.amount) || 0),
-        category: parsed.category || 'Lain-lain',
-        note: parsed.note || parsed.category || 'Transaksi',
-        confidence: parsed.confidence || 'Cukup Yakin',
-        intentScore: 99, // AI score
-        aiParsed: true
-      };
+      // Timeout 10 detik agar tidak hang
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+      try {
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${state.geminiKey}`,
+          {
+            method: 'POST',
+            signal: controller.signal,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0.1, maxOutputTokens: 150 }
+            })
+          }
+        );
+        clearTimeout(timeoutId);
+        if (!res.ok) throw new Error('Gemini HTTP ' + res.status);
+        const data = await res.json();
+        const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        const jsonStr = rawText.replace(/```json?/gi,'').replace(/```/g,'').trim();
+        const parsed = JSON.parse(jsonStr);
+        if (!parsed.type) throw new Error('Invalid AI response: missing type');
+        return {
+          type: parsed.type,
+          amount: Math.round(Number(parsed.amount) || 0),
+          category: GEMINI_CATEGORIES.includes(parsed.category) ? parsed.category : 'Lain-lain',
+          note: (parsed.note || parsed.category || 'Transaksi').slice(0, 40),
+          confidence: parsed.confidence || 'Cukup Yakin',
+          intentScore: 99,
+          aiParsed: true
+        };
+      } catch (err) {
+        clearTimeout(timeoutId);
+        throw err;
+      }
     }
 
     // ── UPDATE VOICE RESULT UI ──
@@ -1137,7 +1141,6 @@ Aturan penting:
       document.getElementById('voiceStatus').style.color = confColor[parsed.confidence] || 'var(--blue)';
       document.getElementById('saveVoiceBtn').style.display = 'block';
       document.getElementById('retryVoiceBtn').style.display = 'block';
-      startAutoSaveCountdown();
     }
 
 
@@ -1185,13 +1188,11 @@ Aturan penting:
     function closeModal(m) {
       m.classList.remove('active');
       stopVoice();
-      clearCountdown();
     }
 
     function closeAllModals() {
       document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
       stopVoice();
-      clearCountdown();
     }
 
     // ================= ULTRA-OPTIMAL VOICE RECOGNITION =================
@@ -1203,9 +1204,10 @@ Aturan penting:
       if (!Speech) return;
 
       recognition = new Speech();
-      recognition.lang = 'id-ID'; // Bahasa Indonesia
+      recognition.lang = 'id-ID';
       recognition.continuous = false;
       recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
 
       recognition.onstart = () => {
         isListening = true;
@@ -1226,11 +1228,11 @@ Aturan penting:
         const displayText = finalText || interimText;
         document.getElementById('transcriptBox').textContent = `"${displayText}"`;
 
-        // Tampil hasil sementara (lokal) saat masih mendengarkan
-        if (!isFinal && interimText) {
+        // ── Interim: tampil preview lokal sementara mendengarkan ──
+        if (!isFinal) {
+          if (!interimText) return;
           const localParsed = parseSpeech(interimText);
           if (localParsed.amount > 0) {
-            clearCountdown(); // Jangan auto-save selagi belum final
             state.detectedVoice = localParsed;
             document.getElementById('parsedGrid').style.display = 'grid';
             document.getElementById('parsedType').textContent = (localParsed.type === 'Pemasukan' ? '▲ ' : '▼ ') + localParsed.type;
@@ -1244,13 +1246,11 @@ Aturan penting:
           return;
         }
 
-        // Hasil final → proses dengan AI jika ada key, lalu fallback lokal
-        if (!isFinal && !finalText) return;
-        const textToProcess = finalText || interimText;
-        if (!textToProcess.trim()) return;
+        // ── Final: proses dengan AI atau parser lokal ──
+        const textToProcess = finalText.trim();
+        if (!textToProcess) return;
 
         if (state.geminiKey) {
-          // === MODE AI: Gemini 1.5 Flash ===
           document.getElementById('voiceStatus').textContent = '⏳ AI memproses...';
           document.getElementById('voiceStatus').style.color = 'var(--purple)';
           try {
@@ -1258,48 +1258,32 @@ Aturan penting:
             if (aiResult.amount > 0) {
               updateVoiceResult(aiResult);
             } else {
-              // AI gagal ekstrak nominal, fallback ke lokal
               const local = parseSpeech(textToProcess);
               if (local.amount > 0) updateVoiceResult(local);
-              else {
-                document.getElementById('voiceStatus').textContent = '⚠️ Nominal tidak terdengar jelas. Coba lagi.';
-                document.getElementById('voiceStatus').style.color = 'var(--red)';
-              }
+              else showVoiceError('Nominal tidak terdengar jelas. Coba lagi.');
             }
           } catch (err) {
             console.warn('Gemini fallback:', err.message);
-            // Fallback ke parser lokal jika AI error (misal offline / quota habis)
             const local = parseSpeech(textToProcess);
             if (local.amount > 0) {
               updateVoiceResult(local);
               showToast('⚙️ AI offline, pakai mode Lokal');
             } else {
-              document.getElementById('voiceStatus').textContent = '⚠️ Belum terdengar jelas. Ketuk bola untuk coba lagi.';
-              document.getElementById('voiceStatus').style.color = 'var(--red)';
+              showVoiceError('Belum terdengar jelas. Ketuk bola untuk coba lagi.');
             }
           }
         } else {
-          // === MODE LOKAL (tanpa AI key) ===
           const parsed = parseSpeech(textToProcess);
-          if (parsed.amount > 0) {
-            updateVoiceResult(parsed);
-          } else {
-            document.getElementById('voiceStatus').textContent = '⚠️ Belum terdengar jelas. Ketuk bola untuk coba lagi.';
-            document.getElementById('voiceStatus').style.color = 'var(--red)';
-          }
+          if (parsed.amount > 0) updateVoiceResult(parsed);
+          else showVoiceError('Belum terdengar jelas. Ketuk bola untuk coba lagi.');
         }
       };
 
 
       recognition.onerror = (e) => {
         isListening = false;
-        console.warn('Speech error:', e.error);
-        if (e.error === 'not-allowed') {
-          document.getElementById('voiceStatus').textContent = '⚠️ Izin mikrofon ditolak di browser.';
-        } else {
-          document.getElementById('voiceStatus').textContent = '⚠️ Belum terdengar jelas. Ketuk bola untuk coba lagi.';
-        }
-        document.getElementById('voiceStatus').style.color = 'var(--red)';
+        if (e.error === 'not-allowed') showVoiceError('Izin mikrofon ditolak di browser.');
+        else if (e.error !== 'aborted') showVoiceError('Gagal mendengar. Ketuk bola untuk coba lagi.');
       };
 
       recognition.onend = () => {
@@ -1310,64 +1294,44 @@ Aturan penting:
         }
       };
 
-      document.getElementById('siriOrb').onclick = () => {
-        clearCountdown();
-        startVoice();
-      };
+      document.getElementById('siriOrb').onclick    = startVoice;
+      document.getElementById('retryVoiceBtn').onclick = startVoice;
+      document.getElementById('saveVoiceBtn').onclick  = confirmSaveVoice;
+    }
 
-      document.getElementById('retryVoiceBtn').onclick = () => {
-        clearCountdown();
-        startVoice();
-      };
-
-      document.getElementById('saveVoiceBtn').onclick = () => {
-        confirmSaveVoice();
-      };
+    function showVoiceError(msg) {
+      const el = document.getElementById('voiceStatus');
+      el.textContent = '⚠️ ' + msg;
+      el.style.color = 'var(--red)';
     }
 
     function startVoice() {
-      if (!recognition) return alert('Gunakan Google Chrome (Android/PC) atau Safari (iPhone) untuk fitur suara.');
-      clearCountdown();
+      if (!recognition) {
+        alert('Gunakan Google Chrome (Android/PC) atau Safari (iPhone) untuk fitur suara.');
+        return;
+      }
+      // Abort sesi sebelumnya jika masih aktif (cegah InvalidStateError)
+      if (isListening) { try { recognition.abort(); } catch(e){} isListening = false; }
       state.detectedVoice = null;
       document.getElementById('parsedGrid').style.display = 'none';
       document.getElementById('saveVoiceBtn').style.display = 'none';
       document.getElementById('retryVoiceBtn').style.display = 'none';
       document.getElementById('transcriptBox').textContent = '"Contoh: Belanja makanan pentol 10.000"';
-      try { recognition.start(); } catch(e){}
+      document.getElementById('voiceStatus').textContent = 'Sedang mendengarkan...';
+      document.getElementById('voiceStatus').style.color = 'var(--blue)';
+      try { recognition.start(); } catch(e) { console.warn('recognition.start:', e.message); }
     }
 
     function stopVoice() {
       if (recognition && isListening) {
-        try { recognition.stop(); } catch(e){}
+        try { recognition.abort(); } catch(e){}
       }
       isListening = false;
     }
 
-    function startAutoSaveCountdown() {
-      clearCountdown();
-      countdownSec = 4; // 4 detik agar user bisa koreksi jika salah deteksi
-      document.getElementById('autoCountdown').textContent = countdownSec + 's';
-      countdownTimer = setInterval(() => {
-        countdownSec--;
-        if (countdownSec <= 0) {
-          clearCountdown();
-          confirmSaveVoice();
-        } else {
-          const el = document.getElementById('autoCountdown');
-          if (el) el.textContent = countdownSec + 's';
-        }
-      }, 1000);
-    }
 
-    function clearCountdown() {
-      if (countdownTimer) {
-        clearInterval(countdownTimer);
-        countdownTimer = null;
-      }
-    }
 
     function confirmSaveVoice() {
-      clearCountdown();
       if (!state.detectedVoice || state.detectedVoice.amount <= 0) return;
       addTransaction({
         id: 'TRX-' + Date.now().toString(36),
