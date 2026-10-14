@@ -1546,13 +1546,27 @@
     function parseSpeech(raw) {
       const text = raw.toLowerCase().trim();
 
-      // ── 1. INTENT SCORING: Hitung skor Pemasukan vs Pengeluaran ──
+      // ── 1. INTENT SCORING DENGAN KESADARAN KONTEKS ──
+      let contextScore = 0;
+      // Konteks Khusus: Jika majikan/pengusaha membayar gaji karyawan -> Pengeluaran
+      if (/(?:bayar|kasih|ngasih|keluar(?:kan)?)\s*(?:gaji|upah)|gaji\s*(?:karyawan|pegawai|staf|anak buah|asisten|art)/i.test(text)) {
+        contextScore -= 8;
+      }
+      // Konteks Khusus: Pelunasan piutang (orang lain melunasi utang ke kita) -> Pemasukan
+      if (/(?:utang|hutang|pinjaman)\s*(?:dibayar|kembali|lunas)|piutang\s*(?:cair|dibayar)/i.test(text)) {
+        contextScore += 6;
+      }
+      // Konteks Khusus: Bayar utang/cicilan sendiri -> Pengeluaran
+      if (/(?:bayar|cicil|lunasin)\s*(?:utang|hutang|pinjaman|cicilan)/i.test(text)) {
+        contextScore -= 6;
+      }
+
       const INTENT_RULES = [
         // === KATA KERJA & INDIKATOR PEMASUKAN (+ Bobot) ===
         { pattern: /\b(terima|diterima|mendapat|dapat|dapet|dikasih|diberi|dikirimin|masuk|cair|transfer masuk|transferan)\b/, score: +4 },
         { pattern: /\b(gaji|gajih|gajian|upah|salary|honor|thr|insentif|pesangon|payroll|slip gaji)\b/, score: +5 },
         { pattern: /\b(bonus|komisi|fee|royalty|tips|tip|sawer|saweran)\b/, score: +3 },
-        { pattern: /\b(proyek|project|klien|freelance|jasa|jualan|omset|omzet|laba|untung|pendapatan|penghasilan|revenue|closingan)\b/, score: +3 },
+        { pattern: /\b(jual|menjual|terjual|penjualan|jualan|proyek|project|klien|freelance|jasa|omset|omzet|laba|untung|pendapatan|penghasilan|revenue|closingan|laku|laris)\b/, score: +4 },
         { pattern: /\b(hibah|hadiah|kado|rejeki|rezeki|arisan|arisan cair|cashback|refund|menang|donasi masuk)\b/, score: +3 },
         { pattern: /\b(pemasukan|income|kredit|uang masuk|sangu|uang saku)\b/, score: +5 },
         { pattern: /\b(investasi|dividen|bunga|return|profit)\b/, score: +3 },
@@ -1562,10 +1576,10 @@
         { pattern: /\b(pengeluaran|expense|keluar|debit|habis|jajan|ngeluarin)\b/, score: -4 },
         { pattern: /\b(belanja|makan|minum|ongkos|biaya|cicilan|kredit bayar|tagihan|sewa|ngisi|isi|topup|top up)\b/, score: -3 },
         { pattern: /\b(buka|order|pesan|transfer keluar|kirim uang|traktir|nraktir)\b/, score: -2 },
-        { pattern: /\b(langganan|subscribe|bayar iuran|sedekah|infaq|zakat|sumbang|donasi)\b/, score: -3 },
+        { pattern: /\b(langganan|subscribe|bayar iuran|sedekah|infaq|zakat|sumbang|donasi|denda|tilang)\b/, score: -3 },
       ];
 
-      let intentScore = 0;
+      let intentScore = contextScore;
       INTENT_RULES.forEach(rule => {
         if (rule.pattern.test(text)) intentScore += rule.score;
       });
@@ -1606,7 +1620,7 @@
             'bensin', 'pertalite', 'pertamax', 'solar', 'dexlite', 'spbu', 'pom bensin', 'tambal',
             'ban', 'oli', 'servis', 'bengkel', 'ojek', 'gojek', 'grab', 'maxim', 'indrive', 'parkir',
             'tol', 'e-toll', 'cuci motor', 'cuci mobil', 'angkot', 'bus', 'transjakarta', 'kereta',
-            'krl', 'mrt', 'lrt', 'pesawat', 'tiket', 'helm', 'aki', 'sparepart'
+            'krl', 'mrt', 'lrt', 'pesawat', 'tiket', 'helm', 'aki', 'sparepart', 'motor', 'mobil', 'sepeda'
           ]
         },
         {
@@ -1619,7 +1633,8 @@
             'sunlight', 'tisu', 'pampers', 'popok', 'susu bayi', 'gas', 'elpiji', 'galon', 'baju',
             'kaos', 'celana', 'sepatu', 'sandal', 'tas', 'dompet', 'jaket', 'hoodie', 'shopee',
             'tokopedia', 'skincare', 'kosmetik', 'makeup', 'parfum', 'lazada', 'tiktok shop',
-            'blibli', 'potong rambut', 'barbershop', 'salon'
+            'blibli', 'potong rambut', 'barbershop', 'salon', 'hp', 'handphone', 'smartphone',
+            'laptop', 'komputer', 'tablet', 'charger', 'casing', 'powerbank'
           ]
         },
         {
@@ -1689,7 +1704,8 @@
           words: [
             'bisnis', 'usaha', 'dagang', 'toko', 'warung', 'omset', 'omzet', 'jualan', 'laba',
             'untung', 'profit', 'pendapatan', 'closingan', 'hasil jualan', 'orderan masuk',
-            'arisan cair', 'arisan', 'cashback', 'refund', 'dividen', 'bunga bank'
+            'arisan cair', 'arisan', 'cashback', 'refund', 'dividen', 'bunga bank',
+            'jual', 'menjual', 'terjual', 'penjualan', 'laku', 'laris'
           ]
         }
       ];
@@ -1774,9 +1790,19 @@
         return parseFloat(str.replace(/,/g, '.'));
       }
 
-      // 4. Pola compact (misal: "50rb", "2.5jt", "1,5jt", "500k", "25k")
+      // 4. Pola angka majemuk bertingkat (misal: "1 juta 200 ribu" atau "1 juta 500")
+      const compoundJutaRe = /(\d+(?:[.,]\d+)*)\s*(?:juta|jt)\s*(\d+(?:[.,]\d+)*)\s*(?:ribu|rb|k)?\b/i;
+      const compoundMatch = s.match(compoundJutaRe);
+      if (compoundMatch) {
+        let jutaPart = parseIndoNum(compoundMatch[1]) * 1000000;
+        let sisaNum = parseIndoNum(compoundMatch[2]);
+        if (sisaNum < 1000) sisaNum *= 1000;
+        return Math.round(jutaPart + sisaNum);
+      }
+
+      // 5. Pola compact (misal: "50rb", "2.5jt", "1,5jt", "500k", "25k")
       const compactMatch = s.match(/(\d+(?:[.,]\d+)*)\s*(ribu|rb|k|juta|jt)\b/i);
-      if (compactMatch) {
+      if (compactMatch && !/\b(?:juta|jt)\s+\d+/i.test(s)) {
         let num = parseIndoNum(compactMatch[1]);
         const unit = compactMatch[2].toLowerCase();
         if (unit === 'juta' || unit === 'jt') num *= 1000000;
@@ -1784,7 +1810,7 @@
         if (num > 0) return Math.round(num);
       }
 
-      // 5. Pola pasangan angka + satuan (misal: "50 ribu", "1 juta 500 ribu", "5.000.000")
+      // 6. Pola pasangan angka + satuan (misal: "50 ribu", "1 juta 500 ribu", "5.000.000")
       const pairRe = /(\d+(?:[.,]\d+)*)\s*(juta|jt|ribu|rb|ratus|puluh|k)?/gi;
       let m, candidates = [];
       while ((m = pairRe.exec(s)) !== null) {
