@@ -789,6 +789,31 @@
     const STORAGE_KEY = 'FINANCE_KITA_CLEAN';
     const MONTHS = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
+    // ── AUTO-FILL dari URL Parameter ──
+    // Contoh link: index.html?k=AIzaSy...&s=https://script.google.com/...
+    // Setelah disimpan, URL dibersihkan agar credential tidak terlihat di address bar
+    (function applyUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      const urlKey = params.get('k');   // Gemini API Key
+      const urlSheet = params.get('s'); // Apps Script URL
+      let changed = false;
+      if (urlKey && urlKey.startsWith('AIza')) {
+        localStorage.setItem('GEMINI_KEY', urlKey);
+        changed = true;
+      }
+      if (urlSheet && urlSheet.startsWith('http')) {
+        localStorage.setItem('API_URL', urlSheet);
+        changed = true;
+      }
+      if (changed) {
+        // Bersihkan URL agar API key tidak terlihat di address bar
+        const cleanUrl = window.location.pathname;
+        history.replaceState(null, '', cleanUrl);
+        // Tandai untuk tampilkan toast setelah DOM siap
+        window._autoConfigured = true;
+      }
+    })();
+
     let state = {
       apiUrl: localStorage.getItem('API_URL') || '',
       geminiKey: localStorage.getItem('GEMINI_KEY') || '',
@@ -799,12 +824,14 @@
       detectedVoice: null
     };
 
-
-
     document.addEventListener('DOMContentLoaded', () => {
       loadData();
       initEvents();
       initVoice();
+      if (window._autoConfigured) {
+        setTimeout(() => showToast('✅ Konfigurasi berhasil dimuat otomatis!'), 500);
+        updateAIBadge();
+      }
     });
 
     function loadData() {
