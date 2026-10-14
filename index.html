@@ -27,6 +27,7 @@
       --blue: #0A84FF;
       --green: #30D158;
       --red: #FF453A;
+      --purple: #BF5AF2;
       --safe-top: env(safe-area-inset-top, 20px);
       --safe-bottom: env(safe-area-inset-bottom, 20px);
     }
@@ -58,6 +59,7 @@
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       justify-content: center;
       transition: background 0.25s ease;
@@ -67,7 +69,7 @@
     .container {
       width: 100%;
       max-width: 480px;
-      padding: calc(var(--safe-top) + 14px) 20px calc(80px + var(--safe-bottom)) 20px;
+      padding: calc(var(--safe-top) + 14px) 20px calc(90px + var(--safe-bottom)) 20px;
       display: flex;
       flex-direction: column;
     }
@@ -77,7 +79,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .brand {
@@ -98,39 +100,41 @@
       letter-spacing: -0.02em;
     }
 
-    .top-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--card);
-      border: 0.5px solid var(--border);
-      color: var(--text);
+    .status-badge {
+      font-size: 11px;
+      color: var(--text-muted);
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      cursor: pointer;
+      gap: 5px;
     }
-    .btn-icon:active { transform: scale(0.92); }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+    }
+    .dot.sync {
+      background: #FF9F0A;
+      box-shadow: 0 0 6px #FF9F0A;
+      animation: pulse 1s infinite alternate;
+    }
+    @keyframes pulse { from { opacity: 0.4; } to { opacity: 1; } }
 
     /* ================= MONTH SELECTOR ================= */
     .month-pill {
       align-self: center;
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
       background: var(--card);
-      padding: 6px 16px;
+      padding: 6px 18px;
       border-radius: 30px;
       border: 0.5px solid var(--border);
       font-size: 14px;
       font-weight: 600;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .month-nav {
@@ -147,7 +151,7 @@
     /* ================= HERO BALANCE ================= */
     .hero-balance {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 26px;
     }
 
     .balance-label {
@@ -179,43 +183,6 @@
     }
     .stat-in { color: var(--green); }
     .stat-out { color: var(--red); }
-
-    /* ================= PRIMARY VOICE ACTION BUTTON ================= */
-    .voice-main-btn {
-      width: 100%;
-      background: linear-gradient(135deg, #0A84FF 0%, #30D158 100%);
-      border: none;
-      border-radius: 20px;
-      padding: 16px 20px;
-      color: #FFFFFF;
-      font-size: 16px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      cursor: pointer;
-      box-shadow: 0 8px 24px rgba(10, 132, 255, 0.35);
-      margin-bottom: 12px;
-      transition: transform 0.15s, opacity 0.2s;
-    }
-    .voice-main-btn:active {
-      transform: scale(0.98);
-      opacity: 0.9;
-    }
-
-    .manual-link-btn {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 13px;
-      font-weight: 600;
-      align-self: center;
-      cursor: pointer;
-      margin-bottom: 24px;
-      padding: 4px 8px;
-    }
-    .manual-link-btn:active { color: var(--text); }
 
     /* ================= TRANSACTIONS LIST ================= */
     .list-header {
@@ -305,11 +272,86 @@
       font-size: 14px;
     }
 
+    /* ================= FIXED BOTTOM BAR (VOICE IN CENTER + SIDES) ================= */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-width: 480px;
+      margin: 0 auto;
+      height: calc(64px + var(--safe-bottom));
+      padding-bottom: var(--safe-bottom);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      background-color: rgba(18, 18, 20, 0.85);
+      border-top: 0.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 80;
+    }
+
+    [data-theme="light"] .bottom-bar {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+
+    .nav-btn {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.15s, transform 0.15s;
+    }
+    .nav-btn:active { transform: scale(0.92); color: var(--text); }
+
+    .nav-icon {
+      font-size: 19px;
+      line-height: 1;
+    }
+
+    /* PRIMARY CENTER VOICE BUTTON */
+    .center-voice-btn {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, #0A84FF, #BF5AF2, #FF3B30, #FF9F0A, #30D158, #0A84FF);
+      border: 3.5px solid var(--bg);
+      color: #FFFFFF;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(10, 132, 255, 0.5), 0 0 14px rgba(191, 90, 242, 0.4);
+      cursor: pointer;
+      margin-top: -20px;
+      transition: transform 0.15s;
+      animation: siriPulse 2s infinite alternate;
+      flex-shrink: 0;
+    }
+    .center-voice-btn:active {
+      transform: scale(0.9) rotate(15deg);
+    }
+
+    @keyframes siriPulse {
+      0% { transform: scale(0.96); box-shadow: 0 4px 16px rgba(10, 132, 255, 0.4); }
+      100% { transform: scale(1.04); box-shadow: 0 6px 26px rgba(10, 132, 255, 0.65), 0 0 16px rgba(48, 209, 88, 0.5); }
+    }
+
     /* ================= MODAL BOTTOM SHEETS ================= */
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.65);
       backdrop-filter: blur(8px);
       z-index: 100;
       opacity: 0;
@@ -427,6 +469,12 @@
       outline: none;
     }
 
+    /* BAR CHART IN ANALYSIS */
+    .cat-bar-item { margin-bottom: 10px; }
+    .cat-bar-top { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+    .cat-bar-track { width: 100%; height: 6px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
+    .cat-bar-fill { height: 100%; background: var(--blue); border-radius: 4px; }
+
     /* TOAST */
     .toast {
       position: fixed;
@@ -451,15 +499,15 @@
 
   <div class="container">
     
-    <!-- Top Header -->
+    <!-- Top Header (Clean Minimalist) -->
     <header class="top-bar">
       <div class="brand">
         <img src="icon.svg" class="brand-icon" alt="FK">
         <span class="brand-title">Finance Kita</span>
       </div>
-      <div class="top-actions">
-        <button class="btn-icon" id="themeBtn" title="Tema">🌗</button>
-        <button class="btn-icon" id="settingsBtn" title="Pengaturan">⚙️</button>
+      <div class="status-badge">
+        <span class="dot" id="cloudDot"></span>
+        <span id="cloudStatus">Cloud Siap</span>
       </div>
     </header>
 
@@ -480,17 +528,9 @@
       </div>
     </div>
 
-    <!-- PRIMARY VOICE BUTTON (ONE-TAP IMMEDIATE RECORDING) -->
-    <button class="voice-main-btn" id="voiceTriggerBtn">
-      <span>🎙️</span> Bicara Catat Transaksi
-    </button>
-    <button class="manual-link-btn" id="manualTriggerBtn">
-      + Input Manual
-    </button>
-
     <!-- Simple Transaction History -->
     <div class="list-header">
-      <span>Riwayat</span>
+      <span>Riwayat Transaksi</span>
       <span id="totalTrxCount">0 Transaksi</span>
     </div>
 
@@ -500,7 +540,40 @@
 
   </div>
 
-  <!-- ================= VOICE MODAL ================= -->
+  <!-- ================= FIXED BOTTOM BAR ================= -->
+  <!-- Tata letak: [Analisis] [Manual] (🎙️ Bicara Tengah) [Tema] [Pengaturan] -->
+  <nav class="bottom-bar">
+    <!-- 1. Analisis -->
+    <button class="nav-btn" id="navAnalysisBtn">
+      <span class="nav-icon">📊</span>
+      <span>Analisis</span>
+    </button>
+
+    <!-- 2. Input Manual -->
+    <button class="nav-btn" id="navManualBtn">
+      <span class="nav-icon">✍️</span>
+      <span>Manual</span>
+    </button>
+
+    <!-- 3. INPUT UTAMA: SUARA (TENGAH BAWAH) -->
+    <button class="center-voice-btn" id="navCenterVoiceBtn" title="Bicara untuk Catat Transaksi">
+      🎙️
+    </button>
+
+    <!-- 4. Mode Gelap/Terang -->
+    <button class="nav-btn" id="navThemeBtn">
+      <span class="nav-icon">🌗</span>
+      <span>Tema</span>
+    </button>
+
+    <!-- 5. Pengaturan -->
+    <button class="nav-btn" id="navSettingsBtn">
+      <span class="nav-icon">⚙️</span>
+      <span>Setting</span>
+    </button>
+  </nav>
+
+  <!-- ================= 1. VOICE MODAL ================= -->
   <div class="modal" id="voiceModal">
     <div class="sheet">
       <div class="handle"></div>
@@ -513,7 +586,7 @@
       </div>
 
       <div class="transcript-box" id="transcriptBox">
-        "Contoh: Makan pentol 10.000"
+        "Contoh: Belanja makanan pentol 10.000"
       </div>
 
       <div class="parsed-grid" id="parsedGrid" style="display: none;">
@@ -541,7 +614,7 @@
     </div>
   </div>
 
-  <!-- ================= MANUAL MODAL ================= -->
+  <!-- ================= 2. MANUAL MODAL ================= -->
   <div class="modal" id="manualModal">
     <div class="sheet">
       <div class="handle"></div>
@@ -574,11 +647,37 @@
         <input type="text" class="clean-input" id="inputNote" placeholder="Contoh: Beli bensin pertamax">
       </div>
 
-      <button class="btn-submit" id="saveManualBtn" style="margin-top: 8px;">Simpan</button>
+      <button class="btn-submit" id="saveManualBtn" style="margin-top: 8px;">Simpan Transaksi</button>
     </div>
   </div>
 
-  <!-- ================= SETTINGS MODAL ================= -->
+  <!-- ================= 3. ANALYSIS MODAL ================= -->
+  <div class="modal" id="analysisModal">
+    <div class="sheet">
+      <div class="handle"></div>
+      <div class="sheet-title">Analisis Bulanan</div>
+
+      <div style="background: var(--card-subtle); padding: 14px; border-radius: 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.8;">
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:var(--text-muted)">Tabungan Bersih:</span>
+          <strong id="anNetVal" style="color:var(--green)">Rp 0</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:var(--text-muted)">Pengeluaran Harian Rata-rata:</span>
+          <strong id="anDailyVal">Rp 0</strong>
+        </div>
+      </div>
+
+      <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px;">
+        Pengeluaran per Kategori
+      </div>
+      <div id="categoryBarsContainer">
+        <!-- Dynamic Category Progress Bars -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 4. SETTINGS MODAL ================= -->
   <div class="modal" id="settingsModal">
     <div class="sheet">
       <div class="handle"></div>
@@ -589,14 +688,15 @@
         <input type="url" class="clean-input" id="inputApiUrl" placeholder="https://script.google.com/macros/s/.../exec">
       </div>
 
-      <button class="btn-submit" id="saveSettingsBtn">Simpan URL</button>
+      <button class="btn-submit" id="saveSettingsBtn" style="margin-bottom: 12px;">Simpan URL</button>
+      <button class="btn-submit" id="testApiBtn" style="background: var(--card-subtle); color: var(--text);">Tes Koneksi</button>
     </div>
   </div>
 
   <!-- Toast Notification -->
   <div class="toast" id="toast">Tersimpan</div>
 
-  <!-- ================= LIGHTWEIGHT JAVASCRIPT ================= -->
+  <!-- ================= LIGHTWEIGHT FAST JAVASCRIPT ================= -->
   <script>
     const STORAGE_KEY = 'FINANCE_KITA_CLEAN';
     const MONTHS = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
@@ -610,7 +710,6 @@
       detectedVoice: null
     };
 
-    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
       loadData();
       initEvents();
@@ -644,12 +743,12 @@
       return new Intl.NumberFormat('id-ID').format(Math.round(num || 0));
     }
 
-    // Render Clean UI
     function render() {
       document.getElementById('monthLabel').textContent = `${MONTHS[state.month - 1]} ${state.year}`;
 
       let income = 0;
       let expense = 0;
+      const catTotals = {};
 
       const filtered = state.transactions.filter(t => {
         const parts = t.tanggal.split('-');
@@ -657,8 +756,12 @@
       });
 
       filtered.forEach(t => {
-        if (t.jenis === 'Pemasukan') income += t.jumlah;
-        else expense += t.jumlah;
+        if (t.jenis === 'Pemasukan') {
+          income += t.jumlah;
+        } else {
+          expense += t.jumlah;
+          catTotals[t.kategori] = (catTotals[t.kategori] || 0) + t.jumlah;
+        }
       });
 
       const net = income - expense;
@@ -675,52 +778,81 @@
       container.innerHTML = '';
 
       if (filtered.length === 0) {
-        container.innerHTML = '<div class="empty-box">Belum ada transaksi di bulan ini.</div>';
-        return;
-      }
-
-      const grouped = {};
-      filtered.forEach(t => {
-        if (!grouped[t.tanggal]) grouped[t.tanggal] = [];
-        grouped[t.tanggal].push(t);
-      });
-
-      const dates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
-      dates.forEach(d => {
-        const box = document.createElement('div');
-        box.className = 'group-box';
-
-        let dateLabel = d === today() ? 'HARI INI' : d;
-        box.innerHTML = `<div class="group-date">${dateLabel}</div>`;
-
-        grouped[d].forEach(t => {
-          const isExp = t.jenis === 'Pengeluaran';
-          const row = document.createElement('div');
-          row.className = 'tx-item';
-          row.innerHTML = `
-            <div class="tx-icon">${t.icon || (isExp ? '🍔' : '💰')}</div>
-            <div class="tx-meta">
-              <div class="tx-name">${escapeHtml(t.catatan || t.kategori)}</div>
-              <div class="tx-sub">${escapeHtml(t.kategori)}</div>
-            </div>
-            <div class="tx-val ${isExp ? 'val-out' : 'val-in'}">
-              ${isExp ? '-' : '+'}Rp ${formatIDR(t.jumlah)}
-            </div>
-          `;
-          row.onclick = () => {
-            if (confirm(`Hapus: ${t.catatan || t.kategori} (Rp ${formatIDR(t.jumlah)})?`)) {
-              state.transactions = state.transactions.filter(x => x.id !== t.id);
-              save();
-              render();
-              showToast('Dihapus');
-              if (state.apiUrl) postCloud({ action: 'delete_transaction', id: t.id });
-            }
-          };
-          box.appendChild(row);
+        container.innerHTML = '<div class="empty-box">Belum ada transaksi di bulan ini.<br><small>Ketuk tombol 🎙️ di tengah bawah untuk mencatat.</small></div>';
+      } else {
+        const grouped = {};
+        filtered.forEach(t => {
+          if (!grouped[t.tanggal]) grouped[t.tanggal] = [];
+          grouped[t.tanggal].push(t);
         });
 
-        container.appendChild(box);
-      });
+        const dates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
+        dates.forEach(d => {
+          const box = document.createElement('div');
+          box.className = 'group-box';
+
+          let dateLabel = d === today() ? 'HARI INI' : d;
+          box.innerHTML = `<div class="group-date">${dateLabel}</div>`;
+
+          grouped[d].forEach(t => {
+            const isExp = t.jenis === 'Pengeluaran';
+            const row = document.createElement('div');
+            row.className = 'tx-item';
+            row.innerHTML = `
+              <div class="tx-icon">${t.icon || (isExp ? '🍔' : '💼')}</div>
+              <div class="tx-meta">
+                <div class="tx-name">${escapeHtml(t.catatan || t.kategori)}</div>
+                <div class="tx-sub">${escapeHtml(t.kategori)}</div>
+              </div>
+              <div class="tx-val ${isExp ? 'val-out' : 'val-in'}">
+                ${isExp ? '-' : '+'}Rp ${formatIDR(t.jumlah)}
+              </div>
+            `;
+            row.onclick = () => {
+              if (confirm(`Hapus: ${t.catatan || t.kategori} (Rp ${formatIDR(t.jumlah)})?`)) {
+                state.transactions = state.transactions.filter(x => x.id !== t.id);
+                save();
+                render();
+                showToast('Dihapus');
+                if (state.apiUrl) postCloud({ action: 'delete_transaction', id: t.id });
+              }
+            };
+            box.appendChild(row);
+          });
+
+          container.appendChild(box);
+        });
+      }
+
+      // Render Analysis Data
+      document.getElementById('anNetVal').textContent = 'Rp ' + formatIDR(net);
+      const daysInMonth = Math.max(1, new Date().getDate());
+      document.getElementById('anDailyVal').textContent = 'Rp ' + formatIDR(expense / daysInMonth);
+
+      const barContainer = document.getElementById('categoryBarsContainer');
+      barContainer.innerHTML = '';
+      const catKeys = Object.keys(catTotals);
+      if (catKeys.length === 0 || expense === 0) {
+        barContainer.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:10px;">Belum ada pengeluaran.</div>';
+      } else {
+        catKeys.sort((a,b) => catTotals[b] - catTotals[a]);
+        catKeys.forEach(k => {
+          const val = catTotals[k];
+          const pct = Math.round((val / expense) * 100);
+          const item = document.createElement('div');
+          item.className = 'cat-bar-item';
+          item.innerHTML = `
+            <div class="cat-bar-top">
+              <span>${getCategoryIcon(k)} ${escapeHtml(k)}</span>
+              <strong>Rp ${formatIDR(val)} (${pct}%)</strong>
+            </div>
+            <div class="cat-bar-track">
+              <div class="cat-bar-fill" style="width: ${pct}%;"></div>
+            </div>
+          `;
+          barContainer.appendChild(item);
+        });
+      }
     }
 
     // Event Bindings
@@ -737,27 +869,27 @@
       // Modals
       const vModal = document.getElementById('voiceModal');
       const mModal = document.getElementById('manualModal');
+      const aModal = document.getElementById('analysisModal');
       const sModal = document.getElementById('settingsModal');
 
-      document.getElementById('voiceTriggerBtn').onclick = () => openModal(vModal, startVoice);
-      document.getElementById('manualTriggerBtn').onclick = () => openModal(mModal);
-      document.getElementById('settingsBtn').onclick = () => {
+      // FIXED BOTTOM BAR ACTIONS
+      // 1. Analisis
+      document.getElementById('navAnalysisBtn').onclick = () => openModal(aModal);
+      // 2. Manual
+      document.getElementById('navManualBtn').onclick = () => openModal(mModal);
+      // 3. INPUT UTAMA SUARA (TENGAH)
+      document.getElementById('navCenterVoiceBtn').onclick = () => openModal(vModal, startVoice);
+      // 4. Tema Gelap/Terang
+      document.getElementById('navThemeBtn').onclick = toggleTheme;
+      // 5. Setting
+      document.getElementById('navSettingsBtn').onclick = () => {
         document.getElementById('inputApiUrl').value = state.apiUrl;
         openModal(sModal);
       };
 
-      [vModal, mModal, sModal].forEach(m => {
+      [vModal, mModal, aModal, sModal].forEach(m => {
         m.onclick = (e) => { if (e.target === m) closeModal(m); };
       });
-
-      // Theme
-      document.getElementById('themeBtn').onclick = () => {
-        const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-        const next = cur === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('THEME', next);
-      };
-      if (localStorage.getItem('THEME')) document.documentElement.setAttribute('data-theme', localStorage.getItem('THEME'));
 
       // Manual Form
       document.getElementById('btnTypeExpense').onclick = () => setManualType('Pengeluaran');
@@ -772,7 +904,18 @@
         showToast('URL Tersimpan');
         if (state.apiUrl) fetchCloud();
       };
+
+      document.getElementById('testApiBtn').onclick = testCloud;
     }
+
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('THEME', next);
+      showToast(next === 'light' ? '☀️ Mode Terang' : '🌙 Mode Gelap');
+    }
+    if (localStorage.getItem('THEME')) document.documentElement.setAttribute('data-theme', localStorage.getItem('THEME'));
 
     function setManualType(t) {
       state.manualType = t;
@@ -878,7 +1021,7 @@
       if (!recognition) return alert('Gunakan Google Chrome atau Safari untuk fitur suara.');
       document.getElementById('parsedGrid').style.display = 'none';
       document.getElementById('saveVoiceBtn').style.display = 'none';
-      document.getElementById('transcriptBox').textContent = '"Contoh: Makan pentol 10.000"';
+      document.getElementById('transcriptBox').textContent = '"Contoh: Belanja makanan pentol 10.000"';
       try { recognition.start(); } catch(e){}
     }
 
@@ -887,7 +1030,6 @@
       let type = 'Pengeluaran';
       if (['gaji','masuk','terima','proyek','freelance','bonus'].some(w => text.includes(w))) type = 'Pemasukan';
 
-      // Parse Amount
       let amount = 0;
       const digit = text.match(/(\d+(?:[.,]\d+)?)\s*(ribu|rb|k|juta|jt)?/i);
       if (digit) {
@@ -896,21 +1038,19 @@
         if (['ribu','rb','k'].includes(u)) amount *= 1000;
         if (['juta','jt'].includes(u)) amount *= 1000000;
       } else {
-        // Simple Verbal parser
         if (text.includes('sepuluh ribu')) amount = 10000;
         else if (text.includes('dua puluh ribu')) amount = 20000;
+        else if (text.includes('dua puluh lima ribu')) amount = 25000;
         else if (text.includes('lima puluh ribu')) amount = 50000;
         else if (text.includes('seratus ribu')) amount = 100000;
         else if (text.includes('satu juta') || text.includes('sejuta')) amount = 1000000;
       }
 
-      // Category
       let cat = type === 'Pemasukan' ? 'Gaji Pokok' : 'Makanan & Minuman';
       if (['bensin','pertamax','ojek','gojek','grab','parkir','tol'].some(w => text.includes(w))) cat = 'Transportasi & Bensin';
       else if (['belanja','pasar','supermarket','indomaret','baju','sabun'].some(w => text.includes(w))) cat = 'Belanja & Kebutuhan';
       else if (['listrik','pln','air','pdam','wifi','pulsa'].some(w => text.includes(w))) cat = 'Tagihan & Listrik/Air';
 
-      // Clean Note
       let note = text.replace(/[\d.,]+/g, ' ')
         .replace(/\b(belanja|makanan|beli|bayar|buat|untuk|ribu|juta|rp|rupiah|gaji|pemasukan)\b/gi, ' ')
         .trim().replace(/\s+/g, ' ');
@@ -938,6 +1078,7 @@
 
     // ================= CLOUD SYNC =================
     async function postCloud(payload) {
+      updateDot(true);
       try {
         await fetch(state.apiUrl, {
           method: 'POST',
@@ -945,10 +1086,12 @@
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(payload)
         });
-      } catch(e){}
+        updateDot(false);
+      } catch(e){ updateDot(false); }
     }
 
     async function fetchCloud() {
+      updateDot(true);
       try {
         const res = await fetch(`${state.apiUrl}?action=get_init_data&year=${state.year}&month=${state.month}&_t=${Date.now()}`);
         const data = await res.json();
@@ -957,7 +1100,30 @@
           save();
           render();
         }
-      } catch(e){}
+        updateDot(false);
+      } catch(e){ updateDot(false); }
+    }
+
+    async function testCloud() {
+      const url = document.getElementById('inputApiUrl').value.trim();
+      if (!url) return alert('Masukkan URL!');
+      try {
+        const res = await fetch(`${url}?action=ping&_t=${Date.now()}`);
+        const json = await res.json();
+        alert(json.status === 'success' ? '✅ Koneksi Sukses!' : 'Gagal: ' + json.message);
+      } catch(e){ alert('Gagal koneksi: ' + e.message); }
+    }
+
+    function updateDot(isSyncing) {
+      const d = document.getElementById('cloudDot');
+      const s = document.getElementById('cloudStatus');
+      if (isSyncing) {
+        d.classList.add('sync');
+        s.textContent = 'Menyimpan...';
+      } else {
+        d.classList.remove('sync');
+        s.textContent = 'Tersambung';
+      }
     }
 
     function showToast(msg) {
