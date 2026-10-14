@@ -19,8 +19,8 @@
     :root {
       --bg: #000000;
       --card: #1C1C1E;
-      --card-subtle: #141416;
-      --border: rgba(255, 255, 255, 0.08);
+      --card-subtle: #252528;
+      --border: rgba(255, 255, 255, 0.1);
       --text: #FFFFFF;
       --text-muted: #8E8E93;
       --text-dim: #636366;
@@ -35,11 +35,11 @@
     [data-theme="light"] {
       --bg: #F2F2F7;
       --card: #FFFFFF;
-      --card-subtle: #F9F9FB;
-      --border: rgba(0, 0, 0, 0.06);
+      --card-subtle: #F0F0F5;
+      --border: rgba(0, 0, 0, 0.1);
       --text: #000000;
-      --text-muted: #8E8E93;
-      --text-dim: #AEAEB2;
+      --text-muted: #6C6C70;
+      --text-dim: #8E8E93;
       --blue: #007AFF;
       --green: #34C759;
       --red: #FF3B30;
@@ -54,22 +54,29 @@
       -webkit-user-select: none;
     }
 
+    input, select, textarea {
+      user-select: text !important;
+      -webkit-user-select: text !important;
+      font-family: inherit;
+    }
+
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
       min-height: 100dvh;
       display: flex;
       justify-content: center;
       transition: background 0.25s ease;
       letter-spacing: -0.015em;
+      overflow-x: hidden;
     }
 
     .container {
       width: 100%;
       max-width: 480px;
-      padding: calc(var(--safe-top) + 14px) 20px calc(90px + var(--safe-bottom)) 20px;
+      padding: calc(var(--safe-top) + 14px) 20px calc(95px + var(--safe-bottom)) 20px;
       display: flex;
       flex-direction: column;
     }
@@ -105,7 +112,11 @@
       color: var(--text-muted);
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
+      background: var(--card-subtle);
+      padding: 4px 10px;
+      border-radius: 12px;
+      border: 0.5px solid var(--border);
     }
 
     .dot {
@@ -135,6 +146,7 @@
       font-size: 14px;
       font-weight: 600;
       margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
 
     .month-nav {
@@ -146,6 +158,7 @@
       cursor: pointer;
       display: flex;
       align-items: center;
+      padding: 2px 6px;
     }
 
     /* ================= HERO BALANCE ================= */
@@ -167,19 +180,20 @@
       font-size: 38px;
       font-weight: 800;
       letter-spacing: -0.03em;
-      line-height: 1;
+      line-height: 1.1;
       margin-bottom: 14px;
     }
 
     .balance-stats {
       display: inline-flex;
       gap: 20px;
-      background: var(--card-subtle);
+      background: var(--card);
       padding: 8px 18px;
       border-radius: 20px;
       border: 0.5px solid var(--border);
       font-size: 12px;
       font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     .stat-in { color: var(--green); }
     .stat-out { color: var(--red); }
@@ -188,11 +202,11 @@
     .list-header {
       display: flex;
       justify-content: space-between;
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
       margin-bottom: 10px;
       padding: 0 4px;
     }
@@ -203,13 +217,14 @@
       border: 0.5px solid var(--border);
       overflow: hidden;
       margin-bottom: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
     }
 
     .group-date {
       padding: 8px 16px;
       font-size: 11px;
       font-weight: 700;
-      color: var(--text-dim);
+      color: var(--text-muted);
       background: var(--card-subtle);
       border-bottom: 0.5px solid var(--border);
       letter-spacing: 0.04em;
@@ -228,13 +243,13 @@
     .tx-icon {
       font-size: 22px;
       margin-right: 14px;
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       display: flex;
       align-items: center;
       justify-content: center;
       background: var(--card-subtle);
-      border-radius: 10px;
+      border-radius: 11px;
       flex-shrink: 0;
     }
 
@@ -261,6 +276,7 @@
       font-size: 15px;
       font-weight: 700;
       text-align: right;
+      letter-spacing: -0.01em;
     }
     .val-out { color: var(--red); }
     .val-in { color: var(--green); }
@@ -270,9 +286,10 @@
       padding: 40px 20px;
       color: var(--text-muted);
       font-size: 14px;
+      line-height: 1.6;
     }
 
-    /* ================= FIXED BOTTOM BAR (VOICE IN CENTER + SIDES) ================= */
+    /* ================= FIXED BOTTOM BAR ================= */
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -284,7 +301,7 @@
       padding-bottom: var(--safe-bottom);
       backdrop-filter: blur(28px) saturate(190%);
       -webkit-backdrop-filter: blur(28px) saturate(190%);
-      background-color: rgba(18, 18, 20, 0.85);
+      background-color: rgba(18, 18, 20, 0.88);
       border-top: 0.5px solid var(--border);
       display: flex;
       align-items: center;
@@ -293,7 +310,7 @@
     }
 
     [data-theme="light"] .bottom-bar {
-      background-color: rgba(255, 255, 255, 0.9);
+      background-color: rgba(255, 255, 255, 0.92);
     }
 
     .nav-btn {
@@ -315,25 +332,25 @@
     .nav-btn:active { transform: scale(0.92); color: var(--text); }
 
     .nav-icon {
-      font-size: 19px;
+      font-size: 20px;
       line-height: 1;
     }
 
     /* PRIMARY CENTER VOICE BUTTON */
     .center-voice-btn {
-      width: 54px;
-      height: 54px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
       background: conic-gradient(from 0deg, #0A84FF, #BF5AF2, #FF3B30, #FF9F0A, #30D158, #0A84FF);
       border: 3.5px solid var(--bg);
       color: #FFFFFF;
-      font-size: 24px;
+      font-size: 25px;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 20px rgba(10, 132, 255, 0.5), 0 0 14px rgba(191, 90, 242, 0.4);
       cursor: pointer;
-      margin-top: -20px;
+      margin-top: -22px;
       transition: transform 0.15s;
       animation: siriPulse 2s infinite alternate;
       flex-shrink: 0;
@@ -352,7 +369,7 @@
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
       z-index: 100;
       opacity: 0;
       visibility: hidden;
@@ -375,23 +392,48 @@
       transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
       max-height: 85vh;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
     }
     .modal.active .sheet { transform: translateY(0); }
+
+    .sheet-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .sheet-close-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--card-subtle);
+      border: 0.5px solid var(--border);
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
 
     .handle {
       width: 36px;
       height: 4px;
       border-radius: 2px;
       background: var(--text-dim);
-      margin: 0 auto 16px auto;
+      margin: 0 auto 12px auto;
       opacity: 0.5;
+      cursor: pointer;
     }
 
     .sheet-title {
       font-size: 17px;
       font-weight: 700;
       text-align: center;
-      margin-bottom: 20px;
+      flex: 1;
     }
 
     /* SIRI VOICE PULSE */
@@ -409,7 +451,9 @@
       cursor: pointer;
       box-shadow: 0 0 30px rgba(10, 132, 255, 0.5);
       animation: siriSpin 3s linear infinite;
+      transition: transform 0.15s;
     }
+    .siri-circle:active { transform: scale(0.9); }
     @keyframes siriSpin { to { transform: rotate(360deg); } }
 
     .transcript-box {
@@ -418,12 +462,13 @@
       padding: 12px 16px;
       font-size: 14px;
       text-align: center;
-      min-height: 46px;
+      min-height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 16px;
       border: 0.5px solid var(--border);
+      font-weight: 500;
     }
 
     .parsed-grid {
@@ -439,8 +484,8 @@
       border-radius: 10px;
       border: 0.5px solid var(--border);
     }
-    .parsed-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
-    .parsed-val { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .parsed-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 2px; }
+    .parsed-val { font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     .btn-submit {
       width: 100%;
@@ -452,8 +497,9 @@
       font-size: 15px;
       font-weight: 700;
       cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
     }
-    .btn-submit:active { opacity: 0.9; }
+    .btn-submit:active { opacity: 0.9; transform: scale(0.99); }
 
     /* SIMPLE INPUTS */
     .form-group { margin-bottom: 12px; }
@@ -467,13 +513,17 @@
       color: var(--text);
       font-size: 15px;
       outline: none;
+      transition: border 0.2s;
+    }
+    .clean-input:focus {
+      border-color: var(--blue);
     }
 
     /* BAR CHART IN ANALYSIS */
-    .cat-bar-item { margin-bottom: 10px; }
-    .cat-bar-top { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+    .cat-bar-item { margin-bottom: 12px; }
+    .cat-bar-top { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
     .cat-bar-track { width: 100%; height: 6px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
-    .cat-bar-fill { height: 100%; background: var(--blue); border-radius: 4px; }
+    .cat-bar-fill { height: 100%; background: var(--blue); border-radius: 4px; transition: width 0.4s ease; }
 
     /* TOAST */
     .toast {
@@ -491,6 +541,7 @@
       z-index: 200;
       transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
       pointer-events: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     }
     .toast.show { transform: translate(-50%, 0); }
   </style>
@@ -543,30 +594,26 @@
   <!-- ================= FIXED BOTTOM BAR ================= -->
   <!-- Tata letak: [Analisis] [Manual] (🎙️ Bicara Tengah) [Tema] [Pengaturan] -->
   <nav class="bottom-bar">
-    <!-- 1. Analisis -->
     <button class="nav-btn" id="navAnalysisBtn">
       <span class="nav-icon">📊</span>
       <span>Analisis</span>
     </button>
 
-    <!-- 2. Input Manual -->
     <button class="nav-btn" id="navManualBtn">
       <span class="nav-icon">✍️</span>
       <span>Manual</span>
     </button>
 
-    <!-- 3. INPUT UTAMA: SUARA (TENGAH BAWAH) -->
+    <!-- INPUT UTAMA: SUARA (TENGAH BAWAH) -->
     <button class="center-voice-btn" id="navCenterVoiceBtn" title="Bicara untuk Catat Transaksi">
       🎙️
     </button>
 
-    <!-- 4. Mode Gelap/Terang -->
     <button class="nav-btn" id="navThemeBtn">
       <span class="nav-icon">🌗</span>
       <span>Tema</span>
     </button>
 
-    <!-- 5. Pengaturan -->
     <button class="nav-btn" id="navSettingsBtn">
       <span class="nav-icon">⚙️</span>
       <span>Setting</span>
@@ -577,7 +624,11 @@
   <div class="modal" id="voiceModal">
     <div class="sheet">
       <div class="handle"></div>
-      <div class="sheet-title">Bicara Sekarang</div>
+      <div class="sheet-header-row">
+        <div style="width: 30px;"></div>
+        <div class="sheet-title">Bicara Sekarang</div>
+        <button class="sheet-close-btn" onclick="closeAllModals()">✕</button>
+      </div>
 
       <div class="siri-circle" id="siriOrb">🎙️</div>
 
@@ -609,7 +660,10 @@
       </div>
 
       <button class="btn-submit" id="saveVoiceBtn" style="display: none; background: var(--green);">
-        ✓ Simpan Transaksi
+        ✓ Simpan Sekarang (<span id="autoCountdown">3s</span>)
+      </button>
+      <button class="btn-submit" id="retryVoiceBtn" style="display: none; background: var(--card-subtle); color: var(--text); margin-top: 8px;">
+        🔄 Coba Bicara Lagi
       </button>
     </div>
   </div>
@@ -618,7 +672,11 @@
   <div class="modal" id="manualModal">
     <div class="sheet">
       <div class="handle"></div>
-      <div class="sheet-title">Input Manual</div>
+      <div class="sheet-header-row">
+        <div style="width: 30px;"></div>
+        <div class="sheet-title">Input Manual</div>
+        <button class="sheet-close-btn" onclick="closeAllModals()">✕</button>
+      </div>
 
       <div style="display: flex; gap: 8px; margin-bottom: 14px;">
         <button class="btn-submit" id="btnTypeExpense" style="background: var(--red); flex: 1;">Pengeluaran</button>
@@ -637,7 +695,12 @@
           <option value="Transportasi & Bensin">🚗 Transportasi & Bensin</option>
           <option value="Belanja & Kebutuhan">🛍️ Belanja & Kebutuhan</option>
           <option value="Tagihan & Listrik/Air">⚡ Tagihan & Listrik/Air</option>
+          <option value="Hiburan & Rekreasi">🎮 Hiburan & Rekreasi</option>
+          <option value="Kesehatan & Medis">💊 Kesehatan & Medis</option>
+          <option value="Sedekah & Amal">🤲 Sedekah & Amal</option>
           <option value="Gaji Pokok">💼 Gaji Pokok</option>
+          <option value="Freelance & Proyek">💻 Freelance & Proyek</option>
+          <option value="Bisnis & Usaha">📈 Bisnis & Usaha</option>
           <option value="Lain-lain">📦 Lain-lain</option>
         </select>
       </div>
@@ -655,7 +718,11 @@
   <div class="modal" id="analysisModal">
     <div class="sheet">
       <div class="handle"></div>
-      <div class="sheet-title">Analisis Bulanan</div>
+      <div class="sheet-header-row">
+        <div style="width: 30px;"></div>
+        <div class="sheet-title">Analisis Bulanan</div>
+        <button class="sheet-close-btn" onclick="closeAllModals()">✕</button>
+      </div>
 
       <div style="background: var(--card-subtle); padding: 14px; border-radius: 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.8;">
         <div style="display:flex; justify-content:space-between;">
@@ -663,13 +730,13 @@
           <strong id="anNetVal" style="color:var(--green)">Rp 0</strong>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span style="color:var(--text-muted)">Pengeluaran Harian Rata-rata:</span>
+          <span style="color:var(--text-muted)">Rata-rata Pengeluaran/Hari:</span>
           <strong id="anDailyVal">Rp 0</strong>
         </div>
       </div>
 
-      <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px;">
-        Pengeluaran per Kategori
+      <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.05em;">
+        Distribusi Pengeluaran
       </div>
       <div id="categoryBarsContainer">
         <!-- Dynamic Category Progress Bars -->
@@ -681,15 +748,36 @@
   <div class="modal" id="settingsModal">
     <div class="sheet">
       <div class="handle"></div>
-      <div class="sheet-title">Pengaturan Google Sheet</div>
+      <div class="sheet-header-row">
+        <div style="width: 30px;"></div>
+        <div class="sheet-title">Pengaturan</div>
+        <button class="sheet-close-btn" onclick="closeAllModals()">✕</button>
+      </div>
+
+      <!-- Gemini AI Section -->
+      <div style="background: linear-gradient(135deg, rgba(10,132,255,0.12), rgba(191,90,242,0.12)); border: 0.5px solid rgba(10,132,255,0.3); border-radius: 14px; padding: 14px; margin-bottom: 14px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <span style="font-size:18px;">✨</span>
+          <div>
+            <div style="font-size:13px; font-weight:700; color:var(--text);">Gemini AI — Gratis Selamanya</div>
+            <div style="font-size:11px; color:var(--text-muted);">Memahami konteks suara seperti manusia</div>
+          </div>
+          <span id="aiBadge" style="margin-left:auto; font-size:10px; font-weight:700; padding:3px 8px; border-radius:8px; background:var(--card-subtle); color:var(--text-muted);">LOKAL</span>
+        </div>
+        <div class="form-group" style="margin-bottom:8px;">
+          <label class="form-label">Gemini API Key <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--blue); text-decoration:none;">→ Dapatkan Gratis</a></label>
+          <input type="password" class="clean-input" id="inputGeminiKey" placeholder="AIza..." autocomplete="off">
+        </div>
+        <button class="btn-submit" id="saveGeminiBtn" style="background: linear-gradient(135deg,#0A84FF,#BF5AF2); margin-bottom: 0;">Aktifkan AI</button>
+      </div>
 
       <div class="form-group">
-        <label class="form-label">URL Web App Apps Script</label>
+        <label class="form-label">URL Web App Apps Script (Google Sheet)</label>
         <input type="url" class="clean-input" id="inputApiUrl" placeholder="https://script.google.com/macros/s/.../exec">
       </div>
 
-      <button class="btn-submit" id="saveSettingsBtn" style="margin-bottom: 12px;">Simpan URL</button>
-      <button class="btn-submit" id="testApiBtn" style="background: var(--card-subtle); color: var(--text);">Tes Koneksi</button>
+      <button class="btn-submit" id="saveSettingsBtn" style="margin-bottom: 10px;">Simpan URL Sheet</button>
+      <button class="btn-submit" id="testApiBtn" style="background: var(--card-subtle); color: var(--text);">Tes Koneksi Sheet</button>
     </div>
   </div>
 
@@ -703,12 +791,16 @@
 
     let state = {
       apiUrl: localStorage.getItem('API_URL') || '',
+      geminiKey: localStorage.getItem('GEMINI_KEY') || '',
       year: new Date().getFullYear(),
       month: new Date().getMonth() + 1,
       transactions: [],
       manualType: 'Pengeluaran',
       detectedVoice: null
     };
+
+    let countdownTimer = null;
+    let countdownSec = 3;
 
     document.addEventListener('DOMContentLoaded', () => {
       loadData();
@@ -741,6 +833,38 @@
 
     function formatIDR(num) {
       return new Intl.NumberFormat('id-ID').format(Math.round(num || 0));
+    }
+
+    // Audio Chime Feedback (Apple Style)
+    function playChime() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(587.33, now); // D5
+        gain1.gain.setValueAtTime(0.12, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.35);
+
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(880, now + 0.08); // A5
+        gain2.gain.setValueAtTime(0.15, now + 0.08);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.start(now + 0.08);
+        osc2.stop(now + 0.45);
+      } catch(e) {}
     }
 
     function render() {
@@ -778,7 +902,7 @@
       container.innerHTML = '';
 
       if (filtered.length === 0) {
-        container.innerHTML = '<div class="empty-box">Belum ada transaksi di bulan ini.<br><small>Ketuk tombol 🎙️ di tengah bawah untuk mencatat.</small></div>';
+        container.innerHTML = '<div class="empty-box">Belum ada transaksi di bulan ini.<br><small style="color:var(--text-dim)">Ketuk tombol 🎙️ di tengah bawah untuk mencatat dengan suara.</small></div>';
       } else {
         const grouped = {};
         filtered.forEach(t => {
@@ -799,7 +923,7 @@
             const row = document.createElement('div');
             row.className = 'tx-item';
             row.innerHTML = `
-              <div class="tx-icon">${t.icon || (isExp ? '🍔' : '💼')}</div>
+              <div class="tx-icon">${t.icon || getCategoryIcon(t.kategori)}</div>
               <div class="tx-meta">
                 <div class="tx-name">${escapeHtml(t.catatan || t.kategori)}</div>
                 <div class="tx-sub">${escapeHtml(t.kategori)}</div>
@@ -866,27 +990,24 @@
         render();
       };
 
-      // Modals
       const vModal = document.getElementById('voiceModal');
       const mModal = document.getElementById('manualModal');
       const aModal = document.getElementById('analysisModal');
       const sModal = document.getElementById('settingsModal');
 
       // FIXED BOTTOM BAR ACTIONS
-      // 1. Analisis
       document.getElementById('navAnalysisBtn').onclick = () => openModal(aModal);
-      // 2. Manual
       document.getElementById('navManualBtn').onclick = () => openModal(mModal);
-      // 3. INPUT UTAMA SUARA (TENGAH)
       document.getElementById('navCenterVoiceBtn').onclick = () => openModal(vModal, startVoice);
-      // 4. Tema Gelap/Terang
       document.getElementById('navThemeBtn').onclick = toggleTheme;
-      // 5. Setting
       document.getElementById('navSettingsBtn').onclick = () => {
         document.getElementById('inputApiUrl').value = state.apiUrl;
+        document.getElementById('inputGeminiKey').value = state.geminiKey ? '••••••••••••••' : '';
+        updateAIBadge();
         openModal(sModal);
       };
 
+      // Modal Background Tap to Close
       [vModal, mModal, aModal, sModal].forEach(m => {
         m.onclick = (e) => { if (e.target === m) closeModal(m); };
       });
@@ -896,12 +1017,22 @@
       document.getElementById('btnTypeIncome').onclick = () => setManualType('Pemasukan');
       document.getElementById('saveManualBtn').onclick = saveManual;
 
+      // Gemini AI Key Save
+      document.getElementById('saveGeminiBtn').onclick = () => {
+        const key = document.getElementById('inputGeminiKey').value.trim();
+        if (!key) { showToast('⚠️ Masukkan API Key dulu'); return; }
+        state.geminiKey = key;
+        localStorage.setItem('GEMINI_KEY', key);
+        updateAIBadge();
+        showToast('✨ Gemini AI Aktif!');
+      };
+
       // Settings Form
       document.getElementById('saveSettingsBtn').onclick = () => {
         state.apiUrl = document.getElementById('inputApiUrl').value.trim();
         localStorage.setItem('API_URL', state.apiUrl);
         closeModal(sModal);
-        showToast('URL Tersimpan');
+        showToast('URL Sheet Tersimpan');
         if (state.apiUrl) fetchCloud();
       };
 
@@ -916,6 +1047,99 @@
       showToast(next === 'light' ? '☀️ Mode Terang' : '🌙 Mode Gelap');
     }
     if (localStorage.getItem('THEME')) document.documentElement.setAttribute('data-theme', localStorage.getItem('THEME'));
+
+    // ── AI BADGE UPDATE ──
+    function updateAIBadge() {
+      const badge = document.getElementById('aiBadge');
+      if (!badge) return;
+      if (state.geminiKey) {
+        badge.textContent = '✨ AI AKTIF';
+        badge.style.background = 'linear-gradient(135deg,#0A84FF,#BF5AF2)';
+        badge.style.color = '#FFF';
+      } else {
+        badge.textContent = 'LOKAL';
+        badge.style.background = 'var(--card-subtle)';
+        badge.style.color = 'var(--text-muted)';
+      }
+    }
+
+    // ── GEMINI AI PARSER (Gratis, 1500 req/hari) ──
+    // Model: gemini-1.5-flash | Paham Bahasa Indonesia & konteks keuangan
+    async function parseWithGemini(transcript) {
+      const CATEGORIES = ['Makanan & Minuman','Transportasi & Bensin','Belanja & Kebutuhan',
+        'Tagihan & Listrik/Air','Hiburan & Rekreasi','Kesehatan & Medis','Sedekah & Amal',
+        'Gaji Pokok','Freelance & Proyek','Bisnis & Usaha','Lain-lain'];
+
+      const prompt = `Kamu adalah asisten keuangan pintar yang memahami Bahasa Indonesia sehari-hari.
+Analisis transkrip suara berikut dan ekstrak informasi transaksi keuangan.
+
+Transkrip: "${transcript}"
+
+Kembalikan HANYA objek JSON valid (tanpa markdown, tanpa penjelasan) dengan format:
+{
+  "type": "Pengeluaran" atau "Pemasukan",
+  "amount": <angka bulat dalam Rupiah, 0 jika tidak ada>,
+  "category": "<salah satu dari: ${CATEGORIES.join(', ')}>",
+  "note": "<deskripsi singkat transaksi, maksimal 5 kata>",
+  "confidence": "Sangat Yakin" atau "Cukup Yakin" atau "Lumayan Yakin" atau "Tebakan"
+}
+
+Aturan penting:
+- "beli", "bayar", "belanja", "makan", "ongkos", "isi bensin" → Pengeluaran
+- "gaji", "terima", "dapat", "cair", "freelance", "omset", "jualan", "transfer masuk" → Pemasukan
+- Angka bisa ditulis verbal ("dua puluh ribu") atau campuran ("20rb", "20 ribu")
+- Jika ada angka kuantitas (misal "5 liter") ABAIKAN, ambil harga yang lebih besar
+- note harus dalam Bahasa Indonesia yang natural`;
+
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${state.geminiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.1, maxOutputTokens: 200 }
+          })
+        }
+      );
+      if (!res.ok) throw new Error('Gemini API error: ' + res.status);
+      const data = await res.json();
+      const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      // Bersihkan markdown code block jika ada
+      const jsonStr = rawText.replace(/```json?/gi,'').replace(/```/g,'').trim();
+      const parsed = JSON.parse(jsonStr);
+      // Validasi field
+      if (!parsed.type || !parsed.amount) throw new Error('Invalid AI response');
+      return {
+        type: parsed.type,
+        amount: Math.round(Number(parsed.amount) || 0),
+        category: parsed.category || 'Lain-lain',
+        note: parsed.note || parsed.category || 'Transaksi',
+        confidence: parsed.confidence || 'Cukup Yakin',
+        intentScore: 99, // AI score
+        aiParsed: true
+      };
+    }
+
+    // ── UPDATE VOICE RESULT UI ──
+    function updateVoiceResult(parsed) {
+      state.detectedVoice = parsed;
+      document.getElementById('parsedGrid').style.display = 'grid';
+      const typeEl = document.getElementById('parsedType');
+      typeEl.textContent = (parsed.type === 'Pemasukan' ? '▲ ' : '▼ ') + parsed.type;
+      typeEl.style.color = parsed.type === 'Pemasukan' ? 'var(--green)' : 'var(--red)';
+      document.getElementById('parsedAmount').textContent = 'Rp ' + formatIDR(parsed.amount);
+      document.getElementById('parsedCategory').textContent = parsed.category;
+      document.getElementById('parsedNote').textContent = parsed.note;
+      const confColor = { 'Sangat Yakin': 'var(--green)', 'Cukup Yakin': 'var(--blue)', 'Lumayan Yakin': '#FF9F0A', 'Tebakan': 'var(--red)' };
+      const aiLabel = parsed.aiParsed ? '✨ AI' : '⚙️ Lokal';
+      document.getElementById('voiceStatus').textContent = `${aiLabel} · ${parsed.confidence}`;
+      document.getElementById('voiceStatus').style.color = confColor[parsed.confidence] || 'var(--blue)';
+      document.getElementById('saveVoiceBtn').style.display = 'block';
+      document.getElementById('retryVoiceBtn').style.display = 'block';
+      startAutoSaveCountdown();
+    }
+
 
     function setManualType(t) {
       state.manualType = t;
@@ -953,110 +1177,381 @@
     }
 
     function openModal(m, cb) {
+      closeAllModals();
       m.classList.add('active');
       if (cb) cb();
     }
+
     function closeModal(m) {
       m.classList.remove('active');
-      if (recognition) recognition.stop();
+      stopVoice();
+      clearCountdown();
     }
 
-    // ================= VOICE PARSER =================
+    function closeAllModals() {
+      document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+      stopVoice();
+      clearCountdown();
+    }
+
+    // ================= ULTRA-OPTIMAL VOICE RECOGNITION =================
     let recognition = null;
+    let isListening = false;
 
     function initVoice() {
       const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!Speech) return;
 
       recognition = new Speech();
-      recognition.lang = 'id-ID';
+      recognition.lang = 'id-ID'; // Bahasa Indonesia
       recognition.continuous = false;
       recognition.interimResults = true;
 
       recognition.onstart = () => {
-        document.getElementById('voiceStatus').textContent = 'Mendengarkan... Katakan sekarang!';
+        isListening = true;
+        document.getElementById('voiceStatus').textContent = '🎙️ Mendengarkan... Katakan sekarang!';
         document.getElementById('voiceStatus').style.color = 'var(--green)';
+        if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(10);
       };
 
-      recognition.onresult = (e) => {
-        let text = '';
-        for (let i = e.resultIndex; i < e.results.length; i++) text += e.results[i][0].transcript;
-        document.getElementById('transcriptBox').textContent = `"${text}"`;
+      recognition.onresult = async (e) => {
+        let interimText = '';
+        let finalText = '';
+        let isFinal = false;
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          const t = e.results[i][0].transcript;
+          if (e.results[i].isFinal) { finalText += t; isFinal = true; }
+          else interimText += t;
+        }
+        const displayText = finalText || interimText;
+        document.getElementById('transcriptBox').textContent = `"${displayText}"`;
 
-        const parsed = parseSpeech(text);
-        if (parsed.amount > 0) {
-          state.detectedVoice = parsed;
-          document.getElementById('parsedGrid').style.display = 'grid';
-          document.getElementById('parsedType').textContent = parsed.type;
-          document.getElementById('parsedType').style.color = parsed.type === 'Pemasukan' ? 'var(--green)' : 'var(--red)';
-          document.getElementById('parsedAmount').textContent = 'Rp ' + formatIDR(parsed.amount);
-          document.getElementById('parsedCategory').textContent = parsed.category;
-          document.getElementById('parsedNote').textContent = parsed.note;
-          document.getElementById('saveVoiceBtn').style.display = 'block';
+        // Tampil hasil sementara (lokal) saat masih mendengarkan
+        if (!isFinal && interimText) {
+          const localParsed = parseSpeech(interimText);
+          if (localParsed.amount > 0) {
+            clearCountdown(); // Jangan auto-save selagi belum final
+            state.detectedVoice = localParsed;
+            document.getElementById('parsedGrid').style.display = 'grid';
+            document.getElementById('parsedType').textContent = (localParsed.type === 'Pemasukan' ? '▲ ' : '▼ ') + localParsed.type;
+            document.getElementById('parsedType').style.color = localParsed.type === 'Pemasukan' ? 'var(--green)' : 'var(--red)';
+            document.getElementById('parsedAmount').textContent = 'Rp ' + formatIDR(localParsed.amount);
+            document.getElementById('parsedCategory').textContent = localParsed.category;
+            document.getElementById('parsedNote').textContent = localParsed.note;
+            document.getElementById('voiceStatus').textContent = '👂 Mendengarkan...';
+            document.getElementById('voiceStatus').style.color = 'var(--green)';
+          }
+          return;
+        }
+
+        // Hasil final → proses dengan AI jika ada key, lalu fallback lokal
+        if (!isFinal && !finalText) return;
+        const textToProcess = finalText || interimText;
+        if (!textToProcess.trim()) return;
+
+        if (state.geminiKey) {
+          // === MODE AI: Gemini 1.5 Flash ===
+          document.getElementById('voiceStatus').textContent = '⏳ AI memproses...';
+          document.getElementById('voiceStatus').style.color = 'var(--purple)';
+          try {
+            const aiResult = await parseWithGemini(textToProcess);
+            if (aiResult.amount > 0) {
+              updateVoiceResult(aiResult);
+            } else {
+              // AI gagal ekstrak nominal, fallback ke lokal
+              const local = parseSpeech(textToProcess);
+              if (local.amount > 0) updateVoiceResult(local);
+              else {
+                document.getElementById('voiceStatus').textContent = '⚠️ Nominal tidak terdengar jelas. Coba lagi.';
+                document.getElementById('voiceStatus').style.color = 'var(--red)';
+              }
+            }
+          } catch (err) {
+            console.warn('Gemini fallback:', err.message);
+            // Fallback ke parser lokal jika AI error (misal offline / quota habis)
+            const local = parseSpeech(textToProcess);
+            if (local.amount > 0) {
+              updateVoiceResult(local);
+              showToast('⚙️ AI offline, pakai mode Lokal');
+            } else {
+              document.getElementById('voiceStatus').textContent = '⚠️ Belum terdengar jelas. Ketuk bola untuk coba lagi.';
+              document.getElementById('voiceStatus').style.color = 'var(--red)';
+            }
+          }
+        } else {
+          // === MODE LOKAL (tanpa AI key) ===
+          const parsed = parseSpeech(textToProcess);
+          if (parsed.amount > 0) {
+            updateVoiceResult(parsed);
+          } else {
+            document.getElementById('voiceStatus').textContent = '⚠️ Belum terdengar jelas. Ketuk bola untuk coba lagi.';
+            document.getElementById('voiceStatus').style.color = 'var(--red)';
+          }
         }
       };
 
-      recognition.onerror = () => {
-        document.getElementById('voiceStatus').textContent = 'Ketuk lingkaran untuk bicara lagi';
-        document.getElementById('voiceStatus').style.color = 'var(--blue)';
+
+      recognition.onerror = (e) => {
+        isListening = false;
+        console.warn('Speech error:', e.error);
+        if (e.error === 'not-allowed') {
+          document.getElementById('voiceStatus').textContent = '⚠️ Izin mikrofon ditolak di browser.';
+        } else {
+          document.getElementById('voiceStatus').textContent = '⚠️ Belum terdengar jelas. Ketuk bola untuk coba lagi.';
+        }
+        document.getElementById('voiceStatus').style.color = 'var(--red)';
       };
 
-      document.getElementById('siriOrb').onclick = startVoice;
+      recognition.onend = () => {
+        isListening = false;
+        if (!state.detectedVoice || state.detectedVoice.amount <= 0) {
+          document.getElementById('voiceStatus').textContent = 'Ketuk lingkaran untuk bicara lagi';
+          document.getElementById('voiceStatus').style.color = 'var(--blue)';
+        }
+      };
+
+      document.getElementById('siriOrb').onclick = () => {
+        clearCountdown();
+        startVoice();
+      };
+
+      document.getElementById('retryVoiceBtn').onclick = () => {
+        clearCountdown();
+        startVoice();
+      };
+
       document.getElementById('saveVoiceBtn').onclick = () => {
-        if (!state.detectedVoice) return;
-        addTransaction({
-          id: 'TRX-' + Date.now().toString(36),
-          tanggal: today(),
-          jenis: state.detectedVoice.type,
-          kategori: state.detectedVoice.category,
-          jumlah: state.detectedVoice.amount,
-          catatan: state.detectedVoice.note,
-          icon: getCategoryIcon(state.detectedVoice.category)
-        });
-        closeModal(document.getElementById('voiceModal'));
+        confirmSaveVoice();
       };
     }
 
     function startVoice() {
-      if (!recognition) return alert('Gunakan Google Chrome atau Safari untuk fitur suara.');
+      if (!recognition) return alert('Gunakan Google Chrome (Android/PC) atau Safari (iPhone) untuk fitur suara.');
+      clearCountdown();
+      state.detectedVoice = null;
       document.getElementById('parsedGrid').style.display = 'none';
       document.getElementById('saveVoiceBtn').style.display = 'none';
+      document.getElementById('retryVoiceBtn').style.display = 'none';
       document.getElementById('transcriptBox').textContent = '"Contoh: Belanja makanan pentol 10.000"';
       try { recognition.start(); } catch(e){}
     }
 
-    function parseSpeech(raw) {
-      const text = raw.toLowerCase();
-      let type = 'Pengeluaran';
-      if (['gaji','masuk','terima','proyek','freelance','bonus'].some(w => text.includes(w))) type = 'Pemasukan';
+    function stopVoice() {
+      if (recognition && isListening) {
+        try { recognition.stop(); } catch(e){}
+      }
+      isListening = false;
+    }
 
-      let amount = 0;
-      const digit = text.match(/(\d+(?:[.,]\d+)?)\s*(ribu|rb|k|juta|jt)?/i);
-      if (digit) {
-        amount = parseFloat(digit[1].replace(/\./g, '').replace(/,/g, '.'));
-        const u = (digit[2] || '').toLowerCase();
-        if (['ribu','rb','k'].includes(u)) amount *= 1000;
-        if (['juta','jt'].includes(u)) amount *= 1000000;
-      } else {
-        if (text.includes('sepuluh ribu')) amount = 10000;
-        else if (text.includes('dua puluh ribu')) amount = 20000;
-        else if (text.includes('dua puluh lima ribu')) amount = 25000;
-        else if (text.includes('lima puluh ribu')) amount = 50000;
-        else if (text.includes('seratus ribu')) amount = 100000;
-        else if (text.includes('satu juta') || text.includes('sejuta')) amount = 1000000;
+    function startAutoSaveCountdown() {
+      clearCountdown();
+      countdownSec = 4; // 4 detik agar user bisa koreksi jika salah deteksi
+      document.getElementById('autoCountdown').textContent = countdownSec + 's';
+      countdownTimer = setInterval(() => {
+        countdownSec--;
+        if (countdownSec <= 0) {
+          clearCountdown();
+          confirmSaveVoice();
+        } else {
+          const el = document.getElementById('autoCountdown');
+          if (el) el.textContent = countdownSec + 's';
+        }
+      }, 1000);
+    }
+
+    function clearCountdown() {
+      if (countdownTimer) {
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+      }
+    }
+
+    function confirmSaveVoice() {
+      clearCountdown();
+      if (!state.detectedVoice || state.detectedVoice.amount <= 0) return;
+      addTransaction({
+        id: 'TRX-' + Date.now().toString(36),
+        tanggal: today(),
+        jenis: state.detectedVoice.type,
+        kategori: state.detectedVoice.category,
+        jumlah: state.detectedVoice.amount,
+        catatan: state.detectedVoice.note,
+        icon: getCategoryIcon(state.detectedVoice.category)
+      });
+      closeAllModals();
+    }
+
+    // ================= ULTRA-SMART INDONESIAN SPEECH PARSER v2 =================
+    // Menggunakan sistem SKOR INTENT untuk akurasi tertinggi
+    function parseSpeech(raw) {
+      const text = raw.toLowerCase().trim();
+
+      // ── 1. INTENT SCORING: Hitung skor Pemasukan vs Pengeluaran ──
+      //    Setiap kata kunci memberikan bobot skor (positif = Pemasukan, negatif = Pengeluaran)
+      const INTENT_RULES = [
+        // === KATA KERJA PENERIMAAN KUAT (skor tinggi) ===
+        { pattern: /\b(terima|diterima|mendapat|dapat|dapet|dikasih|diberi|dikirimin|masuk|cair|naik gaji|transfer masuk)\b/, score: +4 },
+        { pattern: /\b(gaji|upah|salary|honor|thr|insentif)\b/, score: +5 },
+        { pattern: /\b(bonus|komisi|fee|hasil)\b/, score: +3 },
+        { pattern: /\b(proyek|klien|freelance|jasa|jualan|omset|laba|untung|pendapatan|penghasilan|revenue)\b/, score: +3 },
+        { pattern: /\b(hibah|hadiah|kado|rejeki|sedekah masuk|donasi masuk|bantuan)\b/, score: +3 },
+        { pattern: /\b(pemasukan|income|kredit|uang masuk)\b/, score: +5 },
+        { pattern: /\b(investasi|dividen|bunga|return|profit)\b/, score: +3 },
+
+        // === KATA KERJA PENGELUARAN KUAT (skor negatif) ===
+        { pattern: /\b(beli|membeli|beli|bayar|membayar|bayarin|bayar\w*)\b/, score: -4 },
+        { pattern: /\b(pengeluaran|expense|keluar|debit|habis|jajan|ngeluarin)\b/, score: -4 },
+        { pattern: /\b(belanja|makan|minum|ongkos|biaya|cicilan|kredit bayar|tagihan|sewa|ngisi|isi)\b/, score: -3 },
+        { pattern: /\b(buka|order|pesan|top.?up|transfer keluar|kirim uang)\b/, score: -2 },
+        { pattern: /\b(langganan|subscribe|bayar iuran)\b/, score: -3 },
+      ];
+
+      let intentScore = 0;
+      INTENT_RULES.forEach(rule => {
+        if (rule.pattern.test(text)) intentScore += rule.score;
+      });
+
+      // Default: pengeluaran. Hanya menjadi pemasukan jika skor positif.
+      let type = intentScore > 0 ? 'Pemasukan' : 'Pengeluaran';
+
+      // Tingkat keyakinan untuk tampilan UI
+      const absScore = Math.abs(intentScore);
+      let confidence = absScore === 0 ? 'Tebakan' : absScore <= 2 ? 'Lumayan Yakin' : absScore <= 4 ? 'Cukup Yakin' : 'Sangat Yakin';
+
+      // ── 2. EKSTRAKSI NOMINAL ──
+      let amount = extractIndonesianNumber(text);
+
+      // ── 3. KATEGORI CERDAS (tabel lebih luas) ──
+      let cat = type === 'Pemasukan' ? 'Gaji Pokok' : 'Makanan & Minuman';
+
+      const catMap = [
+        // == PENGELUARAN ==
+        { name: 'Makanan & Minuman', type: 'Pengeluaran', words: ['makan', 'minum', 'pentol', 'bakso', 'soto', 'sate', 'mie', 'nasi', 'ayam', 'bebek', 'kopi', 'kafe', 'cafe', 'snack', 'jajan', 'sarapan', 'warteg', 'padang', 'seblak', 'martabak', 'roti', 'kue', 'es', 'boba', 'geprek', 'lalapan', 'gorengan', 'indomie', 'starbucks', 'mcd', 'kfc', 'pizza', 'burger', 'siomay', 'batagor', 'cireng', 'cimol', 'lumpia'] },
+        { name: 'Transportasi & Bensin', type: 'Pengeluaran', words: ['bensin', 'pertamax', 'pertalite', 'solar', 'spbu', 'tambal', 'ban', 'oli', 'servis', 'bengkel', 'ojek', 'gojek', 'grab', 'maxim', 'parkir', 'tol', 'cuci motor', 'cuci mobil', 'angkot', 'bus', 'kereta', 'pesawat', 'tiket'] },
+        { name: 'Belanja & Kebutuhan', type: 'Pengeluaran', words: ['belanja', 'indomaret', 'alfamart', 'supermarket', 'pasar', 'beras', 'telur', 'minyak', 'gula', 'sabun', 'shampoo', 'odol', 'deterjen', 'baju', 'celana', 'sepatu', 'shopee', 'tokopedia', 'skincare', 'lazada', 'tiktok shop', 'blibli'] },
+        { name: 'Tagihan & Listrik/Air', type: 'Pengeluaran', words: ['listrik', 'pln', 'token', 'pdam', 'wifi', 'indihome', 'kuota', 'pulsa', 'telkomsel', 'xl', 'indosat', 'bpjs', 'kos', 'kontrakan', 'tagihan', 'cicilan', 'bayar rumah', 'iuran'] },
+        { name: 'Hiburan & Rekreasi', type: 'Pengeluaran', words: ['nonton', 'bioskop', 'film', 'cinema', 'game', 'topup', 'steam', 'netflix', 'spotify', 'liburan', 'karaoke', 'jalan-jalan', 'wisata', 'hotel', 'resort'] },
+        { name: 'Kesehatan & Medis', type: 'Pengeluaran', words: ['obat', 'apotek', 'dokter', 'klinik', 'rumah sakit', 'vitamin', 'paracetamol', 'bidan', 'periksa', 'gigi', 'fisio', 'rs'] },
+        { name: 'Sedekah & Amal', type: 'Pengeluaran', words: ['sedekah', 'infaq', 'zakat', 'amal', 'masjid', 'donasi', 'sumbangan', 'jariyah', 'wakaf'] },
+        // == PEMASUKAN ==
+        { name: 'Gaji Pokok', type: 'Pemasukan', words: ['gaji', 'upah', 'salary', 'honor', 'thr', 'slip gaji'] },
+        { name: 'Freelance & Proyek', type: 'Pemasukan', words: ['freelance', 'proyek', 'desain', 'klien', 'jasa', 'coding', 'fee', 'komisi', 'bayaran'] },
+        { name: 'Bisnis & Usaha', type: 'Pemasukan', words: ['bisnis', 'usaha', 'dagang', 'toko', 'omset', 'jualan', 'laba', 'untung', 'profit', 'pendapatan'] },
+      ];
+
+      // Cek kategori sesuai tipe yang sudah terdeteksi dulu,
+      // baru cek semua kategori
+      let found = false;
+      // Prioritaskan kategori yang sesuai tipe
+      for (const item of catMap) {
+        if (item.type === type && item.words.some(w => text.includes(w))) {
+          cat = item.name;
+          found = true;
+          break;
+        }
+      }
+      // Jika tidak ketemu, cek lintas tipe (kata benda bisa override tipe)
+      if (!found) {
+        for (const item of catMap) {
+          if (item.words.some(w => text.includes(w))) {
+            cat = item.name;
+            // Kata benda pemasukan yang sangat spesifik -> override tipe
+            if (item.type === 'Pemasukan' && intentScore >= 0) type = 'Pemasukan';
+            break;
+          }
+        }
       }
 
-      let cat = type === 'Pemasukan' ? 'Gaji Pokok' : 'Makanan & Minuman';
-      if (['bensin','pertamax','ojek','gojek','grab','parkir','tol'].some(w => text.includes(w))) cat = 'Transportasi & Bensin';
-      else if (['belanja','pasar','supermarket','indomaret','baju','sabun'].some(w => text.includes(w))) cat = 'Belanja & Kebutuhan';
-      else if (['listrik','pln','air','pdam','wifi','pulsa'].some(w => text.includes(w))) cat = 'Tagihan & Listrik/Air';
+      // ── 4. EKSTRAK CATATAN BERSIH ──
+      let note = text
+        .replace(/(\d[\d.,]*)\s*(ribu|rb|k|juta|jt|ratus|puluh|belas)?/gi, ' ')
+        .replace(/\b(rp|rupiah|idr)\b/gi, ' ');
+      
+      const stopWords = [
+        'belanja','beli','bayar','buat','untuk','pakai','via','dengan','ke','di','dan','yang','ada',
+        'mau','minta','tolong','catatan','nominal','rp','rupiah','ribu','juta','ratus','rb',
+        'pengeluaran','pemasukan','income','expense','uang','duit','modal',
+        'bca','mandiri','bri','bni','qris','gopay','ovo','shopeepay','dana','tunai','cash','transfer'
+      ];
+      stopWords.forEach(w => {
+        note = note.replace(new RegExp('(^|\\s)' + w + '($|\\s)', 'gi'), ' ');
+      });
+      note = note.trim().replace(/\s+/g, ' ');
+      if (note.length < 2) note = cat;
+      else note = note.charAt(0).toUpperCase() + note.slice(1);
 
-      let note = text.replace(/[\d.,]+/g, ' ')
-        .replace(/\b(belanja|makanan|beli|bayar|buat|untuk|ribu|juta|rp|rupiah|gaji|pemasukan)\b/gi, ' ')
-        .trim().replace(/\s+/g, ' ');
-      note = note.length > 0 ? (note.charAt(0).toUpperCase() + note.slice(1)) : cat;
+      return { type, category: cat, amount: Math.round(amount), note, confidence, intentScore };
+    }
 
-      return { type, category: cat, amount: Math.round(amount), note };
+    // ── EKSTRAKTOR ANGKA VERBAL INDONESIA v3 ──
+    // Menangani kasus seperti "beli bensin 5 liter 50.000" → 50000 (bukan 5)
+    function extractIndonesianNumber(str) {
+      // ── Langkah 0: Hapus angka yang diikuti satuan KUANTITAS (bukan harga) ──
+      // Contoh: "5 liter", "2 kg", "3 buah" → angka-angka ini BUKAN harga
+      const QTY_UNITS = /\b(liter|lt|kg|gram|gr|g|ons|mg|buah|biji|porsi|pcs|pack|box|dus|lusin|kotak|botol|kaleng|lembar|helai|meter|cm|km|m2|m3|unit|set|pasang|potong|loyang|bungkus|sachet|sendok|sdm|sdt|gelas|cangkir|menit|jam|hari|minggu|bulan|tahun|x|kali)\b/i;
+      // Ganti pola: ANGKA + SPASI + SATUAN_KUANTITAS → hilangkan seluruhnya
+      const strClean = str.replace(/\d+(?:[.,]\d+)?\s*(?:liter|lt|kg|gram|gr|g|ons|mg|buah|biji|porsi|pcs|pack|box|dus|lusin|kotak|botol|kaleng|lembar|helai|meter|cm|km|m2|m3|unit|set|pasang|potong|loyang|bungkus|sachet|sendok|sdm|sdt|gelas|cangkir|menit|jam|hari|minggu|bulan|tahun|x|kali)\b/gi, ' ');
+
+      // ── Langkah 1: Cari pola compact dulu (misal "50rb", "2.5jt", "500k") ──
+      const compactMatch = strClean.match(/(\d+(?:[.,]\d+)?)\s*(ribu|rb|k|juta|jt)\b/i);
+      if (compactMatch) {
+        let num = parseFloat(compactMatch[1].replace(/\./g, '').replace(/,/, '.'));
+        const unit = compactMatch[2].toLowerCase();
+        if (unit === 'juta' || unit === 'jt') num *= 1000000;
+        else num *= 1000; // ribu, rb, k
+        if (num > 0) return Math.round(num);
+      }
+
+      // ── Langkah 2: Kumpulkan SEMUA angka yang tersisa, pilih nilai terbesar ──
+      // Strategi: harga selalu lebih besar dari kuantitas (50000 > 5)
+      const candidates = [];
+      const pairRe = /(\d+(?:[.,]\d+)?)\s*(juta|jt|ribu|rb|ratus|puluh|k)?/gi;
+      let m, lastIndex = -1;
+      while ((m = pairRe.exec(strClean)) !== null) {
+        if (m.index === lastIndex) break;
+        lastIndex = m.index;
+        let num = parseFloat(m[1].replace(/\./g, '').replace(/,/, '.'));
+        const unit = (m[2] || '').toLowerCase();
+        if (unit === 'juta' || unit === 'jt') num *= 1000000;
+        else if (unit === 'ribu' || unit === 'rb' || unit === 'k') num *= 1000;
+        else if (unit === 'ratus') num *= 100;
+        else if (unit === 'puluh') num *= 10;
+        if (num > 0) candidates.push({ num, hasUnit: !!unit });
+      }
+
+      if (candidates.length > 0) {
+        // Utamakan angka dengan satuan (50 ribu > angka polos "50")
+        const withUnit = candidates.filter(c => c.hasUnit);
+        if (withUnit.length > 0) {
+          // Jika ada satuan, jumlahkan (misal "1 juta 500 ribu")
+          return Math.round(withUnit.reduce((a, c) => a + c.num, 0));
+        }
+        // Tidak ada satuan → ambil angka TERBESAR (paling mungkin harga)
+        const largest = Math.max(...candidates.map(c => c.num));
+        return Math.round(largest);
+      }
+
+      // ── Langkah 3: Fallback Parser kata verbal Indonesia ──
+      const wordMap = {
+        'nol':0,'satu':1,'se':1,'dua':2,'tiga':3,'empat':4,'lima':5,'enam':6,
+        'tujuh':7,'delapan':8,'sembilan':9,'sepuluh':10,'sebelas':11,
+        'dua belas':12,'tiga belas':13,'empat belas':14,'lima belas':15,
+        'enam belas':16,'tujuh belas':17,'delapan belas':18,'sembilan belas':19,
+        'seratus':100,'seribu':1000,'sejuta':1000000
+      };
+      const words = strClean.split(/\s+/);
+      let current = 0, wordTotal = 0;
+      for (let i = 0; i < words.length; i++) {
+        const w = words[i];
+        if (wordMap[w] !== undefined) current += wordMap[w];
+        else if (w === 'belas') current = (current < 10 ? current : 0) + 10 + (current % 10 > 1 ? current % 10 : 0);
+        else if (w === 'puluh') current = (current || 1) * 10;
+        else if (w === 'ratus') { current = (current || 1) * 100; }
+        else if (w === 'ribu' || w === 'rb') { wordTotal += (current || 1) * 1000; current = 0; }
+        else if (w === 'juta' || w === 'jt') { wordTotal += (current || 1) * 1000000; current = 0; }
+      }
+      wordTotal += current;
+      return wordTotal;
     }
 
     function getCategoryIcon(cat) {
@@ -1064,7 +1559,12 @@
       if (cat.includes('Transport') || cat.includes('Bensin')) return '🚗';
       if (cat.includes('Belanja')) return '🛍️';
       if (cat.includes('Tagihan') || cat.includes('Listrik')) return '⚡';
+      if (cat.includes('Hiburan')) return '🎮';
+      if (cat.includes('Kesehatan')) return '💊';
+      if (cat.includes('Sedekah')) return '🤲';
       if (cat.includes('Gaji')) return '💼';
+      if (cat.includes('Freelance')) return '💻';
+      if (cat.includes('Bisnis')) return '📈';
       return '📦';
     }
 
@@ -1072,7 +1572,9 @@
       state.transactions.unshift(tx);
       save();
       render();
-      showToast(`+Rp ${formatIDR(tx.jumlah)} Tersimpan`);
+      playChime();
+      if (window.navigator && window.navigator.vibrate) window.navigator.vibrate([15, 30, 20]);
+      showToast(`✓ +Rp ${formatIDR(tx.jumlah)} Tersimpan`);
       if (state.apiUrl) postCloud({ action: 'add_transaction', ...tx });
     }
 
@@ -1130,7 +1632,7 @@
       const t = document.getElementById('toast');
       t.textContent = msg;
       t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2000);
+      setTimeout(() => t.classList.remove('show'), 2200);
     }
 
     function escapeHtml(s) {
