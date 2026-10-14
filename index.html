@@ -243,6 +243,11 @@
       transform: scale(0.92);
       background: var(--bg-card-hover);
     }
+    .icon-btn.voice-pulse {
+      background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(191, 90, 242, 0.2));
+      border-color: var(--apple-blue);
+      color: var(--apple-blue);
+    }
 
     /* ================= MONTH / FILTER SELECTOR ================= */
     .filter-bar {
@@ -805,6 +810,7 @@
       padding: 16px;
       border-radius: var(--radius-lg);
       border: 0.5px solid var(--border-subtle);
+      position: relative;
     }
 
     .sheet-amount-display {
@@ -938,6 +944,124 @@
       cursor: not-allowed;
     }
 
+    /* ================= SIRI APPLE INTELLIGENCE VOICE MODAL ================= */
+    .siri-orb-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 10px;
+      text-align: center;
+    }
+
+    .siri-orb {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, #0A84FF, #BF5AF2, #FF2D55, #FF9F0A, #30D158, #0A84FF);
+      animation: siriRotate 3s linear infinite, siriPulse 1.6s ease-in-out infinite alternate;
+      box-shadow: 0 0 40px rgba(191, 90, 242, 0.55), inset 0 0 16px rgba(255, 255, 255, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      cursor: pointer;
+      position: relative;
+      margin-bottom: 20px;
+      transition: transform 0.2s ease;
+    }
+
+    .siri-orb:active {
+      transform: scale(0.92);
+    }
+
+    .siri-orb.listening {
+      box-shadow: 0 0 50px rgba(48, 209, 88, 0.7), inset 0 0 20px rgba(255, 255, 255, 0.9);
+      animation: siriRotate 1.5s linear infinite, siriPulse 1s ease-in-out infinite alternate;
+    }
+
+    @keyframes siriRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes siriPulse {
+      0% { transform: scale(0.94); opacity: 0.88; }
+      100% { transform: scale(1.06); opacity: 1; }
+    }
+
+    .voice-transcript-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      width: 100%;
+      min-height: 54px;
+      border: 0.5px solid var(--border-subtle);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .voice-parsed-summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+
+    .voice-chip-badge {
+      background: var(--bg-input);
+      border: 0.5px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    .voice-chip-badge .chip-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .voice-chip-badge .chip-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Voice Shortcut Button in Add Sheet */
+    .voice-shortcut-btn {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(10, 132, 255, 0.15), rgba(191, 90, 242, 0.15));
+      border: 0.5px solid rgba(191, 90, 242, 0.4);
+      color: var(--text-primary);
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      transition: all 0.2s;
+    }
+    .voice-shortcut-btn:active {
+      transform: scale(0.97);
+      background: linear-gradient(135deg, rgba(10, 132, 255, 0.3), rgba(191, 90, 242, 0.3));
+    }
+
     /* ================= TOAST NOTIFICATION (IOS BANNER) ================= */
     .apple-toast {
       position: fixed;
@@ -1030,6 +1154,8 @@
       </div>
 
       <div class="header-actions">
+        <!-- Voice Quick Button -->
+        <button class="icon-btn voice-pulse" id="headerVoiceBtn" title="Catat Cepat Pakai Suara">🎙️</button>
         <!-- Theme Toggle -->
         <button class="icon-btn" id="themeToggleBtn" title="Ganti Mode Gelap/Terang">🌗</button>
         <!-- Manual Sync -->
@@ -1169,15 +1295,72 @@
       <!-- Central Floating "+" Action -->
       <button class="tab-add-btn" id="openAddModalBtn" title="Tambah Transaksi">+</button>
 
-      <button class="tab-item" id="navCategories">
-        <span class="tab-icon">🏷️</span>
-        <span>Kategori</span>
+      <!-- Voice Quick Tab Item -->
+      <button class="tab-item" id="navVoice">
+        <span class="tab-icon">🎙️</span>
+        <span>Suara</span>
       </button>
+
       <button class="tab-item" id="navSettings">
         <span class="tab-icon">⚙️</span>
         <span>Settings</span>
       </button>
     </nav>
+  </div>
+
+  <!-- ================= VOICE INTELLIGENCE MODAL (SIRI STYLE) ================= -->
+  <div class="modal-overlay" id="voiceModal">
+    <div class="bottom-sheet" style="padding-top: 10px;">
+      <div class="sheet-handle-bar"></div>
+      <div class="sheet-header">
+        <div class="sheet-title"> Apple Voice Intelligence</div>
+        <button class="sheet-close-btn" id="closeVoiceModalBtn">✕</button>
+      </div>
+
+      <div class="siri-orb-container">
+        <!-- Glowing Multi-Color Siri Orb -->
+        <div class="siri-orb" id="siriOrbButton" title="Ketuk untuk bicara">
+          🎙️
+        </div>
+
+        <div style="font-size: 13px; font-weight: 600; color: var(--apple-blue); margin-bottom: 10px;" id="siriStatusText">
+          Ketuk lingkaran untuk bicara...
+        </div>
+
+        <!-- Real-time Speech Transcript -->
+        <div class="voice-transcript-box" id="speechTranscriptDisplay">
+          "Contoh: Belanja makanan pentol 10.000"
+        </div>
+
+        <!-- Smart Parsed Preview Badges -->
+        <div class="voice-parsed-summary" id="voiceParsedContainer" style="display: none;">
+          <div class="voice-chip-badge">
+            <div class="chip-title">Tipe Transaksi</div>
+            <div class="chip-val" id="parsedTypeBadge" style="color: var(--apple-red);">Pengeluaran</div>
+          </div>
+          <div class="voice-chip-badge">
+            <div class="chip-title">Kategori</div>
+            <div class="chip-val" id="parsedCategoryBadge">Makanan & Minuman</div>
+          </div>
+          <div class="voice-chip-badge">
+            <div class="chip-title">Nominal</div>
+            <div class="chip-val" id="parsedAmountBadge" style="color: var(--apple-blue); font-size: 16px;">Rp 10.000</div>
+          </div>
+          <div class="voice-chip-badge">
+            <div class="chip-title">Catatan</div>
+            <div class="chip-val" id="parsedNoteBadge">Pentol</div>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <button class="apple-submit-btn" id="confirmVoiceTxBtn" style="display: none; background: var(--apple-green);">
+          ✓ Simpan Transaksi Ini
+        </button>
+        <button class="apple-submit-btn" id="retryVoiceBtn" style="display: none; background: var(--bg-card); color: var(--text-primary); margin-top: 8px;">
+          🔄 Coba Ulang Bicara
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- ================= ADD TRANSACTION MODAL (APPLE BOTTOM SHEET) ================= -->
@@ -1188,6 +1371,11 @@
         <div class="sheet-title" id="sheetModalTitle">Catat Transaksi</div>
         <button class="sheet-close-btn" id="closeAddModalBtn">✕</button>
       </div>
+
+      <!-- Voice Shortcut Button inside manual form -->
+      <button class="voice-shortcut-btn" id="sheetVoiceBtn">
+        <span>🎙️</span> <strong>Bicara Saja (Otomatis Deteksi Akurat)</strong>
+      </button>
 
       <!-- Segmented Type Selector -->
       <div class="apple-segmented-control" style="margin-bottom: 16px;">
@@ -1304,7 +1492,7 @@
     <span id="toastMessage">Transaksi Berhasil Dicatat</span>
   </div>
 
-  <!-- ================= JAVASCRIPT LOGIC (OPTIMISTIC UI + PWA SERVICE WORKER) ================= -->
+  <!-- ================= JAVASCRIPT LOGIC (OPTIMISTIC UI + PWA SERVICE WORKER + VOICE AI) ================= -->
   <script>
     // --------------------------------------------------------------------------
     // STATE & CONFIGURATION
@@ -1331,7 +1519,7 @@
       }
     };
 
-    // Preset Default Data
+    // Preset Default Categories
     const DEFAULT_CATEGORIES = [
       { id: "cat_makan", nama: "Makanan & Minuman", tipe: "Pengeluaran", icon: "🍔", warna: "#FF9500", budget: 2500000 },
       { id: "cat_transport", nama: "Transportasi & Bensin", tipe: "Pengeluaran", icon: "🚗", warna: "#0A84FF", budget: 800000 },
@@ -1370,6 +1558,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       loadCachedData();
       initUI();
+      initVoiceEngine();
       registerPWA();
 
       // If API URL is set, fetch fresh data silently in background
@@ -1516,7 +1705,7 @@
           <div class="empty-state">
             <div class="empty-state-icon">🕊️</div>
             <p><strong>Belum ada transaksi di bulan ini.</strong></p>
-            <p style="font-size: 13px; margin-top: 6px;">Ketuk tombol <strong>+</strong> di bawah untuk mencatat.</p>
+            <p style="font-size: 13px; margin-top: 6px;">Ketuk <strong>🎙️ Bicara</strong> atau tombol <strong>+</strong> untuk mencatat.</p>
           </div>
         `;
         return;
@@ -1762,9 +1951,9 @@
         tabAn.click();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
-      document.getElementById('navCategories').addEventListener('click', () => {
+      document.getElementById('navVoice').addEventListener('click', () => {
         hapticFeedback();
-        tabAn.click();
+        openVoiceModal();
       });
       document.getElementById('navSettings').addEventListener('click', () => {
         hapticFeedback();
@@ -1845,6 +2034,14 @@
       if (savedTheme) {
         document.documentElement.setAttribute('data-theme', savedTheme);
       }
+
+      // Voice Modal Triggers
+      document.getElementById('headerVoiceBtn').addEventListener('click', openVoiceModal);
+      document.getElementById('closeVoiceModalBtn').addEventListener('click', closeVoiceModal);
+      document.getElementById('sheetVoiceBtn').addEventListener('click', () => {
+        closeAddModal();
+        openVoiceModal();
+      });
     }
 
     function openAddModal() {
@@ -2075,6 +2272,317 @@
       else if (state === 'offline') dot.classList.add('offline');
       
       label.textContent = text;
+    }
+
+    // --------------------------------------------------------------------------
+    // 🎙️ APPLE VOICE RECOGNITION & NATURAL LANGUAGE PARSER
+    // --------------------------------------------------------------------------
+    let voiceRecognition = null;
+    let isListening = false;
+    let detectedVoiceData = null;
+
+    function initVoiceEngine() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        console.warn('SpeechRecognition API not available in this browser.');
+        return;
+      }
+
+      voiceRecognition = new SpeechRecognition();
+      voiceRecognition.lang = 'id-ID'; // Bahasa Indonesia
+      voiceRecognition.continuous = false;
+      voiceRecognition.interimResults = true;
+
+      voiceRecognition.onstart = () => {
+        isListening = true;
+        hapticFeedback();
+        document.getElementById('siriOrbButton').classList.add('listening');
+        document.getElementById('siriStatusText').textContent = '🎙️ Sedang mendengarkan... Katakan sekarang!';
+        document.getElementById('siriStatusText').style.color = 'var(--apple-green)';
+      };
+
+      voiceRecognition.onresult = (event) => {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+
+        document.getElementById('speechTranscriptDisplay').textContent = `"${transcript}"`;
+
+        // Parse Indonesian Financial Speech
+        const parsed = parseIndonesianSpeech(transcript);
+        if (parsed && parsed.amount > 0) {
+          detectedVoiceData = parsed;
+          renderVoiceParsedPreview(parsed);
+        }
+      };
+
+      voiceRecognition.onerror = (event) => {
+        console.error('Speech error:', event.error);
+        isListening = false;
+        document.getElementById('siriOrbButton').classList.remove('listening');
+        if (event.error === 'not-allowed') {
+          document.getElementById('siriStatusText').textContent = '⚠️ Izin mikrofon ditolak di browser.';
+        } else {
+          document.getElementById('siriStatusText').textContent = '⚠️ Belum terdengar jelas. Ketuk bola untuk coba lagi.';
+        }
+        document.getElementById('siriStatusText').style.color = 'var(--apple-orange)';
+      };
+
+      voiceRecognition.onend = () => {
+        isListening = false;
+        document.getElementById('siriOrbButton').classList.remove('listening');
+        if (detectedVoiceData && detectedVoiceData.amount > 0) {
+          document.getElementById('siriStatusText').textContent = '✨ Transaksi berhasil dideteksi!';
+          document.getElementById('siriStatusText').style.color = 'var(--apple-green)';
+          document.getElementById('confirmVoiceTxBtn').style.display = 'block';
+          document.getElementById('retryVoiceBtn').style.display = 'block';
+        } else {
+          document.getElementById('siriStatusText').textContent = 'Selesai. Ketuk bola jika ingin bicara lagi.';
+          document.getElementById('siriStatusText').style.color = 'var(--apple-blue)';
+        }
+      };
+
+      // Bind Orb Button Click
+      document.getElementById('siriOrbButton').addEventListener('click', toggleVoiceListening);
+      document.getElementById('retryVoiceBtn').addEventListener('click', () => {
+        startVoiceListening();
+      });
+
+      // Bind Save Detected Transaction
+      document.getElementById('confirmVoiceTxBtn').addEventListener('click', () => {
+        if (!detectedVoiceData || detectedVoiceData.amount <= 0) return;
+
+        hapticFeedback();
+        const tx = {
+          id: 'TRX-' + Math.floor(100000 + Math.random() * 900000),
+          tanggal: new Date().toISOString().split('T')[0],
+          jenis: detectedVoiceData.type,
+          kategori: detectedVoiceData.category,
+          jumlah: detectedVoiceData.amount,
+          metode: detectedVoiceData.method || 'Tunai',
+          catatan: detectedVoiceData.note || detectedVoiceData.category,
+          createdAt: new Date().toISOString()
+        };
+
+        // Optimistic Save
+        appState.transactions.unshift(tx);
+        saveToCache();
+        recalculateMonthlySummary();
+        renderAll();
+
+        closeVoiceModal();
+        showToast(`✓ Berhasil: ${tx.catatan} (Rp ${formatIDR(tx.jumlah)})`);
+
+        // Sync with Google Sheet
+        if (appState.apiUrl) {
+          postToGoogleSheets(tx);
+        }
+      });
+    }
+
+    function openVoiceModal() {
+      hapticFeedback();
+      detectedVoiceData = null;
+      document.getElementById('speechTranscriptDisplay').textContent = '"Contoh: Belanja makanan pentol 10.000"';
+      document.getElementById('voiceParsedContainer').style.display = 'none';
+      document.getElementById('confirmVoiceTxBtn').style.display = 'none';
+      document.getElementById('retryVoiceBtn').style.display = 'none';
+      document.getElementById('voiceModal').classList.add('active');
+
+      setTimeout(() => {
+        startVoiceListening();
+      }, 350);
+    }
+
+    function closeVoiceModal() {
+      hapticFeedback();
+      stopVoiceListening();
+      document.getElementById('voiceModal').classList.remove('active');
+    }
+
+    function toggleVoiceListening() {
+      if (isListening) {
+        stopVoiceListening();
+      } else {
+        startVoiceListening();
+      }
+    }
+
+    function startVoiceListening() {
+      if (!voiceRecognition) {
+        alert('Fitur suara tidak didukung pada browser ini. Harap gunakan Google Chrome atau Safari di iOS.');
+        return;
+      }
+      try {
+        detectedVoiceData = null;
+        document.getElementById('confirmVoiceTxBtn').style.display = 'none';
+        document.getElementById('retryVoiceBtn').style.display = 'none';
+        voiceRecognition.start();
+      } catch (err) {
+        console.warn('Voice restart:', err);
+      }
+    }
+
+    function stopVoiceListening() {
+      if (voiceRecognition && isListening) {
+        voiceRecognition.stop();
+      }
+    }
+
+    function renderVoiceParsedPreview(p) {
+      document.getElementById('voiceParsedContainer').style.display = 'grid';
+      const typeBadge = document.getElementById('parsedTypeBadge');
+      typeBadge.textContent = p.type;
+      typeBadge.style.color = p.type === 'Pemasukan' ? 'var(--apple-green)' : 'var(--apple-red)';
+      
+      document.getElementById('parsedCategoryBadge').textContent = p.category;
+      document.getElementById('parsedAmountBadge').textContent = 'Rp ' + formatIDR(p.amount);
+      document.getElementById('parsedNoteBadge').textContent = p.note || p.category;
+    }
+
+    /**
+     * INTELLIGENT INDONESIAN NATURAL LANGUAGE SPEECH PARSER
+     * Menangani:
+     * - "belanja makanan pentol 10.000"
+     * - "beli pentol sepuluh ribu"
+     * - "makan bakso 25 ribu pakai gopay"
+     * - "isi bensin pertamax 50rb"
+     * - "gaji bulanan masuk 10 juta via bca"
+     */
+    function parseIndonesianSpeech(raw) {
+      if (!raw) return null;
+      const text = raw.toLowerCase().trim();
+
+      // 1. Deteksi Tipe (Pengeluaran vs Pemasukan)
+      let type = 'Pengeluaran'; // Default
+      const incomeKeywords = ['gaji', 'pemasukan', 'masuk', 'terima', 'dapat uang', 'proyek', 'freelance', 'bonus', 'dividen', 'hadiah', 'penjualan', 'omset'];
+      for (const kw of incomeKeywords) {
+        if (text.includes(kw)) {
+          type = 'Pemasukan';
+          break;
+        }
+      }
+
+      // 2. Deteksi Nominal (Angka, Verbal Bahasa Indonesia)
+      let amount = extractIndonesianNumber(text);
+
+      // 3. Deteksi Metode Pembayaran
+      let method = 'Tunai';
+      if (text.includes('bca')) method = 'BCA';
+      else if (text.includes('mandiri')) method = 'Mandiri';
+      else if (text.includes('bri')) method = 'BRI';
+      else if (text.includes('gopay') || text.includes('go pay')) method = 'GoPay';
+      else if (text.includes('ovo')) method = 'OVO';
+      else if (text.includes('shopeepay') || text.includes('shopee pay')) method = 'ShopeePay';
+      else if (text.includes('qris') || text.includes('dana')) method = 'QRIS';
+      else if (text.includes('transfer') || text.includes('bank')) method = 'BCA';
+
+      // 4. Deteksi Kategori Cerdas
+      let category = type === 'Pemasukan' ? 'Gaji Pokok' : 'Makanan & Minuman';
+      
+      const catRules = [
+        { name: 'Makanan & Minuman', words: ['makan', 'minum', 'pentol', 'bakso', 'mie', 'nasi', 'ayam', 'kopi', 'kafe', 'cafe', 'snack', 'jajan', 'sarapan', 'brunch', 'warteg', 'restoran', 'sate', 'martabak', 'roti', 'es'] },
+        { name: 'Transportasi & Bensin', words: ['bensin', 'pertamax', 'pertalite', 'solar', 'ojek', 'gojek', 'grab', 'maxim', 'angkot', 'bus', 'kereta', 'tol', 'parkir', 'tambal ban', 'servis', 'bengkel', 'motor', 'mobil', 'cuci motor'] },
+        { name: 'Belanja & Kebutuhan', words: ['belanja', 'supermarket', 'indomaret', 'alfamart', 'pasar', 'sabun', 'shampoo', 'odol', 'minyak', 'beras', 'baju', 'celana', 'sepatu', 'shopee', 'tokopedia', 'lazada', 'kebutuhan'] },
+        { name: 'Tagihan & Listrik/Air', words: ['tagihan', 'listrik', 'pln', 'token', 'air', 'pdam', 'wifi', 'indihome', 'biznet', 'kuota', 'pulsa', 'iuran', 'kontrakan', 'kos'] },
+        { name: 'Hiburan & Rekreasi', words: ['nonton', 'bioskop', 'cinema', 'game', 'top up', 'steam', 'netflix', 'spotify', 'youtube', 'jalan-jalan', 'liburan', 'karaoke', 'rekreasi'] },
+        { name: 'Kesehatan & Medis', words: ['obat', 'dokter', 'klinik', 'apotek', 'rumah sakit', 'vitamin', 'medis', 'periksa'] },
+        { name: 'Sedekah & Amal', words: ['sedekah', 'infaq', 'zakat', 'amal', 'donasi', 'masjid'] },
+        { name: 'Gaji Pokok', words: ['gaji', 'upah', 'salary', 'honor'] },
+        { name: 'Freelance & Proyek', words: ['freelance', 'proyek', 'project', 'desain', 'klien', 'jasa', 'coding'] },
+        { name: 'Bisnis & Usaha', words: ['bisnis', 'usaha', 'dagang', 'jualan', 'toko', 'omset'] }
+      ];
+
+      for (const rule of catRules) {
+        if (rule.words.some(w => text.includes(w))) {
+          category = rule.name;
+          // Sesuaikan tipe jika kategori pemasukan
+          if (['Gaji Pokok', 'Freelance & Proyek', 'Bisnis & Usaha'].includes(category)) {
+            type = 'Pemasukan';
+          }
+          break;
+        }
+      }
+
+      // 5. Ekstraksi Catatan Bersih (Membersihkan Stopwords)
+      let cleanNote = text;
+      const removeList = [
+        'belanja', 'makanan', 'beli', 'bayar', 'buat', 'untuk', 'pakai', 'via', 'dengan', 
+        'nominal', 'rp', 'rupiah', 'ribu', 'juta', 'ratus', 'gaji', 'pemasukan', 'pengeluaran',
+        'bca', 'mandiri', 'bri', 'qris', 'gopay', 'ovo', 'shopeepay', 'tunai', 'cash'
+      ];
+      // Hapus angka
+      cleanNote = cleanNote.replace(/[\d.,]+/g, ' ');
+      // Hapus stopwords
+      removeList.forEach(w => {
+        cleanNote = cleanNote.replace(new RegExp('\\b' + w + '\\b', 'gi'), ' ');
+      });
+      cleanNote = cleanNote.trim().replace(/\s+/g, ' ');
+
+      // Format kapitalisasi catatan
+      if (cleanNote.length > 0) {
+        cleanNote = cleanNote.charAt(0).toUpperCase() + cleanNote.slice(1);
+      } else {
+        cleanNote = category;
+      }
+
+      return {
+        type: type,
+        category: category,
+        amount: amount,
+        method: method,
+        note: cleanNote
+      };
+    }
+
+    /**
+     * Parser Angka Bahasa Indonesia (Contoh: "10.000", "10rb", "sepuluh ribu", "25 ribu", "1.5 juta")
+     */
+    function extractIndonesianNumber(str) {
+      // 1. Cek pola angka langsung (10.000, 10000, 10 k, 10rb, 10 jt)
+      const digitMatch = str.match(/(\d+(?:[.,]\d+)?)\s*(ribu|rb|k|juta|jt)?/i);
+      if (digitMatch) {
+        let num = parseFloat(digitMatch[1].replace(/\./g, '').replace(/,/g, '.'));
+        const unit = (digitMatch[2] || '').toLowerCase();
+        if (['ribu', 'rb', 'k'].includes(unit)) num *= 1000;
+        if (['juta', 'jt'].includes(unit)) num *= 1000000;
+        if (num > 0) return Math.round(num);
+      }
+
+      // 2. Cek pola verbal bahasa indonesia (sepuluh ribu, dua puluh lima ribu, seratus ribu)
+      const words = str.split(/\s+/);
+      const wordMap = {
+        'nol': 0, 'satu': 1, 'se': 1, 'dua': 2, 'tiga': 3, 'empat': 4,
+        'lima': 5, 'enam': 6, 'tujuh': 7, 'delapan': 8, 'sembilan': 9,
+        'sepuluh': 10, 'sebelas': 11, 'dua belas': 12, 'seratus': 100, 'seribu': 1000, 'sejuta': 1000000
+      };
+
+      let current = 0;
+      let total = 0;
+
+      for (let i = 0; i < words.length; i++) {
+        const w = words[i].toLowerCase();
+        if (wordMap[w] !== undefined) {
+          current += wordMap[w];
+        } else if (w === 'belas') {
+          current += 10;
+        } else if (w === 'puluh') {
+          current = (current === 0 ? 1 : current) * 10;
+        } else if (w === 'ratus') {
+          current = (current === 0 ? 1 : current) * 100;
+        } else if (w === 'ribu') {
+          current = (current === 0 ? 1 : current) * 1000;
+          total += current;
+          current = 0;
+        } else if (w === 'juta') {
+          current = (current === 0 ? 1 : current) * 1000000;
+          total += current;
+          current = 0;
+        }
+      }
+      total += current;
+      return total;
     }
 
     // --------------------------------------------------------------------------
