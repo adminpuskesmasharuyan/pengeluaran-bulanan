@@ -487,6 +487,53 @@
       flex: 1;
     }
 
+    /* iOS STYLE TOGGLE SWITCH */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: var(--card-subtle);
+      border: 1px solid var(--border);
+      transition: 0.25s;
+      border-radius: 26px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 2px;
+      bottom: 2px;
+      background-color: #FFFFFF;
+      transition: 0.25s;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    input:checked + .slider {
+      background-color: var(--green);
+      border-color: var(--green);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
     /* SIRI VOICE PULSE */
     .siri-circle {
       width: 90px;
@@ -883,25 +930,21 @@
         <button class="sheet-close-btn" onclick="closeAllModals()">✕</button>
       </div>
 
-      <!-- Gemini AI Section -->
+      <!-- Opsi Simpan Otomatis Mode Suara -->
       <div
-        style="background: linear-gradient(135deg, rgba(10,132,255,0.12), rgba(191,90,242,0.12)); border: 0.5px solid rgba(10,132,255,0.3); border-radius: 14px; padding: 14px; margin-bottom: 14px;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-          <span style="font-size:18px;">✨</span>
-          <div>
-            <div style="font-size:13px; font-weight:700; color:var(--text);">Gemini AI — Gratis Selamanya</div>
-            <div style="font-size:11px; color:var(--text-muted);">Memahami konteks suara seperti manusia</div>
+        style="background: var(--card-subtle); border: 0.5px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: var(--text);">
+            <span>⏱️</span> Simpan Otomatis 4 Detik
           </div>
-          <span id="aiBadge"
-            style="margin-left:auto; font-size:10px; font-weight:700; padding:3px 8px; border-radius:8px; background:var(--card-subtle); color:var(--text-muted);">LOKAL</span>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px; line-height: 1.4;">
+            Otomatis simpan transaksi suara setelah 4 detik tanpa harus klik tombol
+          </div>
         </div>
-        <div class="form-group" style="margin-bottom:8px;">
-          <label class="form-label">Gemini API Key <a href="https://aistudio.google.com/app/apikey" target="_blank"
-              style="color:var(--blue); text-decoration:none;">→ Dapatkan Gratis</a></label>
-          <input type="password" class="clean-input" id="inputGeminiKey" placeholder="AIza..." autocomplete="off">
-        </div>
-        <button class="btn-submit" id="saveGeminiBtn"
-          style="background: linear-gradient(135deg,#0A84FF,#BF5AF2); margin-bottom: 0;">Aktifkan AI</button>
+        <label class="switch">
+          <input type="checkbox" id="toggleAutoSaveVoice">
+          <span class="slider"></span>
+        </label>
       </div>
 
       <div class="form-group">
@@ -913,21 +956,6 @@
       <button class="btn-submit" id="saveSettingsBtn" style="margin-bottom: 10px;">Simpan URL Sheet</button>
       <button class="btn-submit" id="testApiBtn"
         style="background: var(--card-subtle); color: var(--text); margin-bottom: 10px;">Tes Koneksi Sheet</button>
-
-      <!-- Share Link Section -->
-      <div id="shareLinkSection"
-        style="background: linear-gradient(135deg, rgba(48,209,88,0.1), rgba(10,132,255,0.1)); border: 0.5px solid rgba(48,209,88,0.3); border-radius: 14px; padding: 14px;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
-          <span style="font-size:18px;">🔗</span>
-          <div>
-            <div style="font-size:13px; font-weight:700; color:var(--text);">Bagikan ke Istri / Keluarga</div>
-            <div style="font-size:11px; color:var(--text-muted);">Buka link ini di HP lain → langsung terkonfigurasi
-            </div>
-          </div>
-        </div>
-        <button class="btn-submit" id="copyShareLinkBtn" style="background: var(--green); margin-bottom: 0;">📋 Salin
-          Link Berbagi</button>
-      </div>
     </div>
   </div>
 
@@ -942,17 +970,10 @@
     const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycbwHrWLN_TzBtXuYDjSoiisP_fLr7eATGsj8nGhRkPa61GfBHQJVQAfjBFlNn9SsJNTesA/exec';
 
     // ── AUTO-FILL dari URL Parameter ──
-    // Contoh link: index.html?k=AIzaSy...&s=https://script.google.com/...
-    // Setelah disimpan, URL dibersihkan agar credential tidak terlihat di address bar
     (function applyUrlParams() {
       const params = new URLSearchParams(window.location.search);
-      const urlKey = params.get('k');   // Gemini API Key
       const urlSheet = params.get('s'); // Apps Script URL
       let changed = false;
-      if (urlKey && urlKey.startsWith('AIza')) {
-        localStorage.setItem('GEMINI_KEY', urlKey);
-        changed = true;
-      }
       if (urlSheet && urlSheet.startsWith('http')) {
         localStorage.setItem('API_URL', urlSheet);
         changed = true;
@@ -960,17 +981,15 @@
         localStorage.setItem('API_URL', DEFAULT_API_URL);
       }
       if (changed) {
-        // Bersihkan URL agar API key tidak terlihat di address bar
         const cleanUrl = window.location.pathname;
         history.replaceState(null, '', cleanUrl);
-        // Tandai untuk tampilkan toast setelah DOM siap
         window._autoConfigured = true;
       }
     })();
 
     let state = {
       apiUrl: localStorage.getItem('API_URL') || DEFAULT_API_URL,
-      geminiKey: localStorage.getItem('GEMINI_KEY') || '',
+      autoSaveVoice: localStorage.getItem('VOICE_AUTOSAVE') !== 'false',
       year: new Date().getFullYear(),
       month: new Date().getMonth() + 1,
       transactions: [],
@@ -984,7 +1003,6 @@
       initVoice();
       if (window._autoConfigured) {
         setTimeout(() => showToast('✅ Konfigurasi berhasil dimuat otomatis!'), 500);
-        updateAIBadge();
       }
     });
 
@@ -1182,8 +1200,8 @@
       document.getElementById('navThemeBtn').onclick = toggleTheme;
       document.getElementById('navSettingsBtn').onclick = () => {
         document.getElementById('inputApiUrl').value = state.apiUrl;
-        document.getElementById('inputGeminiKey').value = state.geminiKey ? '••••••••••••••' : '';
-        updateAIBadge();
+        const autoSaveToggle = document.getElementById('toggleAutoSaveVoice');
+        if (autoSaveToggle) autoSaveToggle.checked = !!state.autoSaveVoice;
         openModal(sModal);
       };
 
@@ -1197,17 +1215,16 @@
       document.getElementById('btnTypeIncome').onclick = () => setManualType('Pemasukan');
       document.getElementById('saveManualBtn').onclick = saveManual;
 
-      // Gemini AI Key Save
-      document.getElementById('saveGeminiBtn').onclick = () => {
-        const key = document.getElementById('inputGeminiKey').value.trim();
-        if (!key) { showToast('⚠️ Masukkan API Key dulu'); return; }
-        state.geminiKey = key;
-        localStorage.setItem('GEMINI_KEY', key);
-        updateAIBadge();
-        showToast('✨ Gemini AI Aktif!');
-      };
-
       // Settings Form
+      const autoSaveToggle = document.getElementById('toggleAutoSaveVoice');
+      if (autoSaveToggle) {
+        autoSaveToggle.onchange = () => {
+          state.autoSaveVoice = autoSaveToggle.checked;
+          localStorage.setItem('VOICE_AUTOSAVE', state.autoSaveVoice);
+          showToast(state.autoSaveVoice ? '⏱️ Simpan Otomatis Aktif (4s)' : '⏸️ Simpan Otomatis Nonaktif');
+        };
+      }
+
       document.getElementById('saveSettingsBtn').onclick = () => {
         state.apiUrl = document.getElementById('inputApiUrl').value.trim();
         localStorage.setItem('API_URL', state.apiUrl);
@@ -1217,52 +1234,6 @@
       };
 
       document.getElementById('testApiBtn').onclick = testCloud;
-
-      // Share Link
-      document.getElementById('copyShareLinkBtn').onclick = copyShareLink;
-    }
-
-    // ── SALIN LINK BERBAGI ──
-    function copyShareLink() {
-      const key = state.geminiKey;
-      const sheet = state.apiUrl;
-
-      if (!key && !sheet) {
-        showToast('⚠️ Belum ada API Key atau URL Sheet yang tersimpan');
-        return;
-      }
-
-      const base = window.location.origin + window.location.pathname;
-      const params = new URLSearchParams();
-      if (key) params.set('k', key);
-      if (sheet) params.set('s', sheet);
-
-      const shareUrl = `${base}?${params.toString()}`;
-
-      // Salin ke clipboard
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(shareUrl)
-          .then(() => showToast('📋 Link berhasil disalin! Kirim ke istri via WhatsApp.'))
-          .catch(() => fallbackCopy(shareUrl));
-      } else {
-        fallbackCopy(shareUrl);
-      }
-    }
-
-    function fallbackCopy(text) {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      try {
-        document.execCommand('copy');
-        showToast('📋 Link berhasil disalin! Kirim ke istri via WhatsApp.');
-      } catch (e) {
-        showToast('⚠️ Tidak bisa salin otomatis, salin manual dari URL bar.');
-      }
-      document.body.removeChild(ta);
     }
 
     function toggleTheme() {
@@ -1274,90 +1245,40 @@
     }
     if (localStorage.getItem('THEME')) document.documentElement.setAttribute('data-theme', localStorage.getItem('THEME'));
 
-    // ── AI BADGE UPDATE ──
-    function updateAIBadge() {
-      const badge = document.getElementById('aiBadge');
-      if (!badge) return;
-      if (state.geminiKey) {
-        badge.textContent = '✨ AI AKTIF';
-        badge.style.background = 'linear-gradient(135deg,#0A84FF,#BF5AF2)';
-        badge.style.color = '#FFF';
-      } else {
-        badge.textContent = 'LOKAL';
-        badge.style.background = 'var(--card-subtle)';
-        badge.style.color = 'var(--text-muted)';
-      }
+    // ── AUTO-SAVE COUNTDOWN 4 DETIK ──
+    let autoSaveTimer = null;
+    let autoSaveRemaining = 4;
+
+    function startAutoSaveCountdown() {
+      clearAutoSaveCountdown();
+      autoSaveRemaining = 4;
+      const saveBtn = document.getElementById('saveVoiceBtn');
+      if (saveBtn) saveBtn.textContent = `✓ Simpan Sekarang (${autoSaveRemaining}s)`;
+
+      autoSaveTimer = setInterval(() => {
+        autoSaveRemaining--;
+        if (autoSaveRemaining > 0) {
+          if (saveBtn) saveBtn.textContent = `✓ Simpan Sekarang (${autoSaveRemaining}s)`;
+        } else {
+          clearAutoSaveCountdown();
+          confirmSaveVoice();
+        }
+      }, 1000);
     }
 
-    // ── GEMINI AI PARSER (Gratis, 1500 req/hari) ──
-    // Model: gemini-1.5-flash | Paham Bahasa Indonesia & konteks keuangan
-    const GEMINI_CATEGORIES = [
-      'Makanan & Minuman', 'Transportasi & Bensin', 'Belanja & Kebutuhan',
-      'Tagihan & Listrik/Air', 'Hiburan & Rekreasi', 'Kesehatan & Medis', 'Sedekah & Amal',
-      'Gaji Pokok', 'Freelance & Proyek', 'Bisnis & Usaha', 'Lain-lain'
-    ];
-
-    async function parseWithGemini(transcript) {
-      const prompt = `Kamu adalah asisten keuangan pintar Bahasa Indonesia.
-Ekstrak transaksi keuangan dari transkrip berikut.
-
-Transkrip: "${transcript}"
-
-Kembalikan HANYA JSON (tanpa markdown):
-{"type":"Pengeluaran"|"Pemasukan","amount":<angka Rupiah>,"category":"<dari: ${GEMINI_CATEGORIES.join('|')}>","note":"<max 5 kata>","confidence":"Sangat Yakin"|"Cukup Yakin"|"Lumayan Yakin"|"Tebakan"}
-
-Aturan:
-- beli/bayar/belanja/makan/bensin → Pengeluaran
-- gaji/terima/dapat/cair/jualan → Pemasukan
-- Angka verbal ("dua puluh ribu") atau singkat ("20rb") → konversi ke Rupiah
-- Abaikan satuan kuantitas (liter, kg, buah), ambil harga terbesar
-- amount=0 jika tidak ada nominal`;
-
-      // Timeout 10 detik agar tidak hang
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
-
-      try {
-        const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${state.geminiKey}`,
-          {
-            method: 'POST',
-            signal: controller.signal,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { temperature: 0.1, maxOutputTokens: 200 }
-            })
-          }
-        );
-        clearTimeout(timeoutId);
-        if (!res.ok) {
-          const errBody = await res.text().catch(() => '');
-          throw new Error(`Gemini HTTP ${res.status}: ${errBody.slice(0, 80)}`);
-        }
-        const data = await res.json();
-        const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-        const jsonStr = rawText.replace(/```json?/gi, '').replace(/```/g, '').trim();
-        const parsed = JSON.parse(jsonStr);
-        if (!parsed.type) throw new Error('Invalid AI response: missing type');
-        return {
-          type: parsed.type,
-          amount: Math.round(Number(parsed.amount) || 0),
-          category: GEMINI_CATEGORIES.includes(parsed.category) ? parsed.category : 'Lain-lain',
-          note: (parsed.note || parsed.category || 'Transaksi').slice(0, 40),
-          confidence: parsed.confidence || 'Cukup Yakin',
-          intentScore: 99,
-          aiParsed: true
-        };
-      } catch (err) {
-        clearTimeout(timeoutId);
-        throw err;
+    function clearAutoSaveCountdown() {
+      if (autoSaveTimer) {
+        clearInterval(autoSaveTimer);
+        autoSaveTimer = null;
       }
+      const saveBtn = document.getElementById('saveVoiceBtn');
+      if (saveBtn) saveBtn.textContent = '✓ Simpan Sekarang';
     }
 
     // ── UPDATE VOICE RESULT UI ──
     function updateVoiceResult(parsed) {
       state.detectedVoice = parsed;
+      clearAutoSaveCountdown();
       document.getElementById('parsedGrid').style.display = 'grid';
       const typeEl = document.getElementById('parsedType');
       typeEl.textContent = (parsed.type === 'Pemasukan' ? '▲ ' : '▼ ') + parsed.type;
@@ -1366,11 +1287,17 @@ Aturan:
       document.getElementById('parsedCategory').textContent = parsed.category;
       document.getElementById('parsedNote').textContent = parsed.note;
       const confColor = { 'Sangat Yakin': 'var(--green)', 'Cukup Yakin': 'var(--blue)', 'Lumayan Yakin': '#FF9F0A', 'Tebakan': 'var(--red)' };
-      const aiLabel = parsed.aiParsed ? '✨ AI' : '⚙️ Lokal';
-      document.getElementById('voiceStatus').textContent = `${aiLabel} · ${parsed.confidence}`;
+      document.getElementById('voiceStatus').textContent = `🎯 ${parsed.confidence}`;
       document.getElementById('voiceStatus').style.color = confColor[parsed.confidence] || 'var(--blue)';
-      document.getElementById('saveVoiceBtn').style.display = 'block';
+      const saveBtn = document.getElementById('saveVoiceBtn');
+      saveBtn.style.display = 'block';
       document.getElementById('retryVoiceBtn').style.display = 'block';
+
+      if (state.autoSaveVoice && parsed.amount > 0) {
+        startAutoSaveCountdown();
+      } else {
+        saveBtn.textContent = '✓ Simpan Sekarang';
+      }
     }
 
 
@@ -1450,6 +1377,7 @@ Aturan:
     }
 
     function stopVoice() {
+      clearAutoSaveCountdown();
       if (startRetryTimeout) {
         clearTimeout(startRetryTimeout);
         startRetryTimeout = null;
@@ -1511,7 +1439,7 @@ Aturan:
         if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(10);
       };
 
-      rec.onresult = async (e) => {
+      rec.onresult = (e) => {
         if (recognition !== rec) return;
         let interimText = '';
         let finalText = '';
@@ -1542,44 +1470,22 @@ Aturan:
           return;
         }
 
-        // ── Final: proses dengan AI atau parser lokal ──
+        // ── Final: proses dengan parser lokal ultra-cepat & akurat ──
         const textToProcess = finalText.trim();
         if (!textToProcess) return;
 
-        if (state.geminiKey) {
-          document.getElementById('voiceStatus').textContent = '⏳ AI memproses...';
-          document.getElementById('voiceStatus').style.color = 'var(--purple)';
-          try {
-            const aiResult = await parseWithGemini(textToProcess);
-            if (recognition !== rec) return;
-            if (aiResult.amount > 0) {
-              updateVoiceResult(aiResult);
-            } else {
-              const local = parseSpeech(textToProcess);
-              if (local.amount > 0) updateVoiceResult(local);
-              else showVoiceError('Nominal tidak terdengar jelas. Coba lagi.');
-            }
-          } catch (err) {
-            if (recognition !== rec) return;
-            console.warn('Gemini fallback:', err.message);
-            const local = parseSpeech(textToProcess);
-            if (local.amount > 0) {
-              updateVoiceResult(local);
-              showToast('⚙️ AI offline, pakai mode Lokal');
-            } else {
-              showVoiceError('Belum terdengar jelas. Ketuk bola untuk coba lagi.');
-            }
-          }
+        const parsed = parseSpeech(textToProcess);
+        if (parsed.amount > 0) {
+          updateVoiceResult(parsed);
         } else {
-          const parsed = parseSpeech(textToProcess);
-          if (parsed.amount > 0) updateVoiceResult(parsed);
-          else showVoiceError('Belum terdengar jelas. Ketuk bola untuk coba lagi.');
+          showVoiceError('Nominal tidak terdengar jelas. Coba lagi.');
         }
       };
 
       rec.onerror = (e) => {
         if (recognition !== rec) return;
         isListening = false;
+        clearAutoSaveCountdown();
         const orb = document.getElementById('siriOrb');
         if (orb) orb.classList.remove('listening');
         if (e.error === 'not-allowed') showVoiceError('Izin mikrofon ditolak di browser.');
@@ -1593,8 +1499,9 @@ Aturan:
         const orb = document.getElementById('siriOrb');
         if (orb) orb.classList.remove('listening');
         if (!state.detectedVoice || state.detectedVoice.amount <= 0) {
+          clearAutoSaveCountdown();
           const vStatus = document.getElementById('voiceStatus');
-          if (vStatus && !vStatus.textContent.includes('⏳') && !vStatus.textContent.includes('⚠️')) {
+          if (vStatus && !vStatus.textContent.includes('⚠️')) {
             vStatus.textContent = 'Ketuk lingkaran untuk bicara lagi';
             vStatus.style.color = 'var(--blue)';
           }
@@ -1619,9 +1526,8 @@ Aturan:
       }
     }
 
-
-
     function confirmSaveVoice() {
+      clearAutoSaveCountdown();
       if (!state.detectedVoice || state.detectedVoice.amount <= 0) return;
       addTransaction({
         id: 'TRX-' + Date.now().toString(36),
@@ -1635,29 +1541,28 @@ Aturan:
       closeAllModals();
     }
 
-    // ================= ULTRA-SMART INDONESIAN SPEECH PARSER v2 =================
-    // Menggunakan sistem SKOR INTENT untuk akurasi tertinggi
+    // ================= ULTRA-SMART INDONESIAN SPEECH PARSER v3 =================
+    // Dilengkapi 310+ kata kunci, slang angka, intent scoring, dan ekstraksi kategori presisi
     function parseSpeech(raw) {
       const text = raw.toLowerCase().trim();
 
       // ── 1. INTENT SCORING: Hitung skor Pemasukan vs Pengeluaran ──
-      //    Setiap kata kunci memberikan bobot skor (positif = Pemasukan, negatif = Pengeluaran)
       const INTENT_RULES = [
-        // === KATA KERJA PENERIMAAN KUAT (skor tinggi) ===
-        { pattern: /\b(terima|diterima|mendapat|dapat|dapet|dikasih|diberi|dikirimin|masuk|cair|naik gaji|transfer masuk)\b/, score: +4 },
-        { pattern: /\b(gaji|upah|salary|honor|thr|insentif)\b/, score: +5 },
-        { pattern: /\b(bonus|komisi|fee|hasil)\b/, score: +3 },
-        { pattern: /\b(proyek|klien|freelance|jasa|jualan|omset|laba|untung|pendapatan|penghasilan|revenue)\b/, score: +3 },
-        { pattern: /\b(hibah|hadiah|kado|rejeki|sedekah masuk|donasi masuk|bantuan)\b/, score: +3 },
-        { pattern: /\b(pemasukan|income|kredit|uang masuk)\b/, score: +5 },
+        // === KATA KERJA & INDIKATOR PEMASUKAN (+ Bobot) ===
+        { pattern: /\b(terima|diterima|mendapat|dapat|dapet|dikasih|diberi|dikirimin|masuk|cair|transfer masuk|transferan)\b/, score: +4 },
+        { pattern: /\b(gaji|gajian|upah|salary|honor|thr|insentif|pesangon|payroll|slip gaji)\b/, score: +5 },
+        { pattern: /\b(bonus|komisi|fee|royalty|tips|tip|sawer|saweran)\b/, score: +3 },
+        { pattern: /\b(proyek|project|klien|freelance|jasa|jualan|omset|omzet|laba|untung|pendapatan|penghasilan|revenue|closingan)\b/, score: +3 },
+        { pattern: /\b(hibah|hadiah|kado|rejeki|rezeki|arisan|arisan cair|cashback|refund|menang|donasi masuk)\b/, score: +3 },
+        { pattern: /\b(pemasukan|income|kredit|uang masuk|sangu|uang saku)\b/, score: +5 },
         { pattern: /\b(investasi|dividen|bunga|return|profit)\b/, score: +3 },
 
-        // === KATA KERJA PENGELUARAN KUAT (skor negatif) ===
-        { pattern: /\b(beli|membeli|beli|bayar|membayar|bayarin|bayar\w*)\b/, score: -4 },
+        // === KATA KERJA & INDIKATOR PENGELUARAN (- Bobot) ===
+        { pattern: /\b(beli|membeli|ngebeli|bayar|membayar|bayarin|bayar\w*)\b/, score: -4 },
         { pattern: /\b(pengeluaran|expense|keluar|debit|habis|jajan|ngeluarin)\b/, score: -4 },
-        { pattern: /\b(belanja|makan|minum|ongkos|biaya|cicilan|kredit bayar|tagihan|sewa|ngisi|isi)\b/, score: -3 },
-        { pattern: /\b(buka|order|pesan|top.?up|transfer keluar|kirim uang)\b/, score: -2 },
-        { pattern: /\b(langganan|subscribe|bayar iuran)\b/, score: -3 },
+        { pattern: /\b(belanja|makan|minum|ongkos|biaya|cicilan|kredit bayar|tagihan|sewa|ngisi|isi|topup|top up)\b/, score: -3 },
+        { pattern: /\b(buka|order|pesan|transfer keluar|kirim uang|traktir|nraktir)\b/, score: -2 },
+        { pattern: /\b(langganan|subscribe|bayar iuran|sedekah|infaq|zakat|sumbang|donasi)\b/, score: -3 },
       ];
 
       let intentScore = 0;
@@ -1665,38 +1570,132 @@ Aturan:
         if (rule.pattern.test(text)) intentScore += rule.score;
       });
 
-      // Default: pengeluaran. Hanya menjadi pemasukan jika skor positif.
+      // Default: pengeluaran. Menjadi pemasukan jika skor positif.
       let type = intentScore > 0 ? 'Pemasukan' : 'Pengeluaran';
 
-      // Tingkat keyakinan untuk tampilan UI
       const absScore = Math.abs(intentScore);
       let confidence = absScore === 0 ? 'Tebakan' : absScore <= 2 ? 'Lumayan Yakin' : absScore <= 4 ? 'Cukup Yakin' : 'Sangat Yakin';
 
-      // ── 2. EKSTRAKSI NOMINAL ──
+      // ── 2. EKSTRAKSI NOMINAL UANG ──
       let amount = extractIndonesianNumber(text);
 
-      // ── 3. KATEGORI CERDAS (tabel lebih luas) ──
+      // ── 3. PEMETAAN KATEGORI CERDAS LENGKAP (310+ Kosakata) ──
       let cat = type === 'Pemasukan' ? 'Gaji Pokok' : 'Makanan & Minuman';
 
       const catMap = [
         // == PENGELUARAN ==
-        { name: 'Makanan & Minuman', type: 'Pengeluaran', words: ['makan', 'minum', 'pentol', 'bakso', 'soto', 'sate', 'mie', 'nasi', 'ayam', 'bebek', 'kopi', 'kafe', 'cafe', 'snack', 'jajan', 'sarapan', 'warteg', 'padang', 'seblak', 'martabak', 'roti', 'kue', 'es', 'boba', 'geprek', 'lalapan', 'gorengan', 'indomie', 'starbucks', 'mcd', 'kfc', 'pizza', 'burger', 'siomay', 'batagor', 'cireng', 'cimol', 'lumpia'] },
-        { name: 'Transportasi & Bensin', type: 'Pengeluaran', words: ['bensin', 'pertamax', 'pertalite', 'solar', 'spbu', 'tambal', 'ban', 'oli', 'servis', 'bengkel', 'ojek', 'gojek', 'grab', 'maxim', 'parkir', 'tol', 'cuci motor', 'cuci mobil', 'angkot', 'bus', 'kereta', 'pesawat', 'tiket'] },
-        { name: 'Belanja & Kebutuhan', type: 'Pengeluaran', words: ['belanja', 'indomaret', 'alfamart', 'supermarket', 'pasar', 'beras', 'telur', 'minyak', 'gula', 'sabun', 'shampoo', 'odol', 'deterjen', 'baju', 'celana', 'sepatu', 'shopee', 'tokopedia', 'skincare', 'lazada', 'tiktok shop', 'blibli'] },
-        { name: 'Tagihan & Listrik/Air', type: 'Pengeluaran', words: ['listrik', 'pln', 'token', 'pdam', 'wifi', 'indihome', 'kuota', 'pulsa', 'telkomsel', 'xl', 'indosat', 'bpjs', 'kos', 'kontrakan', 'tagihan', 'cicilan', 'bayar rumah', 'iuran'] },
-        { name: 'Hiburan & Rekreasi', type: 'Pengeluaran', words: ['nonton', 'bioskop', 'film', 'cinema', 'game', 'topup', 'steam', 'netflix', 'spotify', 'liburan', 'karaoke', 'jalan-jalan', 'wisata', 'hotel', 'resort'] },
-        { name: 'Kesehatan & Medis', type: 'Pengeluaran', words: ['obat', 'apotek', 'dokter', 'klinik', 'rumah sakit', 'vitamin', 'paracetamol', 'bidan', 'periksa', 'gigi', 'fisio', 'rs'] },
-        { name: 'Sedekah & Amal', type: 'Pengeluaran', words: ['sedekah', 'infaq', 'zakat', 'amal', 'masjid', 'donasi', 'sumbangan', 'jariyah', 'wakaf'] },
+        {
+          name: 'Makanan & Minuman',
+          type: 'Pengeluaran',
+          words: [
+            'makan', 'minum', 'pentol', 'bakso', 'soto', 'sate', 'mie', 'nasi', 'ayam', 'bebek',
+            'ikan', 'lele', 'seafood', 'kopi', 'kafe', 'cafe', 'warkop', 'snack', 'jajan', 'sarapan',
+            'maksi', 'dinner', 'kuliner', 'warteg', 'padang', 'seblak', 'martabak', 'terang bulan',
+            'roti', 'kue', 'donat', 'es', 'es teh', 'boba', 'geprek', 'lalapan', 'gorengan',
+            'indomie', 'ramen', 'starbucks', 'mcd', 'kfc', 'pizza', 'burger', 'siomay', 'batagor',
+            'cireng', 'cilok', 'cimol', 'lumpia', 'pecel', 'rawon', 'bubur', 'gado-gado', 'ketoprak',
+            'rendang', 'tongseng', 'chiki', 'cemilan', 'kerupuk', 'keripik', 'jus', 'susu', 'aqua',
+            'air mineral', 'le minerale', 'chatime', 'mixue', 'hokben', 'solaria', 'rokok', 'surya',
+            'sampoerna', 'marlboro', 'gudang garam', 'magnum', 'esse'
+          ]
+        },
+        {
+          name: 'Transportasi & Bensin',
+          type: 'Pengeluaran',
+          words: [
+            'bensin', 'pertalite', 'pertamax', 'solar', 'dexlite', 'spbu', 'pom bensin', 'tambal',
+            'ban', 'oli', 'servis', 'bengkel', 'ojek', 'gojek', 'grab', 'maxim', 'indrive', 'parkir',
+            'tol', 'e-toll', 'cuci motor', 'cuci mobil', 'angkot', 'bus', 'transjakarta', 'kereta',
+            'krl', 'mrt', 'lrt', 'pesawat', 'tiket', 'helm', 'aki', 'sparepart'
+          ]
+        },
+        {
+          name: 'Belanja & Kebutuhan',
+          type: 'Pengeluaran',
+          words: [
+            'belanja', 'indomaret', 'alfamart', 'alfamidi', 'supermarket', 'hypermart', 'superindo',
+            'pasar', 'kelontong', 'warung', 'beras', 'telur', 'minyak', 'gula', 'garam', 'bumbu',
+            'sayur', 'daging', 'buah', 'sabun', 'shampoo', 'odol', 'deterjen', 'pewangi', 'rinso',
+            'sunlight', 'tisu', 'pampers', 'popok', 'susu bayi', 'gas', 'elpiji', 'galon', 'baju',
+            'kaos', 'celana', 'sepatu', 'sandal', 'tas', 'dompet', 'jaket', 'hoodie', 'shopee',
+            'tokopedia', 'skincare', 'kosmetik', 'makeup', 'parfum', 'lazada', 'tiktok shop',
+            'blibli', 'potong rambut', 'barbershop', 'salon'
+          ]
+        },
+        {
+          name: 'Tagihan & Listrik/Air',
+          type: 'Pengeluaran',
+          words: [
+            'listrik', 'pln', 'token', 'pdam', 'air pam', 'wifi', 'indihome', 'biznet', 'myrepublic',
+            'kuota', 'pulsa', 'paket data', 'telkomsel', 'byu', 'xl', 'axis', 'indosat', 'im3', 'tri',
+            'smartfren', 'bpjs', 'kos', 'kost', 'kontrakan', 'sewa rumah', 'tagihan', 'cicilan',
+            'kredit', 'paylater', 'spaylater', 'akulaku', 'kredivo', 'iuran', 'pbb'
+          ]
+        },
+        {
+          name: 'Hiburan & Rekreasi',
+          type: 'Pengeluaran',
+          words: [
+            'nonton', 'bioskop', 'film', 'cinema', 'xxi', 'cgv', 'game', 'main game', 'topup ml',
+            'top up diamond', 'steam', 'netflix', 'spotify', 'youtube premium', 'vidio', 'liburan',
+            'karaoke', 'jalan-jalan', 'wisata', 'pantai', 'gunung', 'hotel', 'villa', 'staycation',
+            'biliar', 'timezone'
+          ]
+        },
+        {
+          name: 'Kesehatan & Medis',
+          type: 'Pengeluaran',
+          words: [
+            'obat', 'apotek', 'kimia farma', 'k24', 'dokter', 'klinik', 'puskesmas', 'rumah sakit',
+            'rs', 'vitamin', 'paracetamol', 'bodrex', 'tolak angin', 'bidan', 'periksa', 'gigi',
+            'optik', 'kacamata', 'fisio', 'lab'
+          ]
+        },
+        {
+          name: 'Sedekah & Amal',
+          type: 'Pengeluaran',
+          words: [
+            'sedekah', 'infaq', 'zakat', 'amal', 'masjid', 'donasi', 'sumbangan', 'jariyah',
+            'wakaf', 'qurban', 'kurban', 'anak yatim', 'panti asuhan', 'amplop', 'kondangan'
+          ]
+        },
+        {
+          name: 'Pendidikan & Keluarga',
+          type: 'Pengeluaran',
+          words: [
+            'spp', 'uang sekolah', 'uang kuliah', 'ukt', 'les', 'bimbel', 'kursus', 'buku',
+            'fotokopi', 'atk', 'pulpen', 'uang saku', 'sangu'
+          ]
+        },
         // == PEMASUKAN ==
-        { name: 'Gaji Pokok', type: 'Pemasukan', words: ['gaji', 'upah', 'salary', 'honor', 'thr', 'slip gaji'] },
-        { name: 'Freelance & Proyek', type: 'Pemasukan', words: ['freelance', 'proyek', 'desain', 'klien', 'jasa', 'coding', 'fee', 'komisi', 'bayaran'] },
-        { name: 'Bisnis & Usaha', type: 'Pemasukan', words: ['bisnis', 'usaha', 'dagang', 'toko', 'omset', 'jualan', 'laba', 'untung', 'profit', 'pendapatan'] },
+        {
+          name: 'Gaji Pokok',
+          type: 'Pemasukan',
+          words: [
+            'gaji', 'upah', 'salary', 'honor', 'gajian', 'payroll', 'thr', 'pesangon', 'slip gaji'
+          ]
+        },
+        {
+          name: 'Freelance & Proyek',
+          type: 'Pemasukan',
+          words: [
+            'freelance', 'proyek', 'project', 'desain', 'klien', 'jasa', 'coding', 'website',
+            'fee', 'komisi', 'bayaran klien', 'royalty', 'tips', 'tip'
+          ]
+        },
+        {
+          name: 'Bisnis & Usaha',
+          type: 'Pemasukan',
+          words: [
+            'bisnis', 'usaha', 'dagang', 'toko', 'warung', 'omset', 'omzet', 'jualan', 'laba',
+            'untung', 'profit', 'pendapatan', 'closingan', 'hasil jualan', 'orderan masuk',
+            'arisan cair', 'arisan', 'cashback', 'refund', 'dividen', 'bunga bank'
+          ]
+        }
       ];
 
-      // Cek kategori sesuai tipe yang sudah terdeteksi dulu,
-      // baru cek semua kategori
+      // Prioritas 1: Kategori yang sesuai tipe intent
       let found = false;
-      // Prioritaskan kategori yang sesuai tipe
       for (const item of catMap) {
         if (item.type === type && item.words.some(w => text.includes(w))) {
           cat = item.name;
@@ -1704,19 +1703,18 @@ Aturan:
           break;
         }
       }
-      // Jika tidak ketemu, cek lintas tipe (kata benda bisa override tipe)
+      // Prioritas 2: Cek lintas tipe (kata benda spesifik override tipe)
       if (!found) {
         for (const item of catMap) {
           if (item.words.some(w => text.includes(w))) {
             cat = item.name;
-            // Kata benda pemasukan yang sangat spesifik -> override tipe
             if (item.type === 'Pemasukan' && intentScore >= 0) type = 'Pemasukan';
             break;
           }
         }
       }
 
-      // ── 4. EKSTRAK CATATAN BERSIH ──
+      // ── 4. EKSTRAKSI CATATAN BERSIH ──
       let note = text
         .replace(/(\d[\d.,]*)\s*(ribu|rb|k|juta|jt|ratus|puluh|belas)?/gi, ' ')
         .replace(/\b(rp|rupiah|idr)\b/gi, ' ');
@@ -1737,34 +1735,55 @@ Aturan:
       return { type, category: cat, amount: Math.round(amount), note, confidence, intentScore };
     }
 
-    // ── EKSTRAKTOR ANGKA VERBAL INDONESIA v3 ──
-    // Menangani kasus seperti "beli bensin 5 liter 50.000" → 50000 (bukan 5)
+    // ── EKSTRAKTOR ANGKA VERBAL INDONESIA v4 ──
     function extractIndonesianNumber(str) {
-      // ── Langkah 0: Hapus angka yang diikuti satuan KUANTITAS (bukan harga) ──
-      // Contoh: "5 liter", "2 kg", "3 buah" → angka-angka ini BUKAN harga
-      const QTY_UNITS = /\b(liter|lt|kg|gram|gr|g|ons|mg|buah|biji|porsi|pcs|pack|box|dus|lusin|kotak|botol|kaleng|lembar|helai|meter|cm|km|m2|m3|unit|set|pasang|potong|loyang|bungkus|sachet|sendok|sdm|sdt|gelas|cangkir|menit|jam|hari|minggu|bulan|tahun|x|kali)\b/i;
-      // Ganti pola: ANGKA + SPASI + SATUAN_KUANTITAS → hilangkan seluruhnya
-      const strClean = str.replace(/\d+(?:[.,]\d+)?\s*(?:liter|lt|kg|gram|gr|g|ons|mg|buah|biji|porsi|pcs|pack|box|dus|lusin|kotak|botol|kaleng|lembar|helai|meter|cm|km|m2|m3|unit|set|pasang|potong|loyang|bungkus|sachet|sendok|sdm|sdt|gelas|cangkir|menit|jam|hari|minggu|bulan|tahun|x|kali)\b/gi, ' ');
+      let s = str.toLowerCase().trim();
 
-      // ── Langkah 1: Cari pola compact dulu (misal "50rb", "2.5jt", "500k") ──
-      const compactMatch = strClean.match(/(\d+(?:[.,]\d+)?)\s*(ribu|rb|k|juta|jt)\b/i);
+      // 1. Kombinasi pecahan "setengah" (misal: "2 juta setengah" → "2500000")
+      s = s.replace(/\b(\d+|satu|se|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan)\s*(?:juta|jt)\s*setengah\b/gi, (match, n) => {
+        const wordToNum = { 'se': 1, 'satu': 1, 'dua': 2, 'tiga': 3, 'empat': 4, 'lima': 5, 'enam': 6, 'tujuh': 7, 'delapan': 8, 'sembilan': 9 };
+        const base = wordToNum[n] !== undefined ? wordToNum[n] : parseFloat(n);
+        return Math.round((base + 0.5) * 1000000).toString();
+      });
+
+      // 2. Slang bahasa Indonesia
+      const slangMap = [
+        { regex: /\b(seperempat\s*juta)\b/g, val: '250000' },
+        { regex: /\b(setengah\s*juta)\b/g, val: '500000' },
+        { regex: /\bceban\s*setengah\b/g, val: '15000' },
+        { regex: /\bgoceng\s*setengah\b/g, val: '5500' },
+        { regex: /\bseceng\s*setengah\b/g, val: '1500' },
+        { regex: /\bseceng\b/g, val: '1000' },
+        { regex: /\bnoceng\b/g, val: '2000' },
+        { regex: /\bgoceng\b/g, val: '5000' },
+        { regex: /\bceban\b/g, val: '10000' },
+        { regex: /\bgoban\b/g, val: '50000' },
+        { regex: /\bcepek\b/g, val: '100' },
+        { regex: /\bgopek\b/g, val: '500' },
+        { regex: /\brebu\b/g, val: 'ribu' }
+      ];
+      slangMap.forEach(item => { s = s.replace(item.regex, item.val); });
+
+      // 3. Hapus angka kuantitas (misal: "5 liter", "2 kg", "3 porsi")
+      s = s.replace(/\d+(?:[.,]\d+)?\s*(?:liter|lt|kg|gram|gr|g|ons|mg|buah|biji|porsi|pcs|pack|box|dus|lusin|kotak|botol|kaleng|lembar|helai|meter|cm|km|m2|m3|unit|set|pasang|potong|loyang|bungkus|sachet|sendok|sdm|sdt|gelas|cangkir|menit|jam|hari|minggu|bulan|tahun|x|kali)\b/gi, ' ');
+
+      // 4. Pola compact (misal: "50rb", "2.5jt", "1,5jt", "500k", "25k")
+      const compactMatch = s.match(/(\d+(?:[.,]\d+)?)\s*(ribu|rb|k|juta|jt)\b/i);
       if (compactMatch) {
-        let num = parseFloat(compactMatch[1].replace(/\./g, '').replace(/,/, '.'));
+        let rawNum = compactMatch[1].replace(/,/g, '.');
+        let num = parseFloat(rawNum);
         const unit = compactMatch[2].toLowerCase();
         if (unit === 'juta' || unit === 'jt') num *= 1000000;
-        else num *= 1000; // ribu, rb, k
+        else num *= 1000;
         if (num > 0) return Math.round(num);
       }
 
-      // ── Langkah 2: Kumpulkan SEMUA angka yang tersisa, pilih nilai terbesar ──
-      // Strategi: harga selalu lebih besar dari kuantitas (50000 > 5)
-      const candidates = [];
+      // 5. Pola pasangan angka + satuan (misal: "50 ribu", "1 juta 500 ribu")
       const pairRe = /(\d+(?:[.,]\d+)?)\s*(juta|jt|ribu|rb|ratus|puluh|k)?/gi;
-      let m, lastIndex = -1;
-      while ((m = pairRe.exec(strClean)) !== null) {
-        if (m.index === lastIndex) break;
-        lastIndex = m.index;
-        let num = parseFloat(m[1].replace(/\./g, '').replace(/,/, '.'));
+      let m, candidates = [];
+      while ((m = pairRe.exec(s)) !== null) {
+        let rawNum = m[1].replace(/,/g, '.');
+        let num = parseFloat(rawNum);
         const unit = (m[2] || '').toLowerCase();
         if (unit === 'juta' || unit === 'jt') num *= 1000000;
         else if (unit === 'ribu' || unit === 'rb' || unit === 'k') num *= 1000;
@@ -1774,18 +1793,15 @@ Aturan:
       }
 
       if (candidates.length > 0) {
-        // Utamakan angka dengan satuan (50 ribu > angka polos "50")
         const withUnit = candidates.filter(c => c.hasUnit);
         if (withUnit.length > 0) {
-          // Jika ada satuan, jumlahkan (misal "1 juta 500 ribu")
           return Math.round(withUnit.reduce((a, c) => a + c.num, 0));
         }
-        // Tidak ada satuan → ambil angka TERBESAR (paling mungkin harga)
         const largest = Math.max(...candidates.map(c => c.num));
-        return Math.round(largest);
+        if (largest >= 1000) return Math.round(largest);
       }
 
-      // ── Langkah 3: Fallback Parser kata verbal Indonesia ──
+      // 6. Angka verbal bahasa Indonesia (misal: "dua puluh lima ribu", "sejuta")
       const wordMap = {
         'nol': 0, 'satu': 1, 'se': 1, 'dua': 2, 'tiga': 3, 'empat': 4, 'lima': 5, 'enam': 6,
         'tujuh': 7, 'delapan': 8, 'sembilan': 9, 'sepuluh': 10, 'sebelas': 11,
@@ -1793,19 +1809,26 @@ Aturan:
         'enam belas': 16, 'tujuh belas': 17, 'delapan belas': 18, 'sembilan belas': 19,
         'seratus': 100, 'seribu': 1000, 'sejuta': 1000000
       };
-      const words = strClean.split(/\s+/);
+      const words = s.split(/\s+/);
       let current = 0, wordTotal = 0;
       for (let i = 0; i < words.length; i++) {
         const w = words[i];
         if (wordMap[w] !== undefined) current += wordMap[w];
         else if (w === 'belas') current = (current < 10 ? current : 0) + 10 + (current % 10 > 1 ? current % 10 : 0);
         else if (w === 'puluh') current = (current || 1) * 10;
-        else if (w === 'ratus') { current = (current || 1) * 100; }
+        else if (w === 'ratus') current = (current || 1) * 100;
         else if (w === 'ribu' || w === 'rb') { wordTotal += (current || 1) * 1000; current = 0; }
         else if (w === 'juta' || w === 'jt') { wordTotal += (current || 1) * 1000000; current = 0; }
       }
       wordTotal += current;
-      return wordTotal;
+      if (wordTotal > 0) return wordTotal;
+
+      // 7. Fallback angka polos terbesar
+      if (candidates.length > 0) {
+        return Math.round(Math.max(...candidates.map(c => c.num)));
+      }
+
+      return 0;
     }
 
     function getCategoryIcon(cat) {
