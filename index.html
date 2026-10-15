@@ -564,12 +564,18 @@
       padding: 16px 20px calc(24px + var(--safe-bottom)) 20px;
       border-top: 0.5px solid var(--border);
       transform: translateY(100%);
-      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+      transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.25s ease;
       max-height: 92vh;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
       position: relative;
+      will-change: transform;
+    }
+
+    /* Saat sheet sedang di-drag: matikan transition agar langsung ikut jari */
+    .sheet.dragging {
+      transition: none !important;
     }
 
     .modal.active .sheet {
@@ -1847,28 +1853,78 @@
         openModal(sModal);
       };
 
-      // Swipe-down handle untuk tutup modal — hanya trigger sekali (gunakan flag swipeClosed)
+      // ── SWIPE DOWN TO DISMISS — real-time drag + spring physics ──
       document.querySelectorAll('.sheet .handle').forEach(handle => {
-        let hy0 = 0;
-        let swipeClosed = false;
+        const sheet = handle.closest('.sheet');
+        const modal = handle.closest('.modal');
+        if (!sheet || !modal) return;
+
+        let startY = 0;
+        let lastY = 0;
+        let lastTime = 0;
+        let velocityY = 0;
+        let isDragging = false;
+
         handle.addEventListener('pointerdown', ev => {
-          hy0 = ev.clientY;
-          swipeClosed = false;
+          startY = ev.clientY;
+          lastY = ev.clientY;
+          lastTime = Date.now();
+          velocityY = 0;
+          isDragging = true;
+          sheet.classList.add('dragging');
           handle.setPointerCapture(ev.pointerId);
-        });
+          ev.preventDefault();
+        }, { passive: false });
+
         handle.addEventListener('pointermove', ev => {
-          if (!swipeClosed && ev.clientY - hy0 > 60) {
-            swipeClosed = true; // tandai sudah ditutup, cegah multi-trigger
-            const sheet = handle.closest('.modal');
-            if (sheet) {
-              if (sheet.id === 'deleteConfirmModal') cancelDeleteConfirmation();
-              else closeModal(sheet);
-              navBtns.forEach(b => b.classList.remove('active'));
-            }
-          }
+          if (!isDragging) return;
+          const dy = ev.clientY - startY;
+
+          // Rubber-band resistance saat ditarik ke atas
+          const clampedDy = dy < 0 ? dy * 0.15 : dy;
+
+          sheet.style.transform = `translateY(${clampedDy}px)`;
+
+          // Hitung velocity (px/ms)
+          const now = Date.now();
+          const dt = now - lastTime;
+          if (dt > 0) velocityY = (ev.clientY - lastY) / dt;
+          lastY = ev.clientY;
+          lastTime = now;
         });
-        handle.addEventListener('pointerup', () => { swipeClosed = false; });
+
+        function endDrag() {
+          if (!isDragging) return;
+          isDragging = false;
+          sheet.classList.remove('dragging');
+
+          const dy = lastY - startY;
+          // Tutup jika: geser > 120px ATAU lempar cepat ke bawah (velocity > 0.5 px/ms)
+          const shouldDismiss = dy > 120 || velocityY > 0.5;
+
+          if (shouldDismiss) {
+            // Lempar keluar dengan spring alami
+            sheet.style.transition = 'transform 0.32s cubic-bezier(0.32, 0.72, 0, 1)';
+            sheet.style.transform = 'translateY(110%)';
+            setTimeout(() => {
+              sheet.style.transform = '';
+              sheet.style.transition = '';
+              if (modal.id === 'deleteConfirmModal') cancelDeleteConfirmation();
+              else closeModal(modal);
+              navBtns.forEach(b => b.classList.remove('active'));
+            }, 320);
+          } else {
+            // Snap kembali ke posisi semula dengan spring
+            sheet.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            sheet.style.transform = '';
+            setTimeout(() => { sheet.style.transition = ''; }, 400);
+          }
+        }
+
+        handle.addEventListener('pointerup', endDrag);
+        handle.addEventListener('pointercancel', endDrag);
       });
+
 
       // Modal Background Tap to Close → juga reset active nav
       [vModal, mModal, aModal, sModal, dModal].forEach(m => {
