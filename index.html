@@ -1874,34 +1874,40 @@
         openModal(sModal);
       };
 
-      // Swipe-down handle untuk tutup modal
+      // Swipe-down handle untuk tutup modal — hanya trigger sekali (gunakan flag swipeClosed)
       document.querySelectorAll('.sheet .handle').forEach(handle => {
         let hy0 = 0;
+        let swipeClosed = false;
         handle.addEventListener('pointerdown', ev => {
           hy0 = ev.clientY;
+          swipeClosed = false;
           handle.setPointerCapture(ev.pointerId);
         });
         handle.addEventListener('pointermove', ev => {
-          if (ev.clientY - hy0 > 60) {
+          if (!swipeClosed && ev.clientY - hy0 > 60) {
+            swipeClosed = true; // tandai sudah ditutup, cegah multi-trigger
             const sheet = handle.closest('.modal');
             if (sheet) {
               if (sheet.id === 'deleteConfirmModal') cancelDeleteConfirmation();
               else closeModal(sheet);
+              navBtns.forEach(b => b.classList.remove('active'));
             }
           }
         });
+        handle.addEventListener('pointerup', () => { swipeClosed = false; });
       });
 
       // Modal Background Tap to Close → juga reset active nav
       [vModal, mModal, aModal, sModal, dModal].forEach(m => {
         if (!m) return;
-        m.onclick = (e) => {
+        m.addEventListener('pointerdown', (e) => {
+          // Deteksi tap di backdrop (elemen modal itu sendiri) — lebih andal dari onclick di mobile
           if (e.target === m) {
             if (m === dModal) cancelDeleteConfirmation();
             else closeModal(m);
             navBtns.forEach(b => b.classList.remove('active'));
           }
-        };
+        });
       });
 
       // Manual Form
@@ -2125,6 +2131,7 @@
 
     function closeModal(m) {
       m.classList.remove('active');
+      // Selalu stop voice saat modal apapun ditutup — aman bila tidak ada sesi aktif
       stopVoice();
     }
 
@@ -2132,6 +2139,12 @@
       document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
       stopVoice();
     }
+
+    // Auto-matikan mikrofon saat aplikasi di-minimize/pindah tab/layar mati
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopVoice();
+    });
+    window.addEventListener('pagehide', () => stopVoice());
 
     // ================= ULTRA-OPTIMAL VOICE RECOGNITION =================
     let recognition = null;
