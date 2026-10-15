@@ -224,7 +224,7 @@
       -webkit-user-select: none;
       touch-action: pan-y;
       transition: max-height 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.22s ease, margin 0.22s ease;
-      max-height: 90px;
+      max-height: 120px;
     }
 
     .tx-swipe-row:not(:last-child) {
@@ -505,9 +505,10 @@
       border-top: 0.5px solid var(--border);
       transform: translateY(100%);
       transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-      max-height: 85vh;
+      max-height: 92vh;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
       position: relative;
     }
 
@@ -775,12 +776,26 @@
     }
 
     input[type="date"].clean-input {
-      max-width: 200px;
+      width: 100%;
+      max-width: 100%;
       height: 48px;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
       color: var(--text);
       cursor: pointer;
+      padding: 0 14px;
+    }
+
+    /* Number input — remove spinner arrows */
+    input[type="number"].clean-input {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+    input[type="number"].clean-input::-webkit-outer-spin-button,
+    input[type="number"].clean-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      appearance: none;
+      margin: 0;
     }
 
 
@@ -949,31 +964,41 @@
         <button class="sheet-close-btn" onclick="closeAllModals()">✕</button>
       </div>
 
+      <!-- Tipe Transaksi -->
       <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-        <button class="btn-submit" id="btnTypeExpense" style="background: var(--red); flex: 1; height: 44px; padding: 0;">Pengeluaran</button>
+        <button class="btn-submit" id="btnTypeExpense"
+          style="background: var(--red); flex: 1; height: 46px; padding: 0; font-size: 14px; border-radius: 14px;">▼ Pengeluaran</button>
         <button class="btn-submit" id="btnTypeIncome"
-          style="background: var(--card-subtle); color: var(--text-muted); flex: 1; height: 44px; padding: 0;">Pemasukan</button>
+          style="background: var(--card-subtle); color: var(--text-muted); flex: 1; height: 46px; padding: 0; font-size: 14px; border-radius: 14px;">▲ Pemasukan</button>
       </div>
 
-      <div class="form-group" style="margin-bottom: 14px;">
+      <!-- Nominal -->
+      <div class="form-group" style="margin-bottom: 12px;">
         <label class="form-label">Nominal (Rp)</label>
         <div style="position: relative; display: flex; align-items: center;">
-          <span style="position: absolute; left: 14px; font-weight: 700; color: var(--text-muted); font-size: 16px; pointer-events: none;">Rp</span>
-          <input type="number" inputmode="numeric" class="clean-input" id="inputAmount" placeholder="0" style="padding-left: 44px; font-size: 18px; font-weight: 700;">
+          <span style="position: absolute; left: 14px; font-weight: 700; color: var(--text-muted); font-size: 15px; pointer-events: none; z-index:1;">Rp</span>
+          <input type="number" inputmode="numeric" class="clean-input" id="inputAmount"
+            placeholder="0" style="padding-left: 42px; font-size: 18px; font-weight: 700;">
         </div>
       </div>
 
-      <div class="form-group" id="groupInputDate" style="margin-bottom: 14px;">
-        <label class="form-label">Tanggal Transaksi</label>
-        <input type="date" class="clean-input" id="inputDate">
+      <!-- Tanggal + Catatan dalam satu baris di layar lebar, 2 baris di HP kecil -->
+      <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+        <div class="form-group" id="groupInputDate"
+          style="flex: 1 1 140px; min-width: 140px; margin-bottom: 0;">
+          <label class="form-label">Tanggal</label>
+          <input type="date" class="clean-input" id="inputDate" style="font-size: 14px;">
+        </div>
+        <div class="form-group"
+          style="flex: 2 1 180px; min-width: 160px; margin-bottom: 0;">
+          <label class="form-label">Catatan</label>
+          <input type="text" class="clean-input" id="inputNote"
+            placeholder="Makan siang, bensin…">
+        </div>
       </div>
 
-      <div class="form-group" style="margin-bottom: 18px;">
-        <label class="form-label">Catatan / Keterangan</label>
-        <input type="text" class="clean-input" id="inputNote" placeholder="Contoh: Makan siang, bensin, dll">
-      </div>
-
-      <button class="btn-submit" id="saveManualBtn" style="margin-top: 4px; height: 50px;">Simpan Transaksi</button>
+      <button class="btn-submit" id="saveManualBtn"
+        style="margin-top: 8px; height: 50px; font-size: 16px;">Simpan Transaksi</button>
     </div>
   </div>
 
@@ -1720,10 +1745,14 @@
       const inc = document.getElementById('btnTypeIncome');
       if (t === 'Pengeluaran') {
         exp.style.background = 'var(--red)'; exp.style.color = '#FFF';
+        exp.textContent = '▼ Pengeluaran';
         inc.style.background = 'var(--card-subtle)'; inc.style.color = 'var(--text-muted)';
+        inc.textContent = '▲ Pemasukan';
       } else {
         inc.style.background = 'var(--green)'; inc.style.color = '#FFF';
+        inc.textContent = '▲ Pemasukan';
         exp.style.background = 'var(--card-subtle)'; exp.style.color = 'var(--text-muted)';
+        exp.textContent = '▼ Pengeluaran';
       }
     }
 
@@ -2233,23 +2262,13 @@
     function _syncStart() {
       _syncCount++;
       if (_dotOffTimer) { clearTimeout(_dotOffTimer); _dotOffTimer = null; }
-      const d = document.getElementById('cloudDot');
-      const s = document.getElementById('cloudStatus');
-      if (d) d.classList.add('sync');
-      if (s) s.textContent = 'Menyimpan...';
+      // cloudDot/cloudStatus sudah dihapus dari UI — handler tetap ada untuk backward compat
     }
 
     function _syncEnd() {
       _syncCount = Math.max(0, _syncCount - 1);
       if (_syncCount === 0) {
-        // Tunda pemadaman dot minimal _DOT_MIN_MS agar tidak berkedip
         _dotOffTimer = setTimeout(() => {
-          if (_syncCount === 0) {
-            const d = document.getElementById('cloudDot');
-            const s = document.getElementById('cloudStatus');
-            if (d) d.classList.remove('sync');
-            if (s) s.textContent = 'Tersambung';
-          }
           _dotOffTimer = null;
         }, _DOT_MIN_MS);
       }
