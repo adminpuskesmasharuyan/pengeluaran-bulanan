@@ -250,16 +250,104 @@
       letter-spacing: 0.04em;
     }
 
+    .tx-swipe-row {
+      position: relative;
+      overflow: hidden;
+      background: var(--card);
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: pan-y;
+      transition: max-height 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.22s ease, margin 0.22s ease;
+      max-height: 90px;
+    }
+
+    .tx-swipe-row:not(:last-child) {
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .tx-swipe-row.deleting {
+      max-height: 0 !important;
+      opacity: 0 !important;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      border-bottom: none !important;
+    }
+
+    .tx-swipe-actions {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      align-items: stretch;
+      z-index: 1;
+      pointer-events: auto;
+    }
+
+    .tx-swipe-btn {
+      border: none;
+      color: #FFF;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      padding: 0 16px;
+      transition: width 0.08s linear, background 0.15s ease;
+      will-change: width;
+    }
+
+    .swipe-btn-edit {
+      background: #0A84FF;
+      width: 72px;
+      flex-shrink: 0;
+    }
+
+    .swipe-btn-edit:active {
+      background: #0070DF;
+    }
+
+    .swipe-btn-delete {
+      background: #FF453A;
+      width: 76px;
+      flex-shrink: 0;
+    }
+
+    .swipe-btn-delete:active {
+      background: #D70015;
+    }
+
+    .swipe-btn-delete.full-delete {
+      background: #D70015;
+    }
+
+    .swipe-btn-icon {
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .swipe-btn-text {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
     .tx-item {
+      position: relative;
+      z-index: 2;
+      background: var(--card);
       display: flex;
       align-items: center;
       padding: 14px 16px;
       cursor: pointer;
-      transition: background 0.15s;
-    }
-
-    .tx-item:not(:last-child) {
-      border-bottom: 0.5px solid var(--border);
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.15s;
+      will-change: transform;
     }
 
     .tx-item:active {
@@ -618,6 +706,38 @@
       text-overflow: ellipsis;
     }
 
+    .parsed-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      font-family: inherit;
+      padding: 4px 0 2px 0;
+      border-bottom: 1.5px dashed transparent;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .parsed-input:focus {
+      border-bottom-color: var(--blue);
+      background: rgba(10, 132, 255, 0.08);
+      border-radius: 4px;
+      padding-left: 4px;
+    }
+
+    .parsed-input::-webkit-outer-spin-button,
+    .parsed-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .parsed-input[type=number] {
+      -moz-appearance: textfield;
+    }
+
     .btn-submit {
       width: 100%;
       background: var(--blue);
@@ -726,9 +846,12 @@
     </div>
 
     <!-- Simple Transaction History -->
-    <div class="list-header">
+    <div class="list-header" style="margin-bottom: 4px;">
       <span>Riwayat Transaksi</span>
       <span id="totalTrxCount">0 Transaksi</span>
+    </div>
+    <div style="font-size: 11px; color: var(--text-dim); text-align: right; margin-bottom: 10px; padding-right: 4px;">
+      👈 Geser kiri: Edit / Hapus
     </div>
 
     <div id="txListContainer">
@@ -788,17 +911,26 @@
       </div>
 
       <div class="parsed-grid" id="parsedGrid" style="display: none;">
-        <div class="parsed-item">
-          <div class="parsed-label">Tipe</div>
-          <div class="parsed-val" id="parsedType" style="color: var(--red);">Pengeluaran</div>
+        <div class="parsed-item" id="parsedTypeItem" style="cursor: pointer;" title="Ketuk untuk ganti tipe">
+          <div class="parsed-label" style="display: flex; justify-content: space-between;">
+            <span>Tipe</span>
+            <span style="font-size: 10px; color: var(--text-muted);">🔄 Ganti</span>
+          </div>
+          <div class="parsed-val" id="parsedType" style="color: var(--red); padding: 4px 0 2px 0;">Pengeluaran</div>
         </div>
-        <div class="parsed-item">
-          <div class="parsed-label">Nominal</div>
-          <div class="parsed-val" id="parsedAmount" style="color: var(--blue);">Rp 10.000</div>
+        <div class="parsed-item" id="itemParsedAmount" style="cursor: text;">
+          <div class="parsed-label" style="display: flex; justify-content: space-between;">
+            <span>Nominal (Rp)</span>
+            <span style="font-size: 10px; color: var(--blue);">✏️ Edit</span>
+          </div>
+          <input type="number" inputmode="numeric" id="parsedAmount" class="parsed-input" style="color: var(--blue);" placeholder="0">
         </div>
-        <div class="parsed-item" style="grid-column: span 2;">
-          <div class="parsed-label">Catatan</div>
-          <div class="parsed-val" id="parsedNote">Pentol</div>
+        <div class="parsed-item" style="grid-column: span 2; cursor: text;" id="itemParsedNote">
+          <div class="parsed-label" style="display: flex; justify-content: space-between;">
+            <span>Catatan</span>
+            <span style="font-size: 10px; color: var(--blue);">✏️ Edit</span>
+          </div>
+          <input type="text" id="parsedNote" class="parsed-input" placeholder="Keterangan transaksi">
         </div>
       </div>
 
@@ -826,6 +958,11 @@
         <button class="btn-submit" id="btnTypeExpense" style="background: var(--red); flex: 1;">Pengeluaran</button>
         <button class="btn-submit" id="btnTypeIncome"
           style="background: var(--card-subtle); color: var(--text-muted); flex: 1;">Pemasukan</button>
+      </div>
+
+      <div class="form-group" id="groupInputDate">
+        <label class="form-label">Tanggal</label>
+        <input type="date" class="clean-input" id="inputDate">
       </div>
 
       <div class="form-group">
@@ -1018,16 +1155,230 @@
       } catch (e) { }
     }
 
+    let currentlyOpenRow = null;
+
+    // Tutup swipe saat klik area di luar baris
+    document.addEventListener('pointerdown', (e) => {
+      if (currentlyOpenRow && !e.target.closest('.tx-swipe-row')) {
+        currentlyOpenRow.closeSwipe?.();
+      }
+    });
+
+    let editingTxId = null;
+
+    function openEditModal(tx) {
+      editingTxId = tx.id;
+      const mModal = document.getElementById('manualModal');
+      const titleEl = mModal.querySelector('.sheet-title');
+      if (titleEl) titleEl.textContent = 'Edit Transaksi';
+
+      const saveBtn = document.getElementById('saveManualBtn');
+      if (saveBtn) saveBtn.textContent = '✓ Simpan Perubahan';
+
+      setManualType(tx.jenis || 'Pengeluaran');
+      document.getElementById('inputAmount').value = tx.jumlah || '';
+      document.getElementById('inputNote').value = tx.catatan || '';
+
+      const dateGroup = document.getElementById('groupInputDate');
+      const dateInput = document.getElementById('inputDate');
+      if (dateGroup && dateInput) {
+        dateGroup.style.display = 'block';
+        dateInput.value = tx.tanggal || today();
+      }
+
+      openModal(mModal);
+    }
+
+    function triggerDelete(rowEl, tx, isFullSwipe = false) {
+      if (currentlyOpenRow === rowEl) currentlyOpenRow = null;
+
+      // Haptic feedback Apple-style
+      if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(isFullSwipe ? [30, 50, 20] : 30);
+      }
+
+      const itemEl = rowEl.querySelector('.tx-item');
+      if (itemEl) {
+        itemEl.style.transition = 'transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1)';
+        itemEl.style.transform = 'translateX(-100%)';
+      }
+
+      setTimeout(() => {
+        rowEl.classList.add('deleting');
+        setTimeout(() => {
+          state.transactions = state.transactions.filter(x => x.id !== tx.id);
+          save();
+          render();
+          showToast(`🗑️ ${tx.catatan || tx.jenis} dihapus`);
+          if (state.apiUrl) postCloud({ action: 'delete_transaction', id: tx.id });
+        }, 220);
+      }, 120);
+    }
+
+    function setupSwipeGestures(rowEl, tx) {
+      const itemEl = rowEl.querySelector('.tx-item');
+      const deleteBtn = rowEl.querySelector('.swipe-btn-delete');
+      const editBtn = rowEl.querySelector('.swipe-btn-edit');
+      const deleteText = deleteBtn.querySelector('.swipe-btn-text');
+
+      let startX = 0;
+      let startY = 0;
+      let currentOffset = 0;
+      let isDragging = false;
+      let isHorizontal = null;
+      let hasDragged = false;
+      let pointerId = null;
+      const SNAP_WIDTH = 148;
+      const FULL_SWIPE_THRESHOLD = 190;
+
+      function setOffset(offset, animated = false) {
+        currentOffset = offset;
+        itemEl.style.transition = animated ? 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)' : 'none';
+        itemEl.style.transform = `translateX(${offset}px)`;
+
+        // Efek Full Swipe: Jika ditarik jauh ke kiri (> FULL_SWIPE_THRESHOLD)
+        if (Math.abs(offset) > FULL_SWIPE_THRESHOLD) {
+          deleteBtn.classList.add('full-delete');
+          deleteBtn.style.width = `${Math.abs(offset) - 72}px`;
+          deleteText.textContent = 'Lepas Hapus';
+        } else {
+          deleteBtn.classList.remove('full-delete');
+          deleteBtn.style.width = '76px';
+          deleteText.textContent = 'Hapus';
+        }
+      }
+
+      function closeRow() {
+        setOffset(0, true);
+        if (currentlyOpenRow === rowEl) currentlyOpenRow = null;
+      }
+
+      function openRow() {
+        setOffset(-SNAP_WIDTH, true);
+        if (currentlyOpenRow && currentlyOpenRow !== rowEl) {
+          currentlyOpenRow.closeSwipe?.();
+        }
+        currentlyOpenRow = rowEl;
+      }
+
+      rowEl.closeSwipe = closeRow;
+
+      function onPointerDown(e) {
+        if (e.target.closest('.tx-swipe-btn')) return;
+
+        if (currentlyOpenRow && currentlyOpenRow !== rowEl) {
+          currentlyOpenRow.closeSwipe?.();
+          return;
+        }
+
+        startX = e.clientX;
+        startY = e.clientY;
+        isDragging = true;
+        isHorizontal = null;
+        hasDragged = false;
+        pointerId = e.pointerId;
+      }
+
+      function onPointerMove(e) {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+
+        if (isHorizontal === null) {
+          if (Math.abs(dx) > 7 || Math.abs(dy) > 7) {
+            isHorizontal = Math.abs(dx) > Math.abs(dy);
+            if (!isHorizontal) {
+              isDragging = false;
+              return;
+            }
+            try { itemEl.setPointerCapture(pointerId); } catch (err) { }
+          } else {
+            return;
+          }
+        }
+
+        if (!isHorizontal) return;
+
+        hasDragged = true;
+        if (e.cancelable) e.preventDefault();
+
+        const base = (currentlyOpenRow === rowEl) ? -SNAP_WIDTH : 0;
+        let target = base + dx;
+
+        // Rubber-band resistance saat geser ke kanan
+        if (target > 0) target = target * 0.25;
+
+        setOffset(target, false);
+      }
+
+      function onPointerUp(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        try { itemEl.releasePointerCapture(pointerId); } catch (err) { }
+
+        if (!isHorizontal || !hasDragged) {
+          if (currentlyOpenRow === rowEl) {
+            closeRow();
+          } else {
+            openEditModal(tx);
+          }
+          return;
+        }
+
+        const finalOffset = currentOffset;
+
+        // 1. Geser jauh ke kiri -> langsung hapus (Full swipe delete)
+        if (finalOffset < -FULL_SWIPE_THRESHOLD) {
+          triggerDelete(rowEl, tx, true);
+          return;
+        }
+
+        // 2. Geser sedang -> buka tombol Edit & Hapus
+        if (finalOffset < -70) {
+          openRow();
+        } else {
+          closeRow();
+        }
+      }
+
+      itemEl.addEventListener('pointerdown', onPointerDown);
+      itemEl.addEventListener('pointermove', onPointerMove);
+      itemEl.addEventListener('pointerup', onPointerUp);
+      itemEl.addEventListener('pointercancel', onPointerUp);
+
+      editBtn.onclick = (e) => {
+        e.stopPropagation();
+        closeRow();
+        openEditModal(tx);
+      };
+
+      deleteBtn.onclick = (e) => {
+        e.stopPropagation();
+        triggerDelete(rowEl, tx, false);
+      };
+    }
+
     function render() {
       document.getElementById('monthLabel').textContent = `${MONTHS[state.month - 1]} ${state.year}`;
 
       let income = 0;
       let expense = 0;
 
-      const filtered = state.transactions.filter(t => {
-        const parts = t.tanggal.split('-');
-        return parseInt(parts[0], 10) === state.year && parseInt(parts[1], 10) === state.month;
-      });
+      // Urutkan transaksi: Tanggal terbaru paling atas. Jika tanggal sama, transaksi yang baru dicatat (timestamp/id terbaru) di posisi teratas.
+      const filtered = state.transactions
+        .filter(t => {
+          const parts = (t.tanggal || '').split('-');
+          return parseInt(parts[0], 10) === state.year && parseInt(parts[1], 10) === state.month;
+        })
+        .sort((a, b) => {
+          if (b.tanggal !== a.tanggal) {
+            return (b.tanggal || '').localeCompare(a.tanggal || '');
+          }
+          if (b.createdAt && a.createdAt) {
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          }
+          return String(b.id || '').localeCompare(String(a.id || ''));
+        });
 
       filtered.forEach(t => {
         if (t.jenis === 'Pemasukan') income += t.jumlah;
@@ -1056,7 +1407,8 @@
           grouped[t.tanggal].push(t);
         });
 
-        const dates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
+        // Tanggal terbaru selalu di atas
+        const dates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
         dates.forEach(d => {
           const box = document.createElement('div');
           box.className = 'group-box';
@@ -1067,28 +1419,36 @@
           grouped[d].forEach(t => {
             const isExp = t.jenis === 'Pengeluaran';
             const icon = isExp ? '▼' : '▲';
-            const row = document.createElement('div');
-            row.className = 'tx-item';
-            row.innerHTML = `
-              <div class="tx-icon" style="font-size:16px; color:${isExp ? 'var(--red)' : 'var(--green)'}">${icon}</div>
-              <div class="tx-meta">
-                <div class="tx-name">${escapeHtml(t.catatan || t.jenis)}</div>
-                <div class="tx-sub">${t.jenis}</div>
+            
+            const swipeRow = document.createElement('div');
+            swipeRow.className = 'tx-swipe-row';
+            swipeRow.dataset.id = t.id;
+
+            swipeRow.innerHTML = `
+              <div class="tx-swipe-actions">
+                <button class="tx-swipe-btn swipe-btn-edit" type="button" aria-label="Edit Transaksi">
+                  <span class="swipe-btn-icon">✏️</span>
+                  <span class="swipe-btn-text">Edit</span>
+                </button>
+                <button class="tx-swipe-btn swipe-btn-delete" type="button" aria-label="Hapus Transaksi">
+                  <span class="swipe-btn-icon">🗑️</span>
+                  <span class="swipe-btn-text">Hapus</span>
+                </button>
               </div>
-              <div class="tx-val ${isExp ? 'val-out' : 'val-in'}">
-                ${isExp ? '-' : '+'}Rp ${formatIDR(t.jumlah)}
+              <div class="tx-item">
+                <div class="tx-icon" style="font-size:16px; color:${isExp ? 'var(--red)' : 'var(--green)'}">${icon}</div>
+                <div class="tx-meta">
+                  <div class="tx-name">${escapeHtml(t.catatan || t.jenis)}</div>
+                  <div class="tx-sub">${t.jenis}</div>
+                </div>
+                <div class="tx-val ${isExp ? 'val-out' : 'val-in'}">
+                  ${isExp ? '-' : '+'}Rp ${formatIDR(t.jumlah)}
+                </div>
               </div>
             `;
-            row.onclick = () => {
-              if (confirm(`Hapus: ${t.catatan || t.jenis} (Rp ${formatIDR(t.jumlah)})?`)) {
-                state.transactions = state.transactions.filter(x => x.id !== t.id);
-                save();
-                render();
-                showToast('Dihapus');
-                if (state.apiUrl) postCloud({ action: 'delete_transaction', id: t.id });
-              }
-            };
-            box.appendChild(row);
+
+            setupSwipeGestures(swipeRow, t);
+            box.appendChild(swipeRow);
           });
 
           container.appendChild(box);
@@ -1119,7 +1479,19 @@
 
       // FIXED BOTTOM BAR ACTIONS
       document.getElementById('navAnalysisBtn').onclick = () => openModal(aModal);
-      document.getElementById('navManualBtn').onclick = () => openModal(mModal);
+      document.getElementById('navManualBtn').onclick = () => {
+        editingTxId = null;
+        const titleEl = mModal.querySelector('.sheet-title');
+        if (titleEl) titleEl.textContent = 'Input Manual';
+        const saveBtn = document.getElementById('saveManualBtn');
+        if (saveBtn) saveBtn.textContent = 'Simpan Transaksi';
+        document.getElementById('inputAmount').value = '';
+        document.getElementById('inputNote').value = '';
+        setManualType('Pengeluaran');
+        const dateInput = document.getElementById('inputDate');
+        if (dateInput) dateInput.value = today();
+        openModal(mModal);
+      };
       document.getElementById('navCenterVoiceBtn').onclick = () => openModal(vModal, startVoice);
       document.getElementById('navThemeBtn').onclick = toggleTheme;
       document.getElementById('navSettingsBtn').onclick = () => {
@@ -1202,6 +1574,35 @@
       if (saveBtn) saveBtn.textContent = '✓ Simpan Sekarang';
     }
 
+    // ── CANCEL AUTO SAVE ON EDIT ──
+    function cancelVoiceAutoSave(msg = '✏️ Mode edit: Simpan otomatis dimatikan') {
+      const wasCounting = !!autoSaveTimer;
+      clearAutoSaveCountdown();
+      const vStatus = document.getElementById('voiceStatus');
+      if (vStatus) {
+        vStatus.textContent = msg;
+        vStatus.style.color = 'var(--blue)';
+      }
+      if (wasCounting) {
+        showToast('⏸️ Simpan otomatis dibatalkan');
+      }
+      const saveBtn = document.getElementById('saveVoiceBtn');
+      if (saveBtn) saveBtn.textContent = '✓ Simpan Sekarang';
+    }
+
+    function toggleVoiceType() {
+      if (!state.detectedVoice) {
+        state.detectedVoice = { type: 'Pengeluaran', amount: 0, note: '' };
+      }
+      state.detectedVoice.type = state.detectedVoice.type === 'Pengeluaran' ? 'Pemasukan' : 'Pengeluaran';
+      const typeEl = document.getElementById('parsedType');
+      if (typeEl) {
+        typeEl.textContent = (state.detectedVoice.type === 'Pemasukan' ? '▲ ' : '▼ ') + state.detectedVoice.type;
+        typeEl.style.color = state.detectedVoice.type === 'Pemasukan' ? 'var(--green)' : 'var(--red)';
+      }
+      cancelVoiceAutoSave('Tipe diubah: Simpan otomatis dibatalkan');
+    }
+
     // ── UPDATE VOICE RESULT UI ──
     function updateVoiceResult(parsed) {
       state.detectedVoice = parsed;
@@ -1210,8 +1611,12 @@
       const typeEl = document.getElementById('parsedType');
       typeEl.textContent = (parsed.type === 'Pemasukan' ? '▲ ' : '▼ ') + parsed.type;
       typeEl.style.color = parsed.type === 'Pemasukan' ? 'var(--green)' : 'var(--red)';
-      document.getElementById('parsedAmount').textContent = 'Rp ' + formatIDR(parsed.amount);
-      document.getElementById('parsedNote').textContent = parsed.note;
+      
+      const amtEl = document.getElementById('parsedAmount');
+      const noteEl = document.getElementById('parsedNote');
+      if (amtEl) amtEl.value = parsed.amount || '';
+      if (noteEl) noteEl.value = parsed.note || '';
+
       const confColor = { 'Sangat Yakin': 'var(--green)', 'Cukup Yakin': 'var(--blue)', 'Lumayan Yakin': '#FF9F0A', 'Tebakan': 'var(--red)' };
       document.getElementById('voiceStatus').textContent = `🎯 ${parsed.confidence}`;
       document.getElementById('voiceStatus').style.color = confColor[parsed.confidence] || 'var(--blue)';
@@ -1245,14 +1650,41 @@
       if (amt <= 0) return alert('Masukkan nominal!');
 
       const note = document.getElementById('inputNote').value.trim() || state.manualType;
+      const dateInput = document.getElementById('inputDate');
+      const txDate = (dateInput && dateInput.value) ? dateInput.value : today();
 
-      addTransaction({
-        id: 'TRX-' + Date.now().toString(36),
-        tanggal: today(),
-        jenis: state.manualType,
-        jumlah: amt,
-        catatan: note
-      });
+      if (editingTxId) {
+        const target = state.transactions.find(x => x.id === editingTxId);
+        if (target) {
+          target.jenis = state.manualType;
+          target.jumlah = amt;
+          target.catatan = note;
+          target.tanggal = txDate;
+          save();
+          render();
+          showToast('✓ Transaksi diperbarui');
+          if (state.apiUrl) {
+            postCloud({
+              action: 'update_transaction',
+              id: target.id,
+              tanggal: target.tanggal,
+              jenis: target.jenis,
+              jumlah: target.jumlah,
+              catatan: target.catatan
+            });
+          }
+        }
+        editingTxId = null;
+      } else {
+        addTransaction({
+          id: 'TRX-' + Date.now().toString(36),
+          tanggal: txDate,
+          jenis: state.manualType,
+          jumlah: amt,
+          catatan: note,
+          createdAt: new Date().toISOString()
+        });
+      }
 
       closeModal(document.getElementById('manualModal'));
       document.getElementById('inputAmount').value = '';
@@ -1287,6 +1719,36 @@
       if (retryBtn) retryBtn.onclick = startVoice;
       const saveBtn = document.getElementById('saveVoiceBtn');
       if (saveBtn) saveBtn.onclick = confirmSaveVoice;
+
+      const amtInput = document.getElementById('parsedAmount');
+      const noteInput = document.getElementById('parsedNote');
+      const typeItem = document.getElementById('parsedTypeItem');
+
+      function handleEdit() {
+        cancelVoiceAutoSave();
+      }
+
+      if (amtInput) {
+        amtInput.addEventListener('focus', handleEdit);
+        amtInput.addEventListener('click', handleEdit);
+        amtInput.addEventListener('input', () => {
+          cancelVoiceAutoSave();
+          if (state.detectedVoice) state.detectedVoice.amount = Number(amtInput.value) || 0;
+        });
+      }
+
+      if (noteInput) {
+        noteInput.addEventListener('focus', handleEdit);
+        noteInput.addEventListener('click', handleEdit);
+        noteInput.addEventListener('input', () => {
+          cancelVoiceAutoSave();
+          if (state.detectedVoice) state.detectedVoice.note = noteInput.value.trim();
+        });
+      }
+
+      if (typeItem) {
+        typeItem.onclick = toggleVoiceType;
+      }
     }
 
     function showVoiceError(msg) {
@@ -1340,6 +1802,10 @@
       document.getElementById('parsedGrid').style.display = 'none';
       document.getElementById('saveVoiceBtn').style.display = 'none';
       document.getElementById('retryVoiceBtn').style.display = 'none';
+      const amtEl = document.getElementById('parsedAmount');
+      const noteEl = document.getElementById('parsedNote');
+      if (amtEl) amtEl.value = '';
+      if (noteEl) noteEl.value = '';
       document.getElementById('transcriptBox').textContent = '"Contoh: Belanja makanan pentol 10.000"';
       document.getElementById('voiceStatus').textContent = '🎙️ Menghubungkan mikrofon...';
       document.getElementById('voiceStatus').style.color = 'var(--blue)';
@@ -1384,8 +1850,10 @@
             document.getElementById('parsedGrid').style.display = 'grid';
             document.getElementById('parsedType').textContent = (localParsed.type === 'Pemasukan' ? '▲ ' : '▼ ') + localParsed.type;
             document.getElementById('parsedType').style.color = localParsed.type === 'Pemasukan' ? 'var(--green)' : 'var(--red)';
-            document.getElementById('parsedAmount').textContent = 'Rp ' + formatIDR(localParsed.amount);
-            document.getElementById('parsedNote').textContent = localParsed.note;
+            const amtEl = document.getElementById('parsedAmount');
+            const noteEl = document.getElementById('parsedNote');
+            if (amtEl) amtEl.value = localParsed.amount || '';
+            if (noteEl) noteEl.value = localParsed.note || '';
             document.getElementById('voiceStatus').textContent = '👂 Mendengarkan...';
             document.getElementById('voiceStatus').style.color = 'var(--green)';
           }
@@ -1450,13 +1918,27 @@
 
     function confirmSaveVoice() {
       clearAutoSaveCountdown();
-      if (!state.detectedVoice || state.detectedVoice.amount <= 0) return;
+      const amtEl = document.getElementById('parsedAmount');
+      const noteEl = document.getElementById('parsedNote');
+      
+      const rawAmt = amtEl ? Number(amtEl.value) : (state.detectedVoice ? state.detectedVoice.amount : 0);
+      const amt = isNaN(rawAmt) ? 0 : rawAmt;
+      
+      const rawType = (state.detectedVoice && state.detectedVoice.type) ? state.detectedVoice.type : 'Pengeluaran';
+      const note = (noteEl ? noteEl.value.trim() : '') || (state.detectedVoice ? state.detectedVoice.note : '') || rawType;
+
+      if (amt <= 0) {
+        alert('Nominal harus lebih dari 0!');
+        if (amtEl) amtEl.focus();
+        return;
+      }
+
       addTransaction({
         id: 'TRX-' + Date.now().toString(36),
         tanggal: today(),
-        jenis: state.detectedVoice.type,
-        jumlah: state.detectedVoice.amount,
-        catatan: state.detectedVoice.note
+        jenis: rawType,
+        jumlah: amt,
+        catatan: note
       });
       closeAllModals();
     }
@@ -1648,6 +2130,7 @@
 
 
     function addTransaction(tx) {
+      if (!tx.createdAt) tx.createdAt = new Date().toISOString();
       state.transactions.unshift(tx);
       save();
       render();
