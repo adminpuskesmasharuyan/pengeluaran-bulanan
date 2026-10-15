@@ -1,83 +1,163 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <!-- Background Gradient -->
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#181920" />
-      <stop offset="50%" stop-color="#0E0F14" />
-      <stop offset="100%" stop-color="#050608" />
+    <!-- Background Space-Glass Gradient -->
+    <linearGradient id="baseBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141724" />
+      <stop offset="40%" stop-color="#0B0D15" />
+      <stop offset="100%" stop-color="#05060A" />
     </linearGradient>
 
-    <!-- Glass Rim Glow -->
-    <linearGradient id="rimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0A84FF" stop-opacity="0.8" />
-      <stop offset="40%" stop-color="#30D158" stop-opacity="0.4" />
-      <stop offset="80%" stop-color="#BF5AF2" stop-opacity="0.7" />
-      <stop offset="100%" stop-color="#0A84FF" stop-opacity="0.2" />
+    <!-- Outer Squircle Rim Light (Specular Edge) -->
+    <linearGradient id="outerRim" x1="15%" y1="0%" x2="85%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.45" />
+      <stop offset="30%" stop-color="#60A5FA" stop-opacity="0.25" />
+      <stop offset="70%" stop-color="#34D399" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.08" />
     </linearGradient>
 
-    <!-- Core Soundwave / Crest Gradient -->
-    <linearGradient id="coreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <!-- Liquid Caustic Aurora (Internal Color Refraction) -->
+    <radialGradient id="causticCyan" cx="35%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#00F2FE" stop-opacity="0.85" />
+      <stop offset="40%" stop-color="#0A84FF" stop-opacity="0.5" />
+      <stop offset="80%" stop-color="#0B0D15" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="causticGreen" cx="70%" cy="65%" r="55%">
+      <stop offset="0%" stop-color="#30D158" stop-opacity="0.75" />
+      <stop offset="50%" stop-color="#10B981" stop-opacity="0.35" />
+      <stop offset="85%" stop-color="#05060A" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="causticViolet" cx="60%" cy="25%" r="50%">
+      <stop offset="0%" stop-color="#BF5AF2" stop-opacity="0.6" />
+      <stop offset="55%" stop-color="#8B5CF6" stop-opacity="0.2" />
+      <stop offset="85%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Liquid Glass Body Gradient (Frosted Acrylic Look) -->
+    <linearGradient id="liquidBody" x1="20%" y1="10%" x2="80%" y2="90%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.4" />
+      <stop offset="30%" stop-color="#FFFFFF" stop-opacity="0.12" />
+      <stop offset="70%" stop-color="#00F2FE" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.22" />
+    </linearGradient>
+
+    <!-- Liquid Ribbon 1 (Ascending Growth Wave) -->
+    <linearGradient id="ribbon1" x1="0%" y1="100%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#0A84FF" />
-      <stop offset="45%" stop-color="#30D158" />
-      <stop offset="100%" stop-color="#FFD60A" />
+      <stop offset="45%" stop-color="#00F2FE" />
+      <stop offset="85%" stop-color="#30D158" />
+      <stop offset="100%" stop-color="#A7F3D0" />
     </linearGradient>
 
-    <!-- Siri Voice Wave Gradient -->
-    <linearGradient id="voiceWave" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#30D158" />
-      <stop offset="50%" stop-color="#0A84FF" />
-      <stop offset="100%" stop-color="#BF5AF2" />
+    <!-- Liquid Ribbon 2 (Balance Loop) -->
+    <linearGradient id="ribbon2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.7" />
+      <stop offset="40%" stop-color="#67E8F9" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#34D399" stop-opacity="0.6" />
     </linearGradient>
 
-    <!-- Glow Filter -->
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="16" result="blur" />
+    <!-- Specular Highlight Curve -->
+    <linearGradient id="topGlare" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.55" />
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Core Glass Sphere Refraction -->
+    <radialGradient id="sphereGrad" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9" />
+      <stop offset="35%" stop-color="#67E8F9" stop-opacity="0.6" />
+      <stop offset="75%" stop-color="#0A84FF" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#30D158" stop-opacity="0.8" />
+    </radialGradient>
+
+    <!-- Blur Filters for Depth of Field -->
+    <filter id="bloom" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="36" result="blur" />
+    </filter>
+    <filter id="glassBlur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="14" result="blur" />
+    </filter>
+    <filter id="crispGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
-    <filter id="subtleGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="8" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#00F2FE" flood-opacity="0.35" />
     </filter>
   </defs>
 
-  <!-- iOS Squircle Base -->
-  <rect x="8" y="8" width="496" height="496" rx="116" fill="url(#bgGrad)" stroke="url(#rimGrad)" stroke-width="6" />
+  <!-- ================= 1. BASE SQUIRCLE (iOS 2026 CONTINUOUS CURVE) ================= -->
+  <rect x="18" y="18" width="476" height="476" rx="112" fill="url(#baseBg)" stroke="url(#outerRim)" stroke-width="3" />
 
-  <!-- Inner Ambient Radial Glow -->
-  <circle cx="256" cy="230" r="150" fill="url(#coreGrad)" opacity="0.15" filter="url(#glow)" />
-
-  <!-- Voice Ring Concentric Waves -->
-  <circle cx="256" cy="240" r="180" fill="none" stroke="url(#rimGrad)" stroke-width="2" opacity="0.3" stroke-dasharray="8 12" />
-  <circle cx="256" cy="240" r="140" fill="none" stroke="url(#rimGrad)" stroke-width="3" opacity="0.45" />
-
-  <!-- Central Dynamic Financial Voice Crest -->
-  <!-- Soundwave Bars morphing into Wallet / Growth Chart -->
-  <g filter="url(#subtleGlow)">
-    <!-- Wave 1 (Left mini) -->
-    <rect x="156" y="210" width="16" height="60" rx="8" fill="url(#voiceWave)" opacity="0.75" />
-    <!-- Wave 2 (Left mid) -->
-    <rect x="188" y="170" width="18" height="140" rx="9" fill="url(#voiceWave)" opacity="0.9" />
-    <!-- Wave 3 (Center High - Soundwave + Pillar) -->
-    <rect x="222" y="125" width="22" height="230" rx="11" fill="url(#coreGrad)" />
-    <!-- Wave 4 (Center Right High) -->
-    <rect x="260" y="150" width="22" height="180" rx="11" fill="url(#coreGrad)" />
-    <!-- Wave 5 (Right Mid) -->
-    <rect x="298" y="190" width="18" height="100" rx="9" fill="url(#voiceWave)" opacity="0.9" />
-    <!-- Wave 6 (Right mini) -->
-    <rect x="332" y="225" width="16" height="30" rx="8" fill="url(#voiceWave)" opacity="0.7" />
+  <!-- ================= 2. INTERNAL LIQUID CAUSTICS (AURORA BLOOM) ================= -->
+  <g filter="url(#bloom)" opacity="0.85">
+    <circle cx="180" cy="180" r="140" fill="url(#causticCyan)" />
+    <circle cx="340" cy="330" r="150" fill="url(#causticGreen)" />
+    <circle cx="330" cy="170" r="120" fill="url(#causticViolet)" />
   </g>
 
-  <!-- Soundwave Connecting Golden Arc (Growth Curve) -->
-  <path d="M 164 210 Q 233 80 340 225" fill="none" stroke="#FFD60A" stroke-width="6" stroke-linecap="round" opacity="0.85" filter="url(#subtleGlow)" />
+  <!-- ================= 3. FROSTED GLASS INNER PLATE ================= -->
+  <rect x="52" y="52" width="408" height="408" rx="88" fill="url(#liquidBody)" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="1.5" />
 
-  <!-- Luxury Microphone Accent -->
-  <circle cx="256" cy="240" r="38" fill="#121318" stroke="url(#coreGrad)" stroke-width="4" filter="url(#subtleGlow)" />
-  <!-- Minimalist Mic Head Icon -->
-  <rect x="249" y="222" width="14" height="22" rx="7" fill="#FFFFFF" />
-  <path d="M 243 232 C 243 241 269 241 269 232" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
-  <line x1="256" y1="243" x2="256" y2="252" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
+  <!-- ================= 4. HERO LIQUID GLASS PRISM (ASCENDING GROWTH & BALANCE) ================= -->
+  <!-- Back Refractive Shadow -->
+  <g filter="url(#dropShadow)">
+    
+    <!-- Outer Liquid Wave (Loop 1 - Growth Vector) -->
+    <path d="M 160 330
+             C 140 250, 190 160, 280 145
+             C 350 135, 380 180, 360 230
+             C 340 280, 260 290, 210 335
+             C 170 370, 250 400, 310 380
+             C 370 360, 400 300, 395 240"
+          fill="none"
+          stroke="url(#ribbon1)"
+          stroke-width="32"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          opacity="0.9" />
 
-  <!-- App Label "FINANCE KITA" Bottom Subtle Badge -->
-  <text x="256" y="424" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif" font-size="28" font-weight="800" letter-spacing="4" fill="#FFFFFF" opacity="0.95">FINANCE KITA</text>
-  <text x="256" y="448" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif" font-size="13" font-weight="600" letter-spacing="2" fill="#30D158" opacity="0.9"> VOICE EDITION</text>
+    <!-- Inner Caustic Core (Loop 2 - Intersecting Glass Ribbon) -->
+    <path d="M 175 220
+             C 175 160, 250 140, 310 170
+             C 360 195, 360 270, 300 310
+             C 240 350, 160 310, 160 250
+             C 160 210, 200 180, 256 180
+             C 320 180, 360 230, 350 290"
+          fill="none"
+          stroke="url(#ribbon2)"
+          stroke-width="18"
+          stroke-linecap="round"
+          opacity="0.8" />
+  </g>
+
+  <!-- Floating Liquid Glass Drop (Apex of Wealth / Sound Focus) -->
+  <g filter="url(#crispGlow)">
+    <!-- Central Translucent Lens -->
+    <circle cx="256" cy="245" r="46" fill="url(#sphereGrad)" opacity="0.92" />
+    <circle cx="256" cy="245" r="46" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-opacity="0.8" />
+
+    <!-- Upward Micro Arrow within the Liquid Drop (Minimalist Growth Indicator) -->
+    <path d="M 244 252 L 256 238 L 268 252" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="256" y1="239" x2="256" y2="257" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" />
+
+    <!-- Specular Hotspot on Drop -->
+    <ellipse cx="244" cy="228" rx="14" ry="7" transform="rotate(-30 244 228)" fill="#FFFFFF" opacity="0.85" />
+  </g>
+
+  <!-- Specular Light Lines on Wave Ribbons (Liquid Edge Glints) -->
+  <path d="M 175 320 C 160 260, 200 175, 275 155" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.75" />
+  <path d="M 330 155 C 370 185, 375 240, 345 285" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.6" />
+
+  <!-- ================= 5. TOP GLASS SPECULAR SHEEN (iOS LIQUID REFLECTION) ================= -->
+  <!-- Top Curving Light Reflection -->
+  <path d="M 52 140
+           C 120 70, 392 70, 460 140
+           C 390 100, 122 100, 52 140 Z"
+        fill="url(#topGlare)" />
+
+  <!-- Ultra-subtle Perimeter Ambient Rim -->
+  <rect x="22" y="22" width="468" height="468" rx="108" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.12" />
 </svg>
