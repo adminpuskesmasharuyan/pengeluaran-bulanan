@@ -1382,6 +1382,7 @@
 
     // Audio Chime Feedback (Apple Style)
     function playChime() {
+      voiceCooldownUntil = Date.now() + 1000;
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (!AudioCtx) return;
@@ -2203,6 +2204,8 @@
     // Prinsip: 1 sesi = 1 instance baru. Tidak ada reuse, tidak ada retry loop.
     // recognition selalu null di luar sesi aktif.
     let recognition = null;
+    let voiceStartTimer = null;
+    let voiceCooldownUntil = 0;   // waktu paling awal mic boleh dipakai lagi
 
     function initVoice() {
       const orb = document.getElementById('siriOrb');
@@ -2265,16 +2268,14 @@
     // Hentikan mic secara bersih — selalu aman dipanggil berkali-kali
     function stopVoice() {
       clearAutoSaveCountdown();
+      if (voiceStartTimer) { clearTimeout(voiceStartTimer); voiceStartTimer = null; }
       if (recognition) {
         const r = recognition;
         recognition = null;          // null DULU sebelum abort agar onend tidak memicu ulang
-        r.onstart = null;
-        r.onspeechstart = null;
-        r.onspeechend = null;
-        r.onresult = null;
-        r.onerror = null;
-        r.onend = null;
+        r.onstart = r.onspeechstart = r.onspeechend = null;
+        r.onresult = r.onerror = r.onend = null;
         try { r.abort(); } catch (_) { }
+        voiceCooldownUntil = Date.now() + 700;   // beri waktu mic dilepas oleh OS
       }
       const orb = document.getElementById('siriOrb');
       if (orb) orb.classList.remove('listening');
@@ -2290,6 +2291,15 @@
 
       // Pastikan sesi lama benar-benar mati dulu sebelum membuat yang baru
       stopVoice();
+
+      // Mic belum lepas sepenuhnya → tunggu, lalu coba lagi otomatis
+      const wait = voiceCooldownUntil - Date.now();
+      if (wait > 0) {
+        const vs = document.getElementById('voiceStatus');
+        if (vs) { vs.textContent = 'Menyiapkan mikrofon...'; vs.style.color = 'var(--text-muted)'; }
+        voiceStartTimer = setTimeout(() => { voiceStartTimer = null; startVoice(); }, wait);
+        return;
+      }
 
       // Reset UI
       state.detectedVoice = null;
