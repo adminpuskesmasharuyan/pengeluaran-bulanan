@@ -2364,23 +2364,72 @@
       // ── 2. EKSTRAKSI NOMINAL UANG ──
       let amount = extractIndonesianNumber(text);
 
-      // ── 3. EKSTRAKSI CATATAN BERSIH ──
-      let note = text
-        .replace(/(\d[\d.,]*)\s*(ribu|rb|k|juta|jt|ratus|puluh|belas)?/gi, ' ')
-        .replace(/\b(rp|rupiah|idr)\b/gi, ' ');
+      // ── 3. EKSTRAKSI CATATAN BERSIH (DENGAN PROTEKSI KUANTITAS SEPERTI 5 LITER, 2 KG) ──
+      let note = text;
 
+      // a. Normalisasi singkatan kuantitas dari Speech Recognition (misal: "5 l", "5l", "5lt" -> "5 liter")
+      note = note.replace(/\b(\d+(?:[.,]\d+)?)\s*(?:liter|lt)\b/gi, '$1 liter');
+      note = note.replace(/(\d+(?:[.,]\d+)?)\s*(?:lt|l)\b/gi, '$1 liter');
+      note = note.replace(/(\d+(?:[.,]\d+)?)\s*kg\b/gi, '$1 kg');
+
+      // b. Proteksi kuantitas barang agar angkanya TIDAK terpotong oleh penghapus nominal uang!
+      const quantityPlaceholders = [];
+      const qtyRegex = /\b(\d+(?:[.,]\d+)?\s*(?:liter|kg|gram|gr|ons|buah|biji|porsi|pcs|pack|box|dus|lusin|kotak|botol|kaleng|lembar|helai|meter|cm|unit|set|pasang|potong|loyang|bungkus|sachet|gelas|cangkir|cup|piring|mangkok|tusuk|butir|ekor|batang))\b/gi;
+      note = note.replace(qtyRegex, (match) => {
+        const key = `__QTY_${quantityPlaceholders.length}__`;
+        quantityPlaceholders.push(match);
+        return key;
+      });
+
+      // c. Hapus slang nominal uang
+      const slangWords = [
+        /\b(seperempat\s*juta)\b/gi, /\b(setengah\s*juta)\b/gi,
+        /\bceban\s*setengah\b/gi, /\bgoceng\s*setengah\b/gi, /\bseceng\s*setengah\b/gi,
+        /\bseceng\b/gi, /\bnoceng\b/gi, /\bgoceng\b/gi, /\bceban\b/gi, /\bgoban\b/gi,
+        /\bcepek\b/gi, /\bgopek\b/gi
+      ];
+      slangWords.forEach(re => { note = note.replace(re, ' '); });
+
+      // d. Hapus pola angka compound & pecahan jutaan
+      note = note.replace(/\b(\d+|satu|se|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan)\s*(?:juta|jt)\s*setengah\b/gi, ' ');
+      note = note.replace(/\b\d+(?:[.,]\d+)*\s*(?:juta|jt)\s*\d+(?:[.,]\d+)*\s*(?:ribu|rb|k)?\b/gi, ' ');
+      note = note.replace(/\b\d+(?:[.,]\d+)*\s*(?:juta|jt|ribu|rb|ratus|puluh|k)\b/gi, ' ');
+
+      // e. Hapus nominal bertitik/berkoma atau angka rupiah (misal: "50.000", "50000", "rp 50000", "1.500.000")
+      note = note.replace(/\b(?:rp\.?|idr)\s*\d+(?:[.,]\d+)*\b/gi, ' ');
+      note = note.replace(/\b\d{1,3}(?:[.,]\d{3})+\b/g, ' ');
+      note = note.replace(/\b\d{4,}\b/g, ' '); // 4 digit atau lebih (>= 1000)
+
+      // f. Hapus angka verbal uang jika ada (misal: "lima puluh ribu", "seratus ribu")
+      note = note.replace(/\b(?:satu|se|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh|sebelas|\d+)?\s*(?:belas|puluh)?\s*(?:ribu|juta|jt|ratus)\s*(?:rupiah)?\b/gi, ' ');
+
+      // g. Hapus simbol mata uang & kata pengantar nominal
+      note = note.replace(/\b(rp|rupiah|idr|nominal|sebesar|seharga|senilai|total|harga|biaya)\b/gi, ' ');
+
+      // h. Kembalikan placeholder kuantitas yang diproteksi tadi
+      quantityPlaceholders.forEach((qty, idx) => {
+        note = note.replace(new RegExp(`__QTY_${idx}__`, 'g'), qty);
+      });
+
+      // i. Bersihkan Stopwords Kata Kerja & Transaksi
       const stopWords = [
-        'belanja', 'beli', 'bayar', 'buat', 'untuk', 'pakai', 'via', 'dengan', 'ke', 'di', 'dan', 'yang', 'ada',
-        'mau', 'minta', 'tolong', 'catatan', 'nominal', 'rp', 'rupiah', 'ribu', 'juta', 'ratus', 'rb',
-        'pengeluaran', 'pemasukan', 'income', 'expense', 'uang', 'duit', 'modal',
+        'belanja', 'beli', 'membeli', 'ngebeli', 'bayar', 'membayar', 'bayarin', 'isi', 'ngisi', 'makan', 'minum',
+        'buat', 'untuk', 'pakai', 'via', 'dengan', 'ke', 'di', 'dan', 'yang', 'ada',
+        'mau', 'minta', 'tolong', 'catatan', 'dapat', 'pengeluaran', 'pemasukan',
+        'income', 'expense', 'uang', 'duit', 'modal', 'terima', 'diterima', 'keluar',
         'bca', 'mandiri', 'bri', 'bni', 'qris', 'gopay', 'ovo', 'shopeepay', 'dana', 'tunai', 'cash', 'transfer'
       ];
       stopWords.forEach(w => {
         note = note.replace(new RegExp('(^|\\s)' + w + '($|\\s)', 'gi'), ' ');
       });
+
+      // j. Format Title Case rapi
       note = note.trim().replace(/\s+/g, ' ');
-      if (note.length < 2) note = type;
-      else note = note.charAt(0).toUpperCase() + note.slice(1);
+      if (note.length < 2) {
+        note = type;
+      } else {
+        note = note.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      }
 
       return { type, amount: Math.round(amount), note, confidence, intentScore };
     }
@@ -2388,6 +2437,11 @@
     // ── EKSTRAKTOR ANGKA VERBAL INDONESIA v4 ──
     function extractIndonesianNumber(str) {
       let s = str.toLowerCase().trim();
+
+      // Normalisasi singkatan unit sebelum ekstraksi angka agar "5 l" atau "5l" tidak disalahartikan
+      s = s.replace(/\b(\d+(?:[.,]\d+)?)\s*(?:liter|lt)\b/gi, '$1 liter');
+      s = s.replace(/(\d+(?:[.,]\d+)?)\s*(?:lt|l)\b/gi, '$1 liter');
+      s = s.replace(/(\d+(?:[.,]\d+)?)\s*kg\b/gi, '$1 kg');
 
       // 1. Kombinasi pecahan "setengah" (misal: "2 juta setengah" → "2500000")
       s = s.replace(/\b(\d+|satu|se|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan)\s*(?:juta|jt)\s*setengah\b/gi, (match, n) => {
@@ -2415,7 +2469,7 @@
       slangMap.forEach(item => { s = s.replace(item.regex, item.val); });
 
       // 3. Hapus angka kuantitas (misal: "5 liter", "2 kg", "3 porsi")
-      s = s.replace(/\d+(?:[.,]\d+)*\s*(?:liter|lt|kg|gram|gr|g|ons|mg|buah|biji|porsi|pcs|pack|box|dus|lusin|kotak|botol|kaleng|lembar|helai|meter|cm|km|m2|m3|unit|set|pasang|potong|loyang|bungkus|sachet|sendok|sdm|sdt|gelas|cangkir|menit|jam|hari|minggu|bulan|tahun|x|kali)\b/gi, ' ');
+      s = s.replace(/\d+(?:[.,]\d+)*\s*(?:liter|lt|\bl\b|kg|gram|gr|g|ons|mg|buah|biji|porsi|pcs|pack|box|dus|lusin|kotak|botol|kaleng|lembar|helai|meter|cm|km|m2|m3|unit|set|pasang|potong|loyang|bungkus|sachet|sendok|sdm|sdt|gelas|cangkir|cup|piring|mangkok|tusuk|butir|ekor|batang|menit|jam|hari|minggu|bulan|tahun|x|kali)\b/gi, ' ');
 
       // Helper konversi format angka Indonesia (5.000.000 -> 5000000, 45.000 -> 45000, 1.5jt -> 1.5)
       function parseIndoNum(str) {
