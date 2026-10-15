@@ -111,41 +111,7 @@
       letter-spacing: -0.02em;
     }
 
-    .status-badge {
-      font-size: 11px;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--card-subtle);
-      padding: 4px 10px;
-      border-radius: 12px;
-      border: 0.5px solid var(--border);
-    }
 
-    .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 6px var(--green);
-    }
-
-    .dot.sync {
-      background: #FF9F0A;
-      box-shadow: 0 0 6px #FF9F0A;
-      animation: pulse 1s infinite alternate;
-    }
-
-    @keyframes pulse {
-      from {
-        opacity: 0.4;
-      }
-
-      to {
-        opacity: 1;
-      }
-    }
 
     /* ================= MONTH SELECTOR ================= */
     .month-pill {
@@ -731,11 +697,13 @@
     .parsed-input::-webkit-outer-spin-button,
     .parsed-input::-webkit-inner-spin-button {
       -webkit-appearance: none;
+      appearance: none;
       margin: 0;
     }
 
     .parsed-input[type=number] {
       -moz-appearance: textfield;
+      appearance: textfield;
     }
 
     .btn-submit {
@@ -821,10 +789,6 @@
       <div class="brand">
         <img src="icon.svg" class="brand-icon" alt="FK">
         <span class="brand-title">Finance Kita</span>
-      </div>
-      <div class="status-badge">
-        <span class="dot" id="cloudDot"></span>
-        <span id="cloudStatus">Cloud Siap</span>
       </div>
     </header>
 
@@ -1046,6 +1010,27 @@
     </div>
   </div>
 
+  <!-- ================= 5. DELETE CONFIRM MODAL (iOS Style) ================= -->
+  <div class="modal" id="deleteConfirmModal">
+    <div class="sheet" style="text-align: center; max-width: 400px;">
+      <div class="handle"></div>
+      <div style="font-size: 38px; margin: 6px 0 10px 0;">🗑️</div>
+      <div class="sheet-title" style="margin-bottom: 6px; font-size: 18px;">Hapus Transaksi?</div>
+      <div id="deleteConfirmDesc" style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; padding: 0 10px;">
+        Transaksi ini akan dihapus permanen.
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <button class="btn-submit" id="btnConfirmDelete" style="background: var(--red);">
+          Ya, Hapus Transaksi
+        </button>
+        <button class="btn-submit" id="btnCancelDelete" style="background: var(--card-subtle); color: var(--text);">
+          Batal
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification -->
   <div class="toast" id="toast">Tersimpan</div>
 
@@ -1189,12 +1174,38 @@
       openModal(mModal);
     }
 
-    function triggerDelete(rowEl, tx, isFullSwipe = false) {
-      if (currentlyOpenRow === rowEl) currentlyOpenRow = null;
+    let pendingDeleteRow = null;
+    let pendingDeleteTx = null;
+
+    function askDeleteConfirmation(rowEl, tx) {
+      pendingDeleteRow = rowEl;
+      pendingDeleteTx = tx;
+
+      if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(25);
+      }
+
+      const modal = document.getElementById('deleteConfirmModal');
+      const desc = document.getElementById('deleteConfirmDesc');
+      if (desc) {
+        desc.innerHTML = `Hapus catatan <strong>"${escapeHtml(tx.catatan || tx.jenis)}"</strong> senilai <strong style="color:${tx.jenis === 'Pemasukan' ? 'var(--green)' : 'var(--red)'}">Rp ${formatIDR(tx.jumlah)}</strong>?`;
+      }
+
+      openModal(modal);
+    }
+
+    function executeConfirmedDelete() {
+      if (!pendingDeleteRow || !pendingDeleteTx) return;
+      const rowEl = pendingDeleteRow;
+      const tx = pendingDeleteTx;
+      pendingDeleteRow = null;
+      pendingDeleteTx = null;
+
+      closeModal(document.getElementById('deleteConfirmModal'));
 
       // Haptic feedback Apple-style
       if (window.navigator && window.navigator.vibrate) {
-        window.navigator.vibrate(isFullSwipe ? [30, 50, 20] : 30);
+        window.navigator.vibrate([30, 50, 20]);
       }
 
       const itemEl = rowEl.querySelector('.tx-item');
@@ -1213,6 +1224,15 @@
           if (state.apiUrl) postCloud({ action: 'delete_transaction', id: tx.id });
         }, 220);
       }, 120);
+    }
+
+    function cancelDeleteConfirmation() {
+      if (pendingDeleteRow) {
+        pendingDeleteRow.closeSwipe?.();
+      }
+      pendingDeleteRow = null;
+      pendingDeleteTx = null;
+      closeModal(document.getElementById('deleteConfirmModal'));
     }
 
     function setupSwipeGestures(rowEl, tx) {
@@ -1327,9 +1347,10 @@
 
         const finalOffset = currentOffset;
 
-        // 1. Geser jauh ke kiri -> langsung hapus (Full swipe delete)
+        // 1. Geser jauh ke kiri -> konfirmasi hapus
         if (finalOffset < -FULL_SWIPE_THRESHOLD) {
-          triggerDelete(rowEl, tx, true);
+          openRow();
+          askDeleteConfirmation(rowEl, tx);
           return;
         }
 
@@ -1354,7 +1375,7 @@
 
       deleteBtn.onclick = (e) => {
         e.stopPropagation();
-        triggerDelete(rowEl, tx, false);
+        askDeleteConfirmation(rowEl, tx);
       };
     }
 
@@ -1476,6 +1497,11 @@
       const mModal = document.getElementById('manualModal');
       const aModal = document.getElementById('analysisModal');
       const sModal = document.getElementById('settingsModal');
+      const dModal = document.getElementById('deleteConfirmModal');
+
+      // Tombol Konfirmasi Hapus
+      document.getElementById('btnConfirmDelete').onclick = executeConfirmedDelete;
+      document.getElementById('btnCancelDelete').onclick = cancelDeleteConfirmation;
 
       // FIXED BOTTOM BAR ACTIONS
       document.getElementById('navAnalysisBtn').onclick = () => openModal(aModal);
@@ -1502,8 +1528,14 @@
       };
 
       // Modal Background Tap to Close
-      [vModal, mModal, aModal, sModal].forEach(m => {
-        m.onclick = (e) => { if (e.target === m) closeModal(m); };
+      [vModal, mModal, aModal, sModal, dModal].forEach(m => {
+        if (!m) return;
+        m.onclick = (e) => {
+          if (e.target === m) {
+            if (m === dModal) cancelDeleteConfirmation();
+            else closeModal(m);
+          }
+        };
       });
 
       // Manual Form
@@ -2153,8 +2185,8 @@
       if (_dotOffTimer) { clearTimeout(_dotOffTimer); _dotOffTimer = null; }
       const d = document.getElementById('cloudDot');
       const s = document.getElementById('cloudStatus');
-      d.classList.add('sync');
-      s.textContent = 'Menyimpan...';
+      if (d) d.classList.add('sync');
+      if (s) s.textContent = 'Menyimpan...';
     }
 
     function _syncEnd() {
@@ -2165,8 +2197,8 @@
           if (_syncCount === 0) {
             const d = document.getElementById('cloudDot');
             const s = document.getElementById('cloudStatus');
-            d.classList.remove('sync');
-            s.textContent = 'Tersambung';
+            if (d) d.classList.remove('sync');
+            if (s) s.textContent = 'Tersambung';
           }
           _dotOffTimer = null;
         }, _DOT_MIN_MS);
