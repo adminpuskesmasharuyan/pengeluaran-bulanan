@@ -1,4 +1,4 @@
-const CACHE_NAME = 'finance-kita-v5';
+const CACHE_NAME = 'finance-kita-v6';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
