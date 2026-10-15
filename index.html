@@ -1263,9 +1263,7 @@
     (function initVisibilityRefresh() {
       let lastActiveDate = today();
 
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState !== 'visible') return;
-
+      function handleAppResume() {
         const nowDate = today();
         if (nowDate === lastActiveDate) return; // Hari masih sama, tidak perlu apa-apa
 
@@ -1297,7 +1295,13 @@
 
         // 3. Fetch ulang data cloud saat resume (mungkin ada transaksi dari perangkat lain)
         if (state.apiUrl) fetchCloud();
+      }
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') handleAppResume();
       });
+      window.addEventListener('focus', handleAppResume);
+      window.addEventListener('pageshow', handleAppResume);
     })();
 
     function loadData() {
@@ -1799,8 +1803,9 @@
 
       // Render Analysis Data
       document.getElementById('anNetVal').textContent = 'Rp ' + formatIDR(net);
-      const daysInMonth = Math.max(1, new Date().getDate());
-      document.getElementById('anDailyVal').textContent = 'Rp ' + formatIDR(expense / daysInMonth);
+      const isCurrentMonth = (state.year === new Date().getFullYear() && state.month === (new Date().getMonth() + 1));
+      const daysCount = isCurrentMonth ? Math.max(1, new Date().getDate()) : new Date(state.year, state.month, 0).getDate();
+      document.getElementById('anDailyVal').textContent = 'Rp ' + formatIDR(expense / Math.max(1, daysCount));
     }
 
     // Event Bindings
@@ -1808,10 +1813,12 @@
       document.getElementById('prevMonth').onclick = () => {
         if (state.month === 1) { state.month = 12; state.year--; } else { state.month--; }
         render();
+        if (state.apiUrl) fetchCloud();
       };
       document.getElementById('nextMonth').onclick = () => {
         if (state.month === 12) { state.month = 1; state.year++; } else { state.month++; }
         render();
+        if (state.apiUrl) fetchCloud();
       };
 
       const vModal = document.getElementById('voiceModal');
@@ -2848,10 +2855,16 @@
       }
     }
 
-    // Buat fingerprint data untuk deteksi perubahan tanpa re-render sia-sia
+    // Buat fingerprint data untuk deteksi perubahan (tambah, hapus, maupun edit nilai/catatan)
     function _dataFingerprint(transactions) {
       if (!transactions || transactions.length === 0) return '0:';
-      return transactions.length + ':' + (transactions[0].id || '') + ':' + (transactions[transactions.length - 1].id || '');
+      let sum = 0;
+      let notesLen = 0;
+      for (let i = 0; i < transactions.length; i++) {
+        sum += (transactions[i].jumlah || 0);
+        notesLen += (transactions[i].catatan || '').length;
+      }
+      return `${transactions.length}:${sum}:${notesLen}:${transactions[0].id || ''}:${transactions[transactions.length - 1].id || ''}`;
     }
 
     async function fetchCloud() {
