@@ -2050,6 +2050,9 @@
 
     // ── UPDATE VOICE RESULT UI ──
     function updateVoiceResult(parsed) {
+      // 1. Matikan mikrofon seketika hasil suara valid terdeteksi — hardware mic langsung mati!
+      stopMicOnly();
+
       state.detectedVoice = parsed;
       clearAutoSaveCountdown();
       document.getElementById('parsedGrid').style.display = 'grid';
@@ -2229,8 +2232,7 @@
       if (orb) orb.classList.remove('listening');
     }
 
-    function stopVoice() {
-      clearAutoSaveCountdown();
+    function stopMicOnly() {
       if (startRetryTimeout) {
         clearTimeout(startRetryTimeout);
         startRetryTimeout = null;
@@ -2242,17 +2244,21 @@
       if (recognition) {
         const oldRec = recognition;
         recognition = null;
-        // Lepas semua callback lama agar event abort/end asynchronous tidak memicu error atau merusak UI
+        // Lepas semua callback lama agar event asynchronous tidak memicu error atau merusak UI
         oldRec.onstart = null;
         oldRec.onaudiostart = null;
         oldRec.onspeechstart = null;
         oldRec.onresult = null;
         oldRec.onerror = null;
         oldRec.onend = null;
-        try {
-          oldRec.abort();
-        } catch (e) { }
+        try { oldRec.stop(); } catch (e) { }
+        try { oldRec.abort(); } catch (e) { }
       }
+    }
+
+    function stopVoice() {
+      clearAutoSaveCountdown();
+      stopMicOnly();
     }
 
     function startVoice() {
@@ -2278,7 +2284,7 @@
       document.getElementById('voiceStatus').textContent = 'Menghubungkan mikrofon...';
       document.getElementById('voiceStatus').style.color = 'var(--blue)';
 
-      // 3. Buat instance SpeechRecognition baru setiap kali mulai (hindari reuse bug di Chrome/WebKit)
+      // 3. Buat instance SpeechRecognition baru setiap kali mulai
       const rec = new Speech();
       rec.lang = 'id-ID';
       rec.continuous = false;
@@ -2298,21 +2304,33 @@
 
       rec.onresult = (e) => {
         if (recognition !== rec) return;
-        let interimText = '';
-        let finalText = '';
-        let isFinal = false;
-        for (let i = e.resultIndex; i < e.results.length; i++) {
-          const t = e.results[i][0].transcript;
-          if (e.results[i].isFinal) { finalText += t; isFinal = true; }
-          else interimText += t;
+        // Akumulasi seluruh hasil dari 0 hingga length agar kata di awal tidak pernah hilang
+        let fullFinal = '';
+        let fullInterim = '';
+        for (let i = 0; i < e.results.length; i++) {
+          const item = e.results[i];
+          if (item && item[0]) {
+            if (item.isFinal) fullFinal += item[0].transcript + ' ';
+            else fullInterim += item[0].transcript;
+          }
         }
-        const displayText = finalText || interimText;
-        document.getElementById('transcriptBox').textContent = `"${displayText}"`;
+        const displayText = (fullFinal + fullInterim).trim();
+        if (displayText) {
+          document.getElementById('transcriptBox').textContent = `"${displayText}"`;
+        }
 
-        // ── Interim: tampil preview lokal sementara mendengarkan ──
-        if (!isFinal) {
-          if (!interimText) return;
-          const localParsed = parseSpeech(interimText);
+        // ── Jika sudah ada final result dan nominal terdeteksi: proses dan matikan mic seketika ──
+        if (fullFinal.trim()) {
+          const parsed = parseSpeech(fullFinal.trim());
+          if (parsed.amount > 0) {
+            updateVoiceResult(parsed);
+            return;
+          }
+        }
+
+        // ── Interim preview sementara berbicara ──
+        if (fullInterim.trim()) {
+          const localParsed = parseSpeech(fullInterim.trim());
           if (localParsed.amount > 0) {
             state.detectedVoice = localParsed;
             document.getElementById('parsedGrid').style.display = 'grid';
@@ -2326,18 +2344,6 @@
             document.getElementById('voiceStatus').textContent = 'Mendengarkan...';
             document.getElementById('voiceStatus').style.color = 'var(--green)';
           }
-          return;
-        }
-
-        // ── Final: proses dengan parser lokal ultra-cepat & akurat ──
-        const textToProcess = finalText.trim();
-        if (!textToProcess) return;
-
-        const parsed = parseSpeech(textToProcess);
-        if (parsed.amount > 0) {
-          updateVoiceResult(parsed);
-        } else {
-          showVoiceError('Nominal tidak terdengar jelas. Coba lagi.');
         }
       };
 
@@ -2349,6 +2355,7 @@
         if (orb) orb.classList.remove('listening');
         if (e.error === 'not-allowed') showVoiceError('Izin mikrofon ditolak di browser.');
         else if (e.error === 'no-speech') showVoiceError('Tidak ada suara terdeteksi. Ketuk bola untuk coba lagi.');
+        else if (e.error === 'network') showVoiceError('Koneksi internet bermasalah. Coba lagi.');
         else if (e.error !== 'aborted') showVoiceError('Gagal mendengar (' + e.error + '). Ketuk bola untuk coba lagi.');
       };
 
@@ -2357,7 +2364,15 @@
         isListening = false;
         const orb = document.getElementById('siriOrb');
         if (orb) orb.classList.remove('listening');
-        if (!state.detectedVoice || state.detectedVoice.amount <= 0) {
+
+        // Jika suara sudah terdeteksi di interim tapi browser tidak kirim isFinal, otomatis finalize!
+        if (state.detectedVoice && state.detectedVoice.amount > 0) {
+          const saveBtn = document.getElementById('saveVoiceBtn');
+          if (!saveBtn || saveBtn.style.display !== 'block') {
+            updateVoiceResult(state.detectedVoice);
+            return;
+          }
+        } else {
           clearAutoSaveCountdown();
           const vStatus = document.getElementById('voiceStatus');
           if (vStatus && !vStatus.textContent.includes('Gagal') && !vStatus.textContent.includes('ditolak')) {
@@ -2381,12 +2396,15 @@
               showVoiceError('Ketuk lingkaran untuk mengaktifkan mikrofon.');
             }
           }
-        }, 120);
+        }, 150);
       }
     }
 
     function confirmSaveVoice() {
       clearAutoSaveCountdown();
+      // Pastikan mikrofon benar-benar mati saat menyimpan
+      stopVoice();
+
       const amtEl = document.getElementById('parsedAmount');
       const noteEl = document.getElementById('parsedNote');
       
@@ -2503,8 +2521,9 @@
       note = note.replace(/\b\d{1,3}(?:[.,]\d{3})+\b/g, ' ');
       note = note.replace(/\b\d{4,}\b/g, ' '); // 4 digit atau lebih (>= 1000)
 
-      // f. Hapus angka verbal uang jika ada (misal: "lima puluh ribu", "seratus ribu")
-      note = note.replace(/\b(?:satu|se|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh|sebelas|\d+)?\s*(?:belas|puluh)?\s*(?:ribu|juta|jt|ratus)\s*(?:rupiah)?\b/gi, ' ');
+      // f. Hapus angka verbal uang jika ada (misal: "lima puluh ribu", "seratus lima puluh ribu", "dua belas ribu")
+      note = note.replace(/\b(?:satu|se|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh|sebelas|\d+)?\s*(?:belas|puluh)?\s*(?:satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan)?\s*(?:ribu|juta|jt|ratus)\s*(?:rupiah)?\b/gi, ' ');
+      note = note.replace(/\b(?:satu|se|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan)?\s*(?:puluh|belas|ratus)\s*(?:satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan)?\b/gi, ' ');
 
       // g. Hapus simbol mata uang & kata pengantar nominal
       note = note.replace(/\b(rp|rupiah|idr|nominal|sebesar|seharga|senilai|total|harga|biaya)\b/gi, ' ');
@@ -2535,6 +2554,87 @@
       }
 
       return { type, amount: Math.round(amount), note, confidence, intentScore };
+    }
+
+    // ── PARSER HIERARKIS ANGKA VERBAL INDONESIA ──
+    function parseIndonesianWords(str) {
+      let s = str.toLowerCase().trim();
+      s = s.replace(/duapuluh/g, 'dua puluh')
+           .replace(/tigapuluh/g, 'tiga puluh')
+           .replace(/empatpuluh/g, 'empat puluh')
+           .replace(/limapuluh/g, 'lima puluh')
+           .replace(/enampuluh/g, 'enam puluh')
+           .replace(/tujuhpuluh/g, 'tujuh puluh')
+           .replace(/delapanpuluh/g, 'delapan puluh')
+           .replace(/sembilanpuluh/g, 'sembilan puluh')
+           .replace(/sepuluhribu/g, 'sepuluh ribu')
+           .replace(/seratusribu/g, 'seratus ribu')
+           .replace(/limaratus/g, 'lima ratus')
+           .replace(/duaratus/g, 'dua ratus')
+           .replace(/tigaratus/g, 'tiga ratus');
+
+      function parseChunk(chunkStr) {
+        const tokens = chunkStr.trim().split(/\s+/).filter(Boolean);
+        let val = 0;
+        let temp = 0;
+        const baseMap = {
+          'nol': 0, 'se': 1, 'satu': 1, 'dua': 2, 'tiga': 3, 'empat': 4, 'lima': 5,
+          'enam': 6, 'tujuh': 7, 'delapan': 8, 'sembilan': 9, 'sepuluh': 10, 'sebelas': 11
+        };
+        for (let i = 0; i < tokens.length; i++) {
+          const t = tokens[i];
+          if (t === 'seratus') {
+            val += 100;
+            temp = 0;
+          } else if (t === 'ratus') {
+            val += (temp || 1) * 100;
+            temp = 0;
+          } else if (t === 'puluh') {
+            val += (temp || 1) * 10;
+            temp = 0;
+          } else if (t === 'belas') {
+            val += (temp || 0) + 10;
+            temp = 0;
+          } else if (t === 'seribu') {
+            val += 1000;
+            temp = 0;
+          } else if (baseMap[t] !== undefined) {
+            temp = baseMap[t];
+          } else if (/^\d+$/.test(t)) {
+            temp = parseInt(t, 10);
+          }
+        }
+        val += temp;
+        return val;
+      }
+
+      let total = 0;
+      let remaining = s;
+
+      if (remaining.includes('juta') || remaining.includes('jt')) {
+        const parts = remaining.split(/\bjuta\b|\bjt\b/);
+        const jutaVal = parseChunk(parts[0]);
+        total += (jutaVal || 1) * 1000000;
+        remaining = parts[1] || '';
+      }
+
+      if (remaining.includes('seribu')) {
+        total += 1000;
+        remaining = remaining.replace(/\bseribu\b/, '');
+      }
+
+      if (remaining.includes('ribu') || remaining.includes('rb')) {
+        const parts = remaining.split(/\bribu\b|\brb\b/);
+        const ribuVal = parseChunk(parts[0]);
+        total += (ribuVal || 1) * 1000;
+        remaining = parts[1] || '';
+      }
+
+      if (remaining.trim()) {
+        total += parseChunk(remaining);
+      }
+
+      return total;
     }
 
     // ── EKSTRAKTOR ANGKA VERBAL INDONESIA v4 ──
@@ -2619,33 +2719,13 @@
         if (withUnit.length > 0) {
           return Math.round(withUnit.reduce((a, c) => a + c.num, 0));
         }
-        const largest = Math.max(...candidates.map(c => c.num));
-        if (largest >= 1000) return Math.round(largest);
       }
 
-      // 6. Angka verbal bahasa Indonesia (misal: "dua puluh lima ribu", "sejuta")
-      const wordMap = {
-        'nol': 0, 'satu': 1, 'se': 1, 'dua': 2, 'tiga': 3, 'empat': 4, 'lima': 5, 'enam': 6,
-        'tujuh': 7, 'delapan': 8, 'sembilan': 9, 'sepuluh': 10, 'sebelas': 11,
-        'dua belas': 12, 'tiga belas': 13, 'empat belas': 14, 'lima belas': 15,
-        'enam belas': 16, 'tujuh belas': 17, 'delapan belas': 18, 'sembilan belas': 19,
-        'seratus': 100, 'seribu': 1000, 'sejuta': 1000000
-      };
-      const words = s.split(/\s+/);
-      let current = 0, wordTotal = 0;
-      for (let i = 0; i < words.length; i++) {
-        const w = words[i];
-        if (wordMap[w] !== undefined) current += wordMap[w];
-        else if (w === 'belas') current = (current < 10 ? current : 0) + 10 + (current % 10 > 1 ? current % 10 : 0);
-        else if (w === 'puluh') current = (current || 1) * 10;
-        else if (w === 'ratus') current = (current || 1) * 100;
-        else if (w === 'ribu' || w === 'rb') { wordTotal += (current || 1) * 1000; current = 0; }
-        else if (w === 'juta' || w === 'jt') { wordTotal += (current || 1) * 1000000; current = 0; }
-      }
-      wordTotal += current;
-      if (wordTotal > 0) return wordTotal;
+      // 7. Angka verbal bahasa Indonesia (hierarkis & akurat)
+      const verbalTotal = parseIndonesianWords(s);
+      if (verbalTotal > 0) return verbalTotal;
 
-      // 7. Fallback angka polos terbesar
+      // 8. Fallback angka polos terbesar
       if (candidates.length > 0) {
         return Math.round(Math.max(...candidates.map(c => c.num)));
       }
