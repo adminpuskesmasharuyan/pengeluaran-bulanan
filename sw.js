@@ -45,7 +45,7 @@ self.addEventListener('fetch', (event) => {
           return caches.open(CACHE_NAME).then((cache) => {
             try {
               cache.put(event.request, networkResponse.clone());
-            } catch (err) { }
+            } catch (err) {}
             return networkResponse;
           });
         }).catch(() => caches.match('./INDEX.HTML') || caches.match('./index.html'));
