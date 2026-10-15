@@ -1,8 +1,10 @@
-const CACHE_NAME = 'fajar-finance-v2';
+const CACHE_NAME = 'finance-kita-v4';
 const ASSETS_TO_CACHE = [
   './',
+  './index.html',
   './INDEX.HTML',
-  './manifest.json'
+  './manifest.json',
+  './icon.svg'
 ];
 
 self.addEventListener('install', (event) => {
@@ -30,7 +32,6 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Hanya cache GET dan bukan request API Google Script
   if (event.request.method === 'GET' && !event.request.url.includes('script.google.com')) {
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
@@ -41,7 +42,7 @@ self.addEventListener('fetch', (event) => {
             } catch (err) {}
             return networkResponse;
           });
-        }).catch(() => caches.match('./INDEX.HTML'));
+        }).catch(() => caches.match('./INDEX.HTML') || caches.match('./index.html'));
       })
     );
   }
