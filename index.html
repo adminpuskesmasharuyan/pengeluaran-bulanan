@@ -249,6 +249,15 @@
       justify-content: flex-end;
       align-items: stretch;
       z-index: 1;
+      pointer-events: none;
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    .tx-swipe-row.swiping .tx-swipe-actions,
+    .tx-swipe-row.open .tx-swipe-actions {
+      visibility: visible;
+      opacity: 1;
       pointer-events: auto;
     }
 
@@ -314,6 +323,10 @@
       cursor: pointer;
       transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.15s;
       will-change: transform;
+      transform: translate3d(0, 0, 0);
+      -webkit-transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
 
     .tx-item:active {
@@ -810,12 +823,9 @@
     </div>
 
     <!-- Simple Transaction History -->
-    <div class="list-header" style="margin-bottom: 4px;">
+    <div class="list-header" style="margin-bottom: 12px;">
       <span>Riwayat Transaksi</span>
       <span id="totalTrxCount">0 Transaksi</span>
-    </div>
-    <div style="font-size: 11px; color: var(--text-dim); text-align: right; margin-bottom: 10px; padding-right: 4px;">
-      👈 Geser kiri: Edit / Hapus
     </div>
 
     <div id="txListContainer">
@@ -1254,7 +1264,13 @@
       function setOffset(offset, animated = false) {
         currentOffset = offset;
         itemEl.style.transition = animated ? 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)' : 'none';
-        itemEl.style.transform = `translateX(${offset}px)`;
+        itemEl.style.transform = `translate3d(${offset}px, 0, 0)`;
+
+        if (offset < 0) {
+          rowEl.classList.add('swiping');
+        } else if (currentlyOpenRow !== rowEl) {
+          rowEl.classList.remove('swiping');
+        }
 
         // Efek Full Swipe: Jika ditarik jauh ke kiri (> FULL_SWIPE_THRESHOLD)
         if (Math.abs(offset) > FULL_SWIPE_THRESHOLD) {
@@ -1270,10 +1286,16 @@
 
       function closeRow() {
         setOffset(0, true);
+        rowEl.classList.remove('open');
+        setTimeout(() => {
+          if (currentlyOpenRow !== rowEl) rowEl.classList.remove('swiping');
+        }, 250);
         if (currentlyOpenRow === rowEl) currentlyOpenRow = null;
       }
 
       function openRow() {
+        rowEl.classList.add('open');
+        rowEl.classList.add('swiping');
         setOffset(-SNAP_WIDTH, true);
         if (currentlyOpenRow && currentlyOpenRow !== rowEl) {
           currentlyOpenRow.closeSwipe?.();
@@ -1305,13 +1327,19 @@
         const dy = e.clientY - startY;
 
         if (isHorizontal === null) {
-          if (Math.abs(dx) > 7 || Math.abs(dy) > 7) {
-            isHorizontal = Math.abs(dx) > Math.abs(dy);
-            if (!isHorizontal) {
+          const absX = Math.abs(dx);
+          const absY = Math.abs(dy);
+          if (absX > 10 || absY > 10) {
+            // Hanya tangkap horizontal jika gerakan ke kiri dominan dan tidak vertikal
+            if (absX > absY * 1.5 && dx < 0) {
+              isHorizontal = true;
+              rowEl.classList.add('swiping');
+              try { itemEl.setPointerCapture(pointerId); } catch (err) { }
+            } else {
+              isHorizontal = false;
               isDragging = false;
               return;
             }
-            try { itemEl.setPointerCapture(pointerId); } catch (err) { }
           } else {
             return;
           }
