@@ -1248,6 +1248,13 @@
       detectedVoice: null
     };
 
+    // Setelah reset sesi suara (reload), kembali ke bulan yang tadi dilihat
+    try {
+      const v = JSON.parse(sessionStorage.getItem('FK_VIEW') || 'null');
+      if (v && v.y && v.m) { state.year = v.y; state.month = v.m; }
+      sessionStorage.removeItem('FK_VIEW');
+    } catch (e) { }
+
     document.addEventListener('DOMContentLoaded', () => {
       loadData();
       initEvents();
@@ -1858,7 +1865,10 @@
         if (dateInput) dateInput.value = today();
         openModal(mModal);
       };
-      document.getElementById('navCenterVoiceBtn').onclick = () => openModal(vModal, startVoice);
+      document.getElementById('navCenterVoiceBtn').onclick = () => {
+        if (voiceResetPending) { showToast('Menyegarkan sesi suara...'); return; }
+        openModal(vModal, startVoice);
+      };
       document.getElementById('navThemeBtn').onclick = toggleTheme;
       document.getElementById('navSettingsBtn').onclick = () => {
         setActiveNav('navSettingsBtn');
@@ -2176,7 +2186,7 @@
     }
 
     function openModal(m, cb) {
-      closeAllModals();
+      closeAllModals(true);
       m.classList.add('active');
       if (cb) cb();
     }
@@ -2185,11 +2195,13 @@
       m.classList.remove('active');
       // Selalu stop voice saat modal apapun ditutup — aman bila tidak ada sesi aktif
       stopVoice();
+      scheduleVoiceReset();
     }
 
-    function closeAllModals() {
+    function closeAllModals(skipReset) {
       document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
       stopVoice();
+      if (!skipReset) scheduleVoiceReset();
     }
 
     // Auto-matikan mikrofon saat aplikasi di-minimize/pindah tab/layar mati
@@ -2212,6 +2224,9 @@
     let voiceSeq = 0;
     let voicePendingStart = false;
     let voiceWatchdog = null;
+    const VOICE_AUTO_RESET = true;   // false = matikan reset otomatis
+    let voiceUsed = false;           // true bila mikrofon pernah dipakai sejak halaman dimuat
+    let voiceResetPending = false;
     const VOICE_DEBUG = new URLSearchParams(location.search).has('debug');
 
     function vlog(msg) {
@@ -2316,6 +2331,34 @@
       armVoiceWatchdog(1500, () => { vlog('onend tidak datang -> paksa reset'); forceVoiceReset(); });
     }
 
+    // Reset sesi suara = muat ulang halaman, mirip membuka ulang aplikasi.
+    // Pengaman: tunggu modal tertutup, tunggu sinkron cloud selesai, dan batalkan bila sinkron gagal
+    // (agar transaksi yang belum terkirim tidak tertimpa data cloud setelah reload).
+    function scheduleVoiceReset() {
+      if (!VOICE_AUTO_RESET || !voiceUsed || voiceResetPending) return;
+      voiceResetPending = true;
+      const t0 = Date.now();
+      vlog('reset sesi dijadwalkan');
+      const tick = () => {
+        const modalOpen = !!document.querySelector('.modal.active');
+        const busy = _syncCount > 0 || _isFetching || voiceState !== 'idle';
+        if (modalOpen) {
+          if (Date.now() - t0 > 120000) { voiceResetPending = false; return; }
+          setTimeout(tick, 400);
+          return;
+        }
+        if (busy) {
+          if (Date.now() - t0 > 15000) { voiceResetPending = false; vlog('reset dibatalkan: sinkron macet'); return; }
+          setTimeout(tick, 250);
+          return;
+        }
+        if (_lastPostFailed) { voiceResetPending = false; vlog('reset dibatalkan: ada data belum terkirim'); return; }
+        try { sessionStorage.setItem('FK_VIEW', JSON.stringify({ y: state.year, m: state.month })); } catch (e) { }
+        location.reload();
+      };
+      setTimeout(tick, 1500);   // beri waktu toast "Tersimpan" terbaca
+    }
+
     // Hasil final sudah diterima. Browser menutup sesi sendiri (continuous=false).
     // Kita hanya menandai 'stopping' supaya sesi baru menunggu onend; watchdog sebagai pengaman.
     function awaitNaturalEnd(rec) {
@@ -2403,6 +2446,7 @@
       rec._closed = false;   // true = UI sesi ini diabaikan (modal ditutup / dibatalkan)
       rec._done = false;     // true = hasil final sudah ditampilkan
       rec._error = null;
+      voiceUsed = true;
 
       recognition = rec;
       setVoiceState('starting');
@@ -2895,6 +2939,7 @@
 
     // ================= CLOUD SYNC =================
     let _isFetching = false;
+    let _lastPostFailed = false;   // true bila kirim terakhir ke cloud gagal
     let _autoRefreshTimer = null;
     // Counter aktif operasi — dot hanya mati saat semua selesai
     let _syncCount = 0;
@@ -2929,9 +2974,13 @@
         if (json.status === 'success') {
           // Re-fetch cloud after write to sync with other devices
           // Tidak perlu syncStart lagi — fetchCloud akan pakai counter yang sama
+          _lastPostFailed = false;
           await fetchCloud();
+        } else {
+          _lastPostFailed = true;
         }
       } catch (e) {
+        _lastPostFailed = true;
         showToast('Gagal sinkron, cek koneksi');
       } finally {
         _syncEnd();
