@@ -434,9 +434,33 @@
       color: var(--text);
     }
 
+    .nav-btn.active {
+      color: var(--blue);
+    }
+
+    .nav-btn.active .nav-icon {
+      filter: drop-shadow(0 0 4px var(--blue));
+    }
+
     .nav-icon {
       font-size: 20px;
       line-height: 1;
+    }
+
+    /* Shake animation for validation error */
+    @keyframes shakeInput {
+      0%, 100% { transform: translateX(0); }
+      15%       { transform: translateX(-8px); }
+      30%       { transform: translateX(7px); }
+      45%       { transform: translateX(-6px); }
+      60%       { transform: translateX(5px); }
+      75%       { transform: translateX(-4px); }
+      90%       { transform: translateX(3px); }
+    }
+    .shake {
+      animation: shakeInput 0.45s ease;
+      border-color: var(--red) !important;
+      background: rgba(255, 69, 58, 0.08) !important;
     }
 
     /* PRIMARY CENTER VOICE BUTTON */
@@ -545,7 +569,8 @@
       background: var(--text-dim);
       margin: 0 auto 12px auto;
       opacity: 0.5;
-      cursor: pointer;
+      cursor: grab;
+      touch-action: none;
     }
 
     .sheet-title {
@@ -1412,11 +1437,13 @@
         try { itemEl.releasePointerCapture(pointerId); } catch (err) { }
 
         if (!isHorizontal || !hasDragged) {
+          // Jika row sedang terbuka → tap menutup saja, TIDAK membuka edit
           if (currentlyOpenRow === rowEl) {
             closeRow();
-          } else {
-            openEditModal(tx);
+            return;
           }
+          // Hanya buka edit jika row dalam keadaan tertutup
+          openEditModal(tx);
           return;
         }
 
@@ -1495,7 +1522,8 @@
       container.innerHTML = '';
 
       if (filtered.length === 0) {
-        container.innerHTML = '<div class="empty-box">Belum ada transaksi di bulan ini.<br><small style="color:var(--text-dim)">Ketuk tombol 🎙️ di tengah bawah untuk mencatat dengan suara.</small></div>';
+        const mName = MONTHS[state.month - 1];
+        container.innerHTML = `<div class="empty-box">Belum ada transaksi di ${mName} ${state.year}.<br><small style="color:var(--text-dim)">Ketuk 🎙️ untuk catat via suara, atau ✍️ untuk input manual.</small></div>`;
       } else {
         const grouped = {};
         filtered.forEach(t => {
@@ -1509,7 +1537,15 @@
           const box = document.createElement('div');
           box.className = 'group-box';
 
-          let dateLabel = d === today() ? 'HARI INI' : d;
+          let dateLabel;
+          if (d === today()) {
+            dateLabel = 'HARI INI';
+          } else {
+            // Format: Senin, 14 Oktober 2026
+            const dObj = new Date(d + 'T00:00:00');
+            const dayNames = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+            dateLabel = `${dayNames[dObj.getDay()]}, ${dObj.getDate()} ${MONTHS[dObj.getMonth()]} ${dObj.getFullYear()}`;
+          }
           box.innerHTML = `<div class="group-date">${dateLabel}</div>`;
 
           grouped[d].forEach(t => {
@@ -1578,9 +1614,20 @@
       document.getElementById('btnConfirmDelete').onclick = executeConfirmedDelete;
       document.getElementById('btnCancelDelete').onclick = cancelDeleteConfirmation;
 
-      // FIXED BOTTOM BAR ACTIONS
-      document.getElementById('navAnalysisBtn').onclick = () => openModal(aModal);
+      // FIXED BOTTOM BAR ACTIONS — dengan active state highlight
+      const navBtns = document.querySelectorAll('.nav-btn');
+      function setActiveNav(activeId) {
+        navBtns.forEach(b => b.classList.remove('active'));
+        const btn = document.getElementById(activeId);
+        if (btn) btn.classList.add('active');
+      }
+
+      document.getElementById('navAnalysisBtn').onclick = () => {
+        setActiveNav('navAnalysisBtn');
+        openModal(aModal);
+      };
       document.getElementById('navManualBtn').onclick = () => {
+        setActiveNav('navManualBtn');
         editingTxId = null;
         const titleEl = mModal.querySelector('.sheet-title');
         if (titleEl) titleEl.textContent = 'Input Manual';
@@ -1596,19 +1643,39 @@
       document.getElementById('navCenterVoiceBtn').onclick = () => openModal(vModal, startVoice);
       document.getElementById('navThemeBtn').onclick = toggleTheme;
       document.getElementById('navSettingsBtn').onclick = () => {
+        setActiveNav('navSettingsBtn');
         document.getElementById('inputApiUrl').value = state.apiUrl;
         const autoSaveToggle = document.getElementById('toggleAutoSaveVoice');
         if (autoSaveToggle) autoSaveToggle.checked = !!state.autoSaveVoice;
         openModal(sModal);
       };
 
-      // Modal Background Tap to Close
+      // Swipe-down handle untuk tutup modal
+      document.querySelectorAll('.sheet .handle').forEach(handle => {
+        let hy0 = 0;
+        handle.addEventListener('pointerdown', ev => {
+          hy0 = ev.clientY;
+          handle.setPointerCapture(ev.pointerId);
+        });
+        handle.addEventListener('pointermove', ev => {
+          if (ev.clientY - hy0 > 60) {
+            const sheet = handle.closest('.modal');
+            if (sheet) {
+              if (sheet.id === 'deleteConfirmModal') cancelDeleteConfirmation();
+              else closeModal(sheet);
+            }
+          }
+        });
+      });
+
+      // Modal Background Tap to Close → juga reset active nav
       [vModal, mModal, aModal, sModal, dModal].forEach(m => {
         if (!m) return;
         m.onclick = (e) => {
           if (e.target === m) {
             if (m === dModal) cancelDeleteConfirmation();
             else closeModal(m);
+            navBtns.forEach(b => b.classList.remove('active'));
           }
         };
       });
@@ -1757,12 +1824,21 @@
     }
 
     function saveManual() {
-      const amt = Number(document.getElementById('inputAmount').value) || 0;
-      if (amt <= 0) return alert('Masukkan nominal!');
+      const amtInput = document.getElementById('inputAmount');
+      const amt = Number(amtInput.value) || 0;
+      if (amt <= 0) {
+        shakeField(amtInput);
+        showToast('⚠️ Masukkan nominal terlebih dahulu!');
+        return;
+      }
 
-      const note = document.getElementById('inputNote').value.trim() || state.manualType;
+      const noteInput = document.getElementById('inputNote');
+      const note = noteInput.value.trim() || state.manualType;
       const dateInput = document.getElementById('inputDate');
       const txDate = (dateInput && dateInput.value) ? dateInput.value : today();
+
+      // Dismiss keyboard before closing modal
+      document.activeElement?.blur();
 
       if (editingTxId) {
         const target = state.transactions.find(x => x.id === editingTxId);
@@ -1798,8 +1874,8 @@
       }
 
       closeModal(document.getElementById('manualModal'));
-      document.getElementById('inputAmount').value = '';
-      document.getElementById('inputNote').value = '';
+      amtInput.value = '';
+      noteInput.value = '';
     }
 
     function openModal(m, cb) {
@@ -2039,8 +2115,11 @@
       const note = (noteEl ? noteEl.value.trim() : '') || (state.detectedVoice ? state.detectedVoice.note : '') || rawType;
 
       if (amt <= 0) {
-        alert('Nominal harus lebih dari 0!');
-        if (amtEl) amtEl.focus();
+        if (amtEl) {
+          shakeField(amtEl);
+          amtEl.focus();
+        }
+        showToast('⚠️ Nominal harus lebih dari 0!');
         return;
       }
 
@@ -2358,6 +2437,15 @@
       t.textContent = msg;
       t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    function shakeField(el) {
+      if (!el) return;
+      el.classList.remove('shake');
+      // Force reflow to restart animation
+      void el.offsetWidth;
+      el.classList.add('shake');
+      setTimeout(() => el.classList.remove('shake'), 500);
     }
 
     function escapeHtml(s) {
