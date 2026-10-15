@@ -126,7 +126,7 @@
       font-size: 14px;
       font-weight: 600;
       margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      box-shadow: none;
     }
 
     .month-nav {
@@ -773,7 +773,7 @@
       position: fixed;
       top: calc(var(--safe-top) + 12px);
       left: 50%;
-      transform: translate(-50%, -150%);
+      transform: translate(-50%, -200%);
       background: rgba(30, 30, 30, 0.95);
       border: 0.5px solid var(--border);
       color: #FFF;
@@ -782,12 +782,16 @@
       font-size: 13px;
       font-weight: 600;
       z-index: 200;
-      transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28), visibility 0.25s;
       pointer-events: none;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
 
     .toast.show {
+      opacity: 1;
+      visibility: visible;
       transform: translate(-50%, 0);
     }
   </style>
@@ -934,14 +938,16 @@
           style="background: var(--card-subtle); color: var(--text-muted); flex: 1;">Pemasukan</button>
       </div>
 
-      <div class="form-group" id="groupInputDate">
-        <label class="form-label">Tanggal</label>
-        <input type="date" class="clean-input" id="inputDate">
-      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1.35fr; gap: 10px; margin-bottom: 12px;">
+        <div class="form-group" id="groupInputDate" style="margin-bottom: 0;">
+          <label class="form-label">Tanggal</label>
+          <input type="date" class="clean-input" id="inputDate" style="font-size: 13px; padding: 12px 8px;">
+        </div>
 
-      <div class="form-group">
-        <label class="form-label">Nominal (Rp)</label>
-        <input type="number" class="clean-input" id="inputAmount" placeholder="Contoh: 25000">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label">Nominal (Rp)</label>
+          <input type="number" class="clean-input" id="inputAmount" placeholder="Contoh: 25000">
+        </div>
       </div>
 
 
