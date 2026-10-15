@@ -2192,7 +2192,18 @@
 
     function initVoice() {
       const orb = document.getElementById('siriOrb');
-      if (orb) orb.onclick = startVoice;
+      if (orb) orb.onclick = () => {
+        if (isListening) {
+          stopVoice();
+          const vStatus = document.getElementById('voiceStatus');
+          if (vStatus) {
+            vStatus.textContent = 'Mikrofon dijeda. Ketuk bola untuk bicara.';
+            vStatus.style.color = 'var(--blue)';
+          }
+        } else {
+          startVoice();
+        }
+      };
       const retryBtn = document.getElementById('retryVoiceBtn');
       if (retryBtn) retryBtn.onclick = startVoice;
       const saveBtn = document.getElementById('saveVoiceBtn');
@@ -2251,14 +2262,14 @@
       if (recognition) {
         const oldRec = recognition;
         recognition = null;
-        // Lepas semua callback lama agar event asynchronous tidak memicu error atau merusak UI
+        // Lepas callback lama agar tidak ada event bentrok saat dihentikan
         oldRec.onstart = null;
         oldRec.onaudiostart = null;
         oldRec.onspeechstart = null;
+        oldRec.onspeechend = null;
         oldRec.onresult = null;
         oldRec.onerror = null;
         oldRec.onend = null;
-        try { oldRec.stop(); } catch (e) { }
         try { oldRec.abort(); } catch (e) { }
       }
     }
@@ -2276,7 +2287,7 @@
         return;
       }
 
-      // 1. Hentikan dan bersihkan sesi mikrofon sebelumnya
+      // 1. Hentikan dan bersihkan sesi mikrofon sebelumnya jika masih ada
       stopVoice();
 
       // 2. Reset tampilan UI & transkrip
@@ -2292,7 +2303,7 @@
       document.getElementById('voiceStatus').textContent = 'Mendengarkan... Katakan sekarang!';
       document.getElementById('voiceStatus').style.color = 'var(--green)';
 
-      // 3. Buat instance SpeechRecognition baru untuk sesi ini (standar W3C/WebKit mobile)
+      // 3. Buat instance SpeechRecognition baru untuk sesi ini
       const rec = new Speech();
       rec.lang = 'id-ID';
       rec.continuous = false;
@@ -2399,8 +2410,11 @@
       };
 
       rec.onend = () => {
-        if (recognition !== rec) return;
         isListening = false;
+        // PENTING: Bersihkan referensi agar sesi berikutnya tidak mendeteksi instance lama
+        if (recognition === rec) {
+          recognition = null;
+        }
         const orb = document.getElementById('siriOrb');
         if (orb) orb.classList.remove('listening');
 
@@ -2421,13 +2435,26 @@
         }
       };
 
-      // 4. Jalankan pengenalan suara langsung di dalam user gesture stack (wajib untuk iOS Safari)
-      try {
-        rec.start();
-      } catch (err) {
-        console.warn('Recognition start exception:', err.message);
-        showVoiceError('Ketuk bola Siri di atas untuk mulai bicara.');
+      // 4. Jalankan pengenalan suara dengan safe start & auto-retry transisi hardware
+      function launchRecognition(attempt = 0) {
+        if (recognition !== rec) return;
+        try {
+          rec.start();
+        } catch (err) {
+          console.warn(`Recognition start attempt ${attempt}:`, err.message);
+          // Jika browser masih menyelesaikan sesi sebelumnya (InvalidStateError / already started),
+          // tunggu transisi singkat (80ms - 150ms) lalu coba lagi secara halus
+          if (attempt < 3 && recognition === rec && !isListening) {
+            startRetryTimeout = setTimeout(() => {
+              launchRecognition(attempt + 1);
+            }, 80 * (attempt + 1));
+          } else if (attempt >= 3) {
+            showVoiceError('Ketuk bola Siri di atas untuk mulai bicara.');
+          }
+        }
       }
+
+      launchRecognition(0);
     }
 
     function confirmSaveVoice() {
