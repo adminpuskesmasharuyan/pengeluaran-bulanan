@@ -578,42 +578,31 @@
 
     .sheet-header-row {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
       margin-bottom: 16px;
     }
 
-    .sheet-close-btn {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: var(--card-subtle);
-      border: 0.5px solid var(--border);
-      color: var(--text-muted);
-      font-size: 14px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-
     .handle {
-      width: 36px;
-      height: 4px;
-      border-radius: 2px;
+      width: 40px;
+      height: 5px;
+      border-radius: 3px;
       background: var(--text-dim);
-      margin: 0 auto 12px auto;
-      opacity: 0.5;
+      margin: -8px auto 6px auto; /* area sentuh lebih besar dengan negative margin */
+      padding: 8px 20px;          /* invisible touch padding */
+      box-sizing: content-box;
+      opacity: 0.4;
       cursor: grab;
       touch-action: none;
+      transition: opacity 0.2s;
+      background-clip: content-box;
     }
+    .handle:active { opacity: 0.7; cursor: grabbing; }
 
     .sheet-title {
       font-size: 17px;
       font-weight: 700;
       text-align: center;
-      flex: 1;
     }
 
     /* iOS STYLE TOGGLE SWITCH */
@@ -1011,11 +1000,7 @@
     <div class="sheet">
       <div class="handle"></div>
       <div class="sheet-header-row">
-        <div style="width: 30px;"></div>
         <div class="sheet-title">Bicara Sekarang</div>
-        <button class="sheet-close-btn" onclick="closeAllModals()" aria-label="Tutup">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
       </div>
 
       <div class="siri-circle" id="siriOrb">
@@ -1086,11 +1071,7 @@
     <div class="sheet">
       <div class="handle"></div>
       <div class="sheet-header-row">
-        <div style="width: 30px;"></div>
         <div class="sheet-title">Input Manual</div>
-        <button class="sheet-close-btn" onclick="closeAllModals()" aria-label="Tutup">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
       </div>
 
       <!-- Tipe Transaksi -->
@@ -1138,11 +1119,7 @@
     <div class="sheet">
       <div class="handle"></div>
       <div class="sheet-header-row">
-        <div style="width: 30px;"></div>
         <div class="sheet-title">Analisis Bulanan</div>
-        <button class="sheet-close-btn" onclick="closeAllModals()" aria-label="Tutup">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
       </div>
 
       <div
@@ -1166,11 +1143,7 @@
     <div class="sheet">
       <div class="handle"></div>
       <div class="sheet-header-row">
-        <div style="width: 30px;"></div>
         <div class="sheet-title">Pengaturan</div>
-        <button class="sheet-close-btn" onclick="closeAllModals()" aria-label="Tutup">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
       </div>
 
       <!-- Opsi Simpan Otomatis Mode Suara -->
