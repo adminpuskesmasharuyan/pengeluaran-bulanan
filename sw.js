@@ -1,4 +1,4 @@
-const CACHE_NAME = 'finance-kita-v8';
+const CACHE_NAME = 'finance-kita-v9';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -9,8 +9,14 @@ const ASSETS_TO_CACHE = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+    caches.open(CACHE_NAME).then(async (cache) => {
+      for (const asset of ASSETS_TO_CACHE) {
+        try {
+          await cache.add(asset);
+        } catch (e) {
+          // Abaikan jika salah satu varian nama file (index.html vs INDEX.HTML) tidak ditemukan di server tertentu
+        }
+      }
     })
   );
   self.skipWaiting();
