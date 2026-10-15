@@ -303,8 +303,12 @@
     }
 
     .swipe-btn-icon {
-      font-size: 16px;
-      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      margin-bottom: 2px;
     }
 
     .swipe-btn-text {
@@ -334,16 +338,25 @@
     }
 
     .tx-icon {
-      font-size: 22px;
       margin-right: 14px;
       width: 38px;
       height: 38px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--card-subtle);
-      border-radius: 11px;
+      border-radius: 12px;
       flex-shrink: 0;
+      transition: transform 0.15s ease;
+    }
+
+    .tx-icon.tx-out {
+      background: rgba(255, 69, 58, 0.12);
+      color: var(--red);
+    }
+
+    .tx-icon.tx-in {
+      background: rgba(48, 209, 88, 0.12);
+      color: var(--green);
     }
 
     .tx-meta {
@@ -445,6 +458,17 @@
     .nav-icon {
       font-size: 20px;
       line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+    }
+
+    .nav-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
     }
 
     /* Shake animation for validation error */
@@ -481,6 +505,12 @@
       transition: transform 0.15s;
       animation: siriPulse 2s infinite alternate;
       flex-shrink: 0;
+    }
+
+    .center-voice-btn svg {
+      width: 32px;
+      height: 32px;
+      transition: transform 0.15s ease;
     }
 
     .center-voice-btn:active {
@@ -878,8 +908,8 @@
       <div class="balance-label">Total Saldo Bulan Ini</div>
       <div class="balance-val" id="netBalance">Rp 0</div>
       <div class="balance-stats">
-        <span class="stat-in">▲ Masuk: <strong id="incomeVal">Rp 0</strong></span>
-        <span class="stat-out">▼ Keluar: <strong id="expenseVal">Rp 0</strong></span>
+        <span class="stat-in"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:3px;"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>Masuk: <strong id="incomeVal">Rp 0</strong></span>
+        <span class="stat-out"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:3px;"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>Keluar: <strong id="expenseVal">Rp 0</strong></span>
       </div>
     </div>
 
@@ -896,30 +926,54 @@
   </div>
 
   <!-- ================= FIXED BOTTOM BAR ================= -->
-  <!-- Tata letak: [Analisis] [Manual] (🎙️ Bicara Tengah) [Tema] [Pengaturan] -->
+  <!-- Tata letak: [Analisis] [Manual] (Bicara Tengah) [Tema] [Pengaturan] -->
   <nav class="bottom-bar">
     <button class="nav-btn" id="navAnalysisBtn">
-      <span class="nav-icon">📊</span>
+      <span class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 20V10M12 20V4M6 20v-6"/>
+        </svg>
+      </span>
       <span>Analisis</span>
     </button>
 
     <button class="nav-btn" id="navManualBtn">
-      <span class="nav-icon">✍️</span>
+      <span class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+      </span>
       <span>Manual</span>
     </button>
 
     <!-- INPUT UTAMA: SUARA (TENGAH BAWAH) -->
-    <button class="center-voice-btn" id="navCenterVoiceBtn" title="Bicara untuk Catat Transaksi">
-      🎙️
+    <button class="center-voice-btn" id="navCenterVoiceBtn" title="Bicara untuk Catat Transaksi" aria-label="Bicara untuk Catat Transaksi">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+        <line x1="12" y1="19" x2="12" y2="22"/>
+        <line x1="8" y1="22" x2="16" y2="22"/>
+      </svg>
     </button>
 
     <button class="nav-btn" id="navThemeBtn">
-      <span class="nav-icon">🌗</span>
+      <span class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>
+        </svg>
+      </span>
       <span>Tema</span>
     </button>
 
     <button class="nav-btn" id="navSettingsBtn">
-      <span class="nav-icon">⚙️</span>
+      <span class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </span>
       <span>Setting</span>
     </button>
   </nav>
@@ -931,10 +985,19 @@
       <div class="sheet-header-row">
         <div style="width: 30px;"></div>
         <div class="sheet-title">Bicara Sekarang</div>
-        <button class="sheet-close-btn" onclick="closeAllModals()">✕</button>
+        <button class="sheet-close-btn" onclick="closeAllModals()" aria-label="Tutup">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
 
-      <div class="siri-circle" id="siriOrb">🎙️</div>
+      <div class="siri-circle" id="siriOrb">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="22"/>
+          <line x1="8" y1="22" x2="16" y2="22"/>
+        </svg>
+      </div>
 
       <div style="text-align: center; font-size: 13px; font-weight: 600; color: var(--blue); margin-bottom: 12px;"
         id="voiceStatus">
@@ -949,32 +1012,43 @@
         <div class="parsed-item" id="parsedTypeItem" style="cursor: pointer;" title="Ketuk untuk ganti tipe">
           <div class="parsed-label" style="display: flex; justify-content: space-between;">
             <span>Tipe</span>
-            <span style="font-size: 10px; color: var(--text-muted);">🔄 Ganti</span>
+            <span style="font-size: 11px; color: var(--text-muted); display: inline-flex; align-items: center; gap: 4px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              Ganti
+            </span>
           </div>
           <div class="parsed-val" id="parsedType" style="color: var(--red); padding: 4px 0 2px 0;">Pengeluaran</div>
         </div>
         <div class="parsed-item" id="itemParsedAmount" style="cursor: text;">
           <div class="parsed-label" style="display: flex; justify-content: space-between;">
             <span>Nominal (Rp)</span>
-            <span style="font-size: 10px; color: var(--blue);">✏️ Edit</span>
+            <span style="font-size: 11px; color: var(--blue); display: inline-flex; align-items: center; gap: 4px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              Edit
+            </span>
           </div>
           <input type="number" inputmode="numeric" id="parsedAmount" class="parsed-input" style="color: var(--blue);" placeholder="0">
         </div>
         <div class="parsed-item" style="grid-column: span 2; cursor: text;" id="itemParsedNote">
           <div class="parsed-label" style="display: flex; justify-content: space-between;">
             <span>Catatan</span>
-            <span style="font-size: 10px; color: var(--blue);">✏️ Edit</span>
+            <span style="font-size: 11px; color: var(--blue); display: inline-flex; align-items: center; gap: 4px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              Edit
+            </span>
           </div>
           <input type="text" id="parsedNote" class="parsed-input" placeholder="Keterangan transaksi">
         </div>
       </div>
 
       <button class="btn-submit" id="saveVoiceBtn" style="display: none; background: var(--green);">
-        ✓ Simpan Sekarang
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>
+        Simpan Sekarang
       </button>
       <button class="btn-submit" id="retryVoiceBtn"
         style="display: none; background: var(--card-subtle); color: var(--text); margin-top: 8px;">
-        🔄 Coba Bicara Lagi
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        Coba Bicara Lagi
       </button>
     </div>
   </div>
@@ -986,15 +1060,21 @@
       <div class="sheet-header-row">
         <div style="width: 30px;"></div>
         <div class="sheet-title">Input Manual</div>
-        <button class="sheet-close-btn" onclick="closeAllModals()">✕</button>
+        <button class="sheet-close-btn" onclick="closeAllModals()" aria-label="Tutup">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
 
       <!-- Tipe Transaksi -->
       <div style="display: flex; gap: 8px; margin-bottom: 16px;">
         <button class="btn-submit" id="btnTypeExpense"
-          style="background: var(--red); flex: 1; height: 46px; padding: 0; font-size: 14px; border-radius: 14px;">▼ Pengeluaran</button>
+          style="background: var(--red); flex: 1; height: 46px; padding: 0; font-size: 14px; border-radius: 14px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:5px;"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>Pengeluaran
+        </button>
         <button class="btn-submit" id="btnTypeIncome"
-          style="background: var(--card-subtle); color: var(--text-muted); flex: 1; height: 46px; padding: 0; font-size: 14px; border-radius: 14px;">▲ Pemasukan</button>
+          style="background: var(--card-subtle); color: var(--text-muted); flex: 1; height: 46px; padding: 0; font-size: 14px; border-radius: 14px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:5px;"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>Pemasukan
+        </button>
       </div>
 
       <!-- Nominal -->
@@ -1034,7 +1114,9 @@
       <div class="sheet-header-row">
         <div style="width: 30px;"></div>
         <div class="sheet-title">Analisis Bulanan</div>
-        <button class="sheet-close-btn" onclick="closeAllModals()">✕</button>
+        <button class="sheet-close-btn" onclick="closeAllModals()" aria-label="Tutup">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
 
       <div
@@ -1060,15 +1142,18 @@
       <div class="sheet-header-row">
         <div style="width: 30px;"></div>
         <div class="sheet-title">Pengaturan</div>
-        <button class="sheet-close-btn" onclick="closeAllModals()">✕</button>
+        <button class="sheet-close-btn" onclick="closeAllModals()" aria-label="Tutup">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
 
       <!-- Opsi Simpan Otomatis Mode Suara -->
       <div
         style="background: var(--card-subtle); border: 0.5px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
         <div>
-          <div style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: var(--text);">
-            <span>⏱️</span> Simpan Otomatis 3 Detik
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--text);">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Simpan Otomatis 3 Detik
           </div>
           <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px; line-height: 1.4;">
             Otomatis simpan transaksi suara setelah 3 detik tanpa harus klik tombol
@@ -1096,7 +1181,14 @@
   <div class="modal" id="deleteConfirmModal">
     <div class="sheet" style="text-align: center; max-width: 400px;">
       <div class="handle"></div>
-      <div style="font-size: 38px; margin: 6px 0 10px 0;">🗑️</div>
+      <div style="width: 58px; height: 58px; border-radius: 50%; background: rgba(255, 69, 58, 0.12); color: var(--red); display: flex; align-items: center; justify-content: center; margin: 8px auto 14px auto;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18"/>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          <line x1="10" y1="11" x2="10" y2="17"/>
+          <line x1="14" y1="11" x2="14" y2="17"/>
+        </svg>
+      </div>
       <div class="sheet-title" style="margin-bottom: 6px; font-size: 18px;">Hapus Transaksi?</div>
       <div id="deleteConfirmDesc" style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; padding: 0 10px;">
         Transaksi ini akan dihapus permanen.
@@ -1156,7 +1248,7 @@
       initEvents();
       initVoice();
       if (window._autoConfigured) {
-        setTimeout(() => showToast('✅ Konfigurasi berhasil dimuat otomatis!'), 500);
+        setTimeout(() => showToast('Konfigurasi berhasil dimuat otomatis'), 500);
       }
     });
 
@@ -1181,7 +1273,7 @@
           state.month = nowMonth;
           state.year = nowYear;
           render();
-          showToast(`📅 Berganti bulan: ${MONTHS[nowMonth - 1]} ${nowYear}`);
+          showToast(`Berganti bulan: ${MONTHS[nowMonth - 1]} ${nowYear}`);
         } else {
           // Bulan sama tapi hari berganti → re-render label tanggal grup
           render();
@@ -1194,7 +1286,7 @@
           // Hanya update jika field masih berisi tanggal kemarin (tidak diubah user)
           if (dateInput && !editingTxId) {
             dateInput.value = nowDate;
-            showToast('📅 Tanggal diperbarui ke hari ini');
+            showToast('Tanggal diperbarui ke hari ini');
           }
         }
 
@@ -1289,7 +1381,9 @@
       if (titleEl) titleEl.textContent = 'Edit Transaksi';
 
       const saveBtn = document.getElementById('saveManualBtn');
-      if (saveBtn) saveBtn.textContent = '✓ Simpan Perubahan';
+      if (saveBtn) {
+        saveBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg> Simpan Perubahan';
+      }
 
       setManualType(tx.jenis || 'Pengeluaran');
       document.getElementById('inputAmount').value = tx.jumlah || '';
@@ -1351,7 +1445,7 @@
           state.transactions = state.transactions.filter(x => x.id !== tx.id);
           save();
           render();
-          showToast(`🗑️ ${tx.catatan || tx.jenis} dihapus`);
+          showToast(`${tx.catatan || tx.jenis} dihapus`);
           if (state.apiUrl) postCloud({ action: 'delete_transaction', id: tx.id });
         }, 220);
       }, 120);
@@ -1572,7 +1666,16 @@
 
       if (filtered.length === 0) {
         const mName = MONTHS[state.month - 1];
-        container.innerHTML = `<div class="empty-box">Belum ada transaksi di ${mName} ${state.year}.<br><small style="color:var(--text-dim)">Ketuk 🎙️ untuk catat via suara, atau ✍️ untuk input manual.</small></div>`;
+        container.innerHTML = `<div class="empty-box">
+          <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--card-subtle); border: 0.5px solid var(--border); margin: 0 auto 10px auto; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="5" width="20" height="14" rx="2"/>
+              <line x1="2" y1="10" x2="22" y2="10"/>
+            </svg>
+          </div>
+          Belum ada transaksi di ${mName} ${state.year}.<br>
+          <small style="color:var(--text-dim); display:inline-block; margin-top:4px;">Gunakan tombol mikrofon atau menu Manual untuk mulai mencatat.</small>
+        </div>`;
       } else {
         const grouped = {};
         filtered.forEach(t => {
@@ -1599,7 +1702,9 @@
 
           grouped[d].forEach(t => {
             const isExp = t.jenis === 'Pengeluaran';
-            const icon = isExp ? '▼' : '▲';
+            const iconSvg = isExp
+              ? `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>`
+              : `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="7" y2="17"/><polyline points="7 7 17 7 17 17"/></svg>`;
             
             const swipeRow = document.createElement('div');
             swipeRow.className = 'tx-swipe-row';
@@ -1608,16 +1713,20 @@
             swipeRow.innerHTML = `
               <div class="tx-swipe-actions">
                 <button class="tx-swipe-btn swipe-btn-edit" type="button" aria-label="Edit Transaksi">
-                  <span class="swipe-btn-icon">✏️</span>
+                  <span class="swipe-btn-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  </span>
                   <span class="swipe-btn-text">Edit</span>
                 </button>
                 <button class="tx-swipe-btn swipe-btn-delete" type="button" aria-label="Hapus Transaksi">
-                  <span class="swipe-btn-icon">🗑️</span>
+                  <span class="swipe-btn-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                  </span>
                   <span class="swipe-btn-text">Hapus</span>
                 </button>
               </div>
               <div class="tx-item">
-                <div class="tx-icon" style="font-size:16px; color:${isExp ? 'var(--red)' : 'var(--green)'}">${icon}</div>
+                <div class="tx-icon ${isExp ? 'tx-out' : 'tx-in'}">${iconSvg}</div>
                 <div class="tx-meta">
                   <div class="tx-name">${escapeHtml(t.catatan || t.jenis)}</div>
                   <div class="tx-sub">${t.jenis}</div>
@@ -1740,7 +1849,7 @@
         autoSaveToggle.onchange = () => {
           state.autoSaveVoice = autoSaveToggle.checked;
           localStorage.setItem('VOICE_AUTOSAVE', state.autoSaveVoice);
-          showToast(state.autoSaveVoice ? '⏱️ Simpan Otomatis Aktif (3s)' : '⏸️ Simpan Otomatis Nonaktif');
+          showToast(state.autoSaveVoice ? 'Simpan otomatis aktif (3s)' : 'Simpan otomatis nonaktif');
         };
       }
 
@@ -1763,7 +1872,7 @@
       const next = cur === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('THEME', next);
-      showToast(next === 'light' ? '☀️ Mode Terang' : '🌙 Mode Gelap');
+      showToast(next === 'light' ? 'Mode Terang' : 'Mode Gelap');
     }
     if (localStorage.getItem('THEME')) document.documentElement.setAttribute('data-theme', localStorage.getItem('THEME'));
 
@@ -1771,16 +1880,29 @@
     let autoSaveTimer = null;
     let autoSaveRemaining = 3;
 
+    function setVoiceSaveBtnLabel(label) {
+      const saveBtn = document.getElementById('saveVoiceBtn');
+      if (!saveBtn) return;
+      saveBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg> ${label}`;
+    }
+
+    function formatTypeBadge(type) {
+      const isExp = type === 'Pengeluaran';
+      const iconSvg = isExp
+        ? `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:4px;"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>`
+        : `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:4px;"><line x1="7" y1="17" x2="7" y2="17"/><polyline points="7 7 17 7 17 17"/></svg>`;
+      return `${iconSvg}${type}`;
+    }
+
     function startAutoSaveCountdown() {
       clearAutoSaveCountdown();
       autoSaveRemaining = 3;
-      const saveBtn = document.getElementById('saveVoiceBtn');
-      if (saveBtn) saveBtn.textContent = `✓ Simpan Sekarang (${autoSaveRemaining}s)`;
+      setVoiceSaveBtnLabel(`Simpan Sekarang (${autoSaveRemaining}s)`);
 
       autoSaveTimer = setInterval(() => {
         autoSaveRemaining--;
         if (autoSaveRemaining > 0) {
-          if (saveBtn) saveBtn.textContent = `✓ Simpan Sekarang (${autoSaveRemaining}s)`;
+          setVoiceSaveBtnLabel(`Simpan Sekarang (${autoSaveRemaining}s)`);
         } else {
           clearAutoSaveCountdown();
           confirmSaveVoice();
@@ -1793,12 +1915,11 @@
         clearInterval(autoSaveTimer);
         autoSaveTimer = null;
       }
-      const saveBtn = document.getElementById('saveVoiceBtn');
-      if (saveBtn) saveBtn.textContent = '✓ Simpan Sekarang';
+      setVoiceSaveBtnLabel('Simpan Sekarang');
     }
 
     // ── CANCEL AUTO SAVE ON EDIT ──
-    function cancelVoiceAutoSave(msg = '✏️ Mode edit: Simpan otomatis dimatikan') {
+    function cancelVoiceAutoSave(msg = 'Mode edit: Simpan otomatis dimatikan') {
       const wasCounting = !!autoSaveTimer;
       clearAutoSaveCountdown();
       const vStatus = document.getElementById('voiceStatus');
@@ -1807,10 +1928,9 @@
         vStatus.style.color = 'var(--blue)';
       }
       if (wasCounting) {
-        showToast('⏸️ Simpan otomatis dibatalkan');
+        showToast('Simpan otomatis dibatalkan');
       }
-      const saveBtn = document.getElementById('saveVoiceBtn');
-      if (saveBtn) saveBtn.textContent = '✓ Simpan Sekarang';
+      setVoiceSaveBtnLabel('Simpan Sekarang');
     }
 
     function toggleVoiceType() {
@@ -1820,7 +1940,7 @@
       state.detectedVoice.type = state.detectedVoice.type === 'Pengeluaran' ? 'Pemasukan' : 'Pengeluaran';
       const typeEl = document.getElementById('parsedType');
       if (typeEl) {
-        typeEl.textContent = (state.detectedVoice.type === 'Pemasukan' ? '▲ ' : '▼ ') + state.detectedVoice.type;
+        typeEl.innerHTML = formatTypeBadge(state.detectedVoice.type);
         typeEl.style.color = state.detectedVoice.type === 'Pemasukan' ? 'var(--green)' : 'var(--red)';
       }
       cancelVoiceAutoSave('Tipe diubah: Simpan otomatis dibatalkan');
@@ -1832,7 +1952,7 @@
       clearAutoSaveCountdown();
       document.getElementById('parsedGrid').style.display = 'grid';
       const typeEl = document.getElementById('parsedType');
-      typeEl.textContent = (parsed.type === 'Pemasukan' ? '▲ ' : '▼ ') + parsed.type;
+      typeEl.innerHTML = formatTypeBadge(parsed.type);
       typeEl.style.color = parsed.type === 'Pemasukan' ? 'var(--green)' : 'var(--red)';
       
       const amtEl = document.getElementById('parsedAmount');
@@ -1841,7 +1961,7 @@
       if (noteEl) noteEl.value = parsed.note || '';
 
       const confColor = { 'Sangat Yakin': 'var(--green)', 'Cukup Yakin': 'var(--blue)', 'Lumayan Yakin': '#FF9F0A', 'Tebakan': 'var(--red)' };
-      document.getElementById('voiceStatus').textContent = `🎯 ${parsed.confidence}`;
+      document.getElementById('voiceStatus').textContent = parsed.confidence;
       document.getElementById('voiceStatus').style.color = confColor[parsed.confidence] || 'var(--blue)';
       const saveBtn = document.getElementById('saveVoiceBtn');
       saveBtn.style.display = 'block';
@@ -1850,7 +1970,7 @@
       if (state.autoSaveVoice && parsed.amount > 0) {
         startAutoSaveCountdown();
       } else {
-        saveBtn.textContent = '✓ Simpan Sekarang';
+        setVoiceSaveBtnLabel('Simpan Sekarang');
       }
     }
 
@@ -1859,16 +1979,19 @@
       state.manualType = t;
       const exp = document.getElementById('btnTypeExpense');
       const inc = document.getElementById('btnTypeIncome');
+      const expIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:5px;"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>`;
+      const incIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:5px;"><line x1="7" y1="17" x2="7" y2="17"/><polyline points="7 7 17 7 17 17"/></svg>`;
+
       if (t === 'Pengeluaran') {
         exp.style.background = 'var(--red)'; exp.style.color = '#FFF';
-        exp.textContent = '▼ Pengeluaran';
+        exp.innerHTML = `${expIcon}Pengeluaran`;
         inc.style.background = 'var(--card-subtle)'; inc.style.color = 'var(--text-muted)';
-        inc.textContent = '▲ Pemasukan';
+        inc.innerHTML = `${incIcon}Pemasukan`;
       } else {
         inc.style.background = 'var(--green)'; inc.style.color = '#FFF';
-        inc.textContent = '▲ Pemasukan';
+        inc.innerHTML = `${incIcon}Pemasukan`;
         exp.style.background = 'var(--card-subtle)'; exp.style.color = 'var(--text-muted)';
-        exp.textContent = '▼ Pengeluaran';
+        exp.innerHTML = `${expIcon}Pengeluaran`;
       }
     }
 
@@ -1877,7 +2000,7 @@
       const amt = Number(amtInput.value) || 0;
       if (amt <= 0) {
         shakeField(amtInput);
-        showToast('⚠️ Masukkan nominal terlebih dahulu!');
+        showToast('Masukkan nominal terlebih dahulu');
         return;
       }
 
@@ -1898,7 +2021,7 @@
           target.tanggal = txDate;
           save();
           render();
-          showToast('✓ Transaksi diperbarui');
+          showToast('Transaksi diperbarui');
           if (state.apiUrl) {
             postCloud({
               action: 'update_transaction',
@@ -1990,7 +2113,7 @@
     function showVoiceError(msg) {
       const el = document.getElementById('voiceStatus');
       if (el) {
-        el.textContent = '⚠️ ' + msg;
+        el.textContent = msg;
         el.style.color = 'var(--red)';
       }
       const orb = document.getElementById('siriOrb');
@@ -2043,7 +2166,7 @@
       if (amtEl) amtEl.value = '';
       if (noteEl) noteEl.value = '';
       document.getElementById('transcriptBox').textContent = '"Contoh: Belanja makanan pentol 10.000"';
-      document.getElementById('voiceStatus').textContent = '🎙️ Menghubungkan mikrofon...';
+      document.getElementById('voiceStatus').textContent = 'Menghubungkan mikrofon...';
       document.getElementById('voiceStatus').style.color = 'var(--blue)';
 
       // 3. Buat instance SpeechRecognition baru setiap kali mulai (hindari reuse bug di Chrome/WebKit)
@@ -2059,7 +2182,7 @@
         isListening = true;
         const orb = document.getElementById('siriOrb');
         if (orb) orb.classList.add('listening');
-        document.getElementById('voiceStatus').textContent = '🎙️ Mendengarkan... Katakan sekarang!';
+        document.getElementById('voiceStatus').textContent = 'Mendengarkan... Katakan sekarang!';
         document.getElementById('voiceStatus').style.color = 'var(--green)';
         if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(10);
       };
@@ -2084,13 +2207,14 @@
           if (localParsed.amount > 0) {
             state.detectedVoice = localParsed;
             document.getElementById('parsedGrid').style.display = 'grid';
-            document.getElementById('parsedType').textContent = (localParsed.type === 'Pemasukan' ? '▲ ' : '▼ ') + localParsed.type;
-            document.getElementById('parsedType').style.color = localParsed.type === 'Pemasukan' ? 'var(--green)' : 'var(--red)';
+            const typeEl = document.getElementById('parsedType');
+            typeEl.innerHTML = formatTypeBadge(localParsed.type);
+            typeEl.style.color = localParsed.type === 'Pemasukan' ? 'var(--green)' : 'var(--red)';
             const amtEl = document.getElementById('parsedAmount');
             const noteEl = document.getElementById('parsedNote');
             if (amtEl) amtEl.value = localParsed.amount || '';
             if (noteEl) noteEl.value = localParsed.note || '';
-            document.getElementById('voiceStatus').textContent = '👂 Mendengarkan...';
+            document.getElementById('voiceStatus').textContent = 'Mendengarkan...';
             document.getElementById('voiceStatus').style.color = 'var(--green)';
           }
           return;
@@ -2127,7 +2251,7 @@
         if (!state.detectedVoice || state.detectedVoice.amount <= 0) {
           clearAutoSaveCountdown();
           const vStatus = document.getElementById('voiceStatus');
-          if (vStatus && !vStatus.textContent.includes('⚠️')) {
+          if (vStatus && !vStatus.textContent.includes('Gagal') && !vStatus.textContent.includes('ditolak')) {
             vStatus.textContent = 'Ketuk lingkaran untuk bicara lagi';
             vStatus.style.color = 'var(--blue)';
           }
@@ -2168,7 +2292,7 @@
           shakeField(amtEl);
           amtEl.focus();
         }
-        showToast('⚠️ Nominal harus lebih dari 0!');
+        showToast('Nominal harus lebih dari 0');
         return;
       }
 
@@ -2375,7 +2499,7 @@
       render();
       playChime();
       if (window.navigator && window.navigator.vibrate) window.navigator.vibrate([15, 30, 20]);
-      showToast(`✓ +Rp ${formatIDR(tx.jumlah)} Tersimpan`);
+      showToast(`+Rp ${formatIDR(tx.jumlah)} Tersimpan`);
       if (state.apiUrl) postCloud({ action: 'add_transaction', ...tx });
     }
 
@@ -2418,7 +2542,7 @@
           await fetchCloud();
         }
       } catch (e) {
-        showToast('⚠️ Gagal sinkron, cek koneksi');
+        showToast('Gagal sinkron, cek koneksi');
       } finally {
         _syncEnd();
       }
@@ -2445,7 +2569,7 @@
             state.transactions = data.transactions;
             save();
             render();
-            showToast('🔄 Data diperbarui');
+            showToast('Data diperbarui');
           }
           // Kalau sama persis, tidak ada aksi (hemat resource)
         }
@@ -2472,7 +2596,7 @@
       try {
         const res = await fetch(`${url}?action=ping&_t=${Date.now()}`);
         const json = await res.json();
-        alert(json.status === 'success' ? '✅ Koneksi Sukses!' : 'Gagal: ' + json.message);
+        alert(json.status === 'success' ? 'Koneksi Sukses!' : 'Gagal: ' + json.message);
       } catch (e) { alert('Gagal koneksi: ' + e.message); }
     }
 
@@ -2483,7 +2607,7 @@
 
     function showToast(msg) {
       const t = document.getElementById('toast');
-      t.textContent = msg;
+      t.innerHTML = msg;
       t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 2200);
     }
