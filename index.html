@@ -665,32 +665,7 @@
       border-color: var(--blue);
     }
 
-    /* BAR CHART IN ANALYSIS */
-    .cat-bar-item {
-      margin-bottom: 12px;
-    }
 
-    .cat-bar-top {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      margin-bottom: 4px;
-    }
-
-    .cat-bar-track {
-      width: 100%;
-      height: 6px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .cat-bar-fill {
-      height: 100%;
-      background: var(--blue);
-      border-radius: 4px;
-      transition: width 0.4s ease;
-    }
 
     /* TOAST */
     .toast {
@@ -821,11 +796,7 @@
           <div class="parsed-label">Nominal</div>
           <div class="parsed-val" id="parsedAmount" style="color: var(--blue);">Rp 10.000</div>
         </div>
-        <div class="parsed-item">
-          <div class="parsed-label">Kategori</div>
-          <div class="parsed-val" id="parsedCategory">Makanan & Minuman</div>
-        </div>
-        <div class="parsed-item">
+        <div class="parsed-item" style="grid-column: span 2;">
           <div class="parsed-label">Catatan</div>
           <div class="parsed-val" id="parsedNote">Pentol</div>
         </div>
@@ -862,22 +833,7 @@
         <input type="number" class="clean-input" id="inputAmount" placeholder="Contoh: 25000">
       </div>
 
-      <div class="form-group">
-        <label class="form-label">Kategori</label>
-        <select class="clean-input" id="selectCategory">
-          <option value="Makanan & Minuman">🍔 Makanan & Minuman</option>
-          <option value="Transportasi & Bensin">🚗 Transportasi & Bensin</option>
-          <option value="Belanja & Kebutuhan">🛍️ Belanja & Kebutuhan</option>
-          <option value="Tagihan & Listrik/Air">⚡ Tagihan & Listrik/Air</option>
-          <option value="Hiburan & Rekreasi">🎮 Hiburan & Rekreasi</option>
-          <option value="Kesehatan & Medis">💊 Kesehatan & Medis</option>
-          <option value="Sedekah & Amal">🤲 Sedekah & Amal</option>
-          <option value="Gaji Pokok">💼 Gaji Pokok</option>
-          <option value="Freelance & Proyek">💻 Freelance & Proyek</option>
-          <option value="Bisnis & Usaha">📈 Bisnis & Usaha</option>
-          <option value="Lain-lain">📦 Lain-lain</option>
-        </select>
-      </div>
+
 
       <div class="form-group">
         <label class="form-label">Catatan</label>
@@ -910,13 +866,7 @@
         </div>
       </div>
 
-      <div
-        style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.05em;">
-        Distribusi Pengeluaran
-      </div>
-      <div id="categoryBarsContainer">
-        <!-- Dynamic Category Progress Bars -->
-      </div>
+
     </div>
   </div>
 
@@ -1012,8 +962,8 @@
         try { state.transactions = JSON.parse(cached); } catch (e) { }
       } else {
         state.transactions = [
-          { id: 'T1', tanggal: today(), jenis: 'Pengeluaran', kategori: 'Makanan & Minuman', jumlah: 15000, catatan: 'Makan Pentol', icon: '🍔' },
-          { id: 'T2', tanggal: today(), jenis: 'Pemasukan', kategori: 'Gaji Pokok', jumlah: 5000000, catatan: 'Gaji Masuk', icon: '💼' }
+          { id: 'T1', tanggal: today(), jenis: 'Pengeluaran', jumlah: 15000, catatan: 'Makan Pentol' },
+          { id: 'T2', tanggal: today(), jenis: 'Pemasukan', jumlah: 5000000, catatan: 'Gaji Masuk' }
         ];
         save();
       }
@@ -1073,7 +1023,6 @@
 
       let income = 0;
       let expense = 0;
-      const catTotals = {};
 
       const filtered = state.transactions.filter(t => {
         const parts = t.tanggal.split('-');
@@ -1081,12 +1030,8 @@
       });
 
       filtered.forEach(t => {
-        if (t.jenis === 'Pemasukan') {
-          income += t.jumlah;
-        } else {
-          expense += t.jumlah;
-          catTotals[t.kategori] = (catTotals[t.kategori] || 0) + t.jumlah;
-        }
+        if (t.jenis === 'Pemasukan') income += t.jumlah;
+        else expense += t.jumlah;
       });
 
       const net = income - expense;
@@ -1121,20 +1066,21 @@
 
           grouped[d].forEach(t => {
             const isExp = t.jenis === 'Pengeluaran';
+            const icon = isExp ? '▼' : '▲';
             const row = document.createElement('div');
             row.className = 'tx-item';
             row.innerHTML = `
-              <div class="tx-icon">${t.icon || getCategoryIcon(t.kategori)}</div>
+              <div class="tx-icon" style="font-size:16px; color:${isExp ? 'var(--red)' : 'var(--green)'}">${icon}</div>
               <div class="tx-meta">
-                <div class="tx-name">${escapeHtml(t.catatan || t.kategori)}</div>
-                <div class="tx-sub">${escapeHtml(t.kategori)}</div>
+                <div class="tx-name">${escapeHtml(t.catatan || t.jenis)}</div>
+                <div class="tx-sub">${t.jenis}</div>
               </div>
               <div class="tx-val ${isExp ? 'val-out' : 'val-in'}">
                 ${isExp ? '-' : '+'}Rp ${formatIDR(t.jumlah)}
               </div>
             `;
             row.onclick = () => {
-              if (confirm(`Hapus: ${t.catatan || t.kategori} (Rp ${formatIDR(t.jumlah)})?`)) {
+              if (confirm(`Hapus: ${t.catatan || t.jenis} (Rp ${formatIDR(t.jumlah)})?`)) {
                 state.transactions = state.transactions.filter(x => x.id !== t.id);
                 save();
                 render();
@@ -1153,31 +1099,6 @@
       document.getElementById('anNetVal').textContent = 'Rp ' + formatIDR(net);
       const daysInMonth = Math.max(1, new Date().getDate());
       document.getElementById('anDailyVal').textContent = 'Rp ' + formatIDR(expense / daysInMonth);
-
-      const barContainer = document.getElementById('categoryBarsContainer');
-      barContainer.innerHTML = '';
-      const catKeys = Object.keys(catTotals);
-      if (catKeys.length === 0 || expense === 0) {
-        barContainer.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:10px;">Belum ada pengeluaran.</div>';
-      } else {
-        catKeys.sort((a, b) => catTotals[b] - catTotals[a]);
-        catKeys.forEach(k => {
-          const val = catTotals[k];
-          const pct = Math.round((val / expense) * 100);
-          const item = document.createElement('div');
-          item.className = 'cat-bar-item';
-          item.innerHTML = `
-            <div class="cat-bar-top">
-              <span>${getCategoryIcon(k)} ${escapeHtml(k)}</span>
-              <strong>Rp ${formatIDR(val)} (${pct}%)</strong>
-            </div>
-            <div class="cat-bar-track">
-              <div class="cat-bar-fill" style="width: ${pct}%;"></div>
-            </div>
-          `;
-          barContainer.appendChild(item);
-        });
-      }
     }
 
     // Event Bindings
@@ -1290,7 +1211,6 @@
       typeEl.textContent = (parsed.type === 'Pemasukan' ? '▲ ' : '▼ ') + parsed.type;
       typeEl.style.color = parsed.type === 'Pemasukan' ? 'var(--green)' : 'var(--red)';
       document.getElementById('parsedAmount').textContent = 'Rp ' + formatIDR(parsed.amount);
-      document.getElementById('parsedCategory').textContent = parsed.category;
       document.getElementById('parsedNote').textContent = parsed.note;
       const confColor = { 'Sangat Yakin': 'var(--green)', 'Cukup Yakin': 'var(--blue)', 'Lumayan Yakin': '#FF9F0A', 'Tebakan': 'var(--red)' };
       document.getElementById('voiceStatus').textContent = `🎯 ${parsed.confidence}`;
@@ -1324,17 +1244,14 @@
       const amt = Number(document.getElementById('inputAmount').value) || 0;
       if (amt <= 0) return alert('Masukkan nominal!');
 
-      const cat = document.getElementById('selectCategory').value;
-      const note = document.getElementById('inputNote').value.trim() || cat;
+      const note = document.getElementById('inputNote').value.trim() || state.manualType;
 
       addTransaction({
         id: 'TRX-' + Date.now().toString(36),
         tanggal: today(),
         jenis: state.manualType,
-        kategori: cat,
         jumlah: amt,
-        catatan: note,
-        icon: getCategoryIcon(cat)
+        catatan: note
       });
 
       closeModal(document.getElementById('manualModal'));
@@ -1468,7 +1385,6 @@
             document.getElementById('parsedType').textContent = (localParsed.type === 'Pemasukan' ? '▲ ' : '▼ ') + localParsed.type;
             document.getElementById('parsedType').style.color = localParsed.type === 'Pemasukan' ? 'var(--green)' : 'var(--red)';
             document.getElementById('parsedAmount').textContent = 'Rp ' + formatIDR(localParsed.amount);
-            document.getElementById('parsedCategory').textContent = localParsed.category;
             document.getElementById('parsedNote').textContent = localParsed.note;
             document.getElementById('voiceStatus').textContent = '👂 Mendengarkan...';
             document.getElementById('voiceStatus').style.color = 'var(--green)';
@@ -1539,16 +1455,14 @@
         id: 'TRX-' + Date.now().toString(36),
         tanggal: today(),
         jenis: state.detectedVoice.type,
-        kategori: state.detectedVoice.category,
         jumlah: state.detectedVoice.amount,
-        catatan: state.detectedVoice.note,
-        icon: getCategoryIcon(state.detectedVoice.category)
+        catatan: state.detectedVoice.note
       });
       closeAllModals();
     }
 
     // ================= ULTRA-SMART INDONESIAN SPEECH PARSER v3 =================
-    // Dilengkapi 310+ kata kunci, slang angka, intent scoring, dan ekstraksi kategori presisi
+    // Dilengkapi ekstraksi tipe intent (Pemasukan/Pengeluaran), angka verbal, dan catatan
     function parseSpeech(raw) {
       const text = raw.toLowerCase().trim();
 
@@ -1599,144 +1513,7 @@
       // ── 2. EKSTRAKSI NOMINAL UANG ──
       let amount = extractIndonesianNumber(text);
 
-      // ── 3. PEMETAAN KATEGORI CERDAS LENGKAP (310+ Kosakata) ──
-      let cat = type === 'Pemasukan' ? 'Gaji Pokok' : 'Makanan & Minuman';
-
-      const catMap = [
-        // == PENGELUARAN ==
-        {
-          name: 'Makanan & Minuman',
-          type: 'Pengeluaran',
-          words: [
-            'makan', 'minum', 'pentol', 'bakso', 'soto', 'sate', 'mie', 'nasi', 'ayam', 'bebek',
-            'ikan', 'lele', 'seafood', 'kopi', 'kafe', 'cafe', 'warkop', 'snack', 'jajan', 'sarapan',
-            'maksi', 'dinner', 'kuliner', 'warteg', 'padang', 'seblak', 'martabak', 'terang bulan',
-            'roti', 'kue', 'donat', 'es', 'es teh', 'boba', 'geprek', 'lalapan', 'gorengan',
-            'indomie', 'ramen', 'starbucks', 'mcd', 'kfc', 'pizza', 'burger', 'siomay', 'batagor',
-            'cireng', 'cilok', 'cimol', 'lumpia', 'pecel', 'rawon', 'bubur', 'gado-gado', 'ketoprak',
-            'rendang', 'tongseng', 'chiki', 'cemilan', 'kerupuk', 'keripik', 'jus', 'susu', 'aqua',
-            'air mineral', 'le minerale', 'chatime', 'mixue', 'hokben', 'solaria', 'rokok', 'surya',
-            'sampoerna', 'marlboro', 'gudang garam', 'magnum', 'esse'
-          ]
-        },
-        {
-          name: 'Transportasi & Bensin',
-          type: 'Pengeluaran',
-          words: [
-            'bensin', 'pertalite', 'pertamax', 'solar', 'dexlite', 'spbu', 'pom bensin', 'tambal',
-            'ban', 'oli', 'servis', 'bengkel', 'ojek', 'gojek', 'grab', 'maxim', 'indrive', 'parkir',
-            'tol', 'e-toll', 'cuci motor', 'cuci mobil', 'angkot', 'bus', 'transjakarta', 'kereta',
-            'krl', 'mrt', 'lrt', 'pesawat', 'tiket', 'helm', 'aki', 'sparepart', 'motor', 'mobil', 'sepeda'
-          ]
-        },
-        {
-          name: 'Belanja & Kebutuhan',
-          type: 'Pengeluaran',
-          words: [
-            'belanja', 'indomaret', 'alfamart', 'alfamidi', 'supermarket', 'hypermart', 'superindo',
-            'pasar', 'kelontong', 'warung', 'beras', 'telur', 'minyak', 'gula', 'garam', 'bumbu',
-            'sayur', 'daging', 'buah', 'sabun', 'shampoo', 'odol', 'deterjen', 'pewangi', 'rinso',
-            'sunlight', 'tisu', 'pampers', 'popok', 'susu bayi', 'gas', 'elpiji', 'galon', 'baju',
-            'kaos', 'celana', 'sepatu', 'sandal', 'tas', 'dompet', 'jaket', 'hoodie', 'shopee',
-            'tokopedia', 'skincare', 'kosmetik', 'makeup', 'parfum', 'lazada', 'tiktok shop',
-            'blibli', 'potong rambut', 'barbershop', 'salon', 'hp', 'handphone', 'smartphone',
-            'laptop', 'komputer', 'tablet', 'charger', 'casing', 'powerbank'
-          ]
-        },
-        {
-          name: 'Tagihan & Listrik/Air',
-          type: 'Pengeluaran',
-          words: [
-            'listrik', 'pln', 'token', 'pdam', 'air pam', 'wifi', 'indihome', 'biznet', 'myrepublic',
-            'kuota', 'pulsa', 'paket data', 'telkomsel', 'byu', 'xl', 'axis', 'indosat', 'im3', 'tri',
-            'smartfren', 'bpjs', 'kos', 'kost', 'kontrakan', 'sewa rumah', 'tagihan', 'cicilan',
-            'kredit', 'paylater', 'spaylater', 'akulaku', 'kredivo', 'iuran', 'pbb'
-          ]
-        },
-        {
-          name: 'Hiburan & Rekreasi',
-          type: 'Pengeluaran',
-          words: [
-            'nonton', 'bioskop', 'film', 'cinema', 'xxi', 'cgv', 'game', 'main game', 'topup ml',
-            'top up diamond', 'steam', 'netflix', 'spotify', 'youtube premium', 'vidio', 'liburan',
-            'karaoke', 'jalan-jalan', 'wisata', 'pantai', 'gunung', 'hotel', 'villa', 'staycation',
-            'biliar', 'timezone'
-          ]
-        },
-        {
-          name: 'Kesehatan & Medis',
-          type: 'Pengeluaran',
-          words: [
-            'obat', 'apotek', 'kimia farma', 'k24', 'dokter', 'klinik', 'puskesmas', 'rumah sakit',
-            'rs', 'vitamin', 'paracetamol', 'bodrex', 'tolak angin', 'bidan', 'periksa', 'gigi',
-            'optik', 'kacamata', 'fisio', 'lab'
-          ]
-        },
-        {
-          name: 'Sedekah & Amal',
-          type: 'Pengeluaran',
-          words: [
-            'sedekah', 'infaq', 'zakat', 'amal', 'masjid', 'donasi', 'sumbangan', 'jariyah',
-            'wakaf', 'qurban', 'kurban', 'anak yatim', 'panti asuhan', 'amplop', 'kondangan'
-          ]
-        },
-        {
-          name: 'Pendidikan & Keluarga',
-          type: 'Pengeluaran',
-          words: [
-            'spp', 'uang sekolah', 'uang kuliah', 'ukt', 'les', 'bimbel', 'kursus', 'buku',
-            'fotokopi', 'atk', 'pulpen', 'uang saku', 'sangu'
-          ]
-        },
-        // == PEMASUKAN ==
-        {
-          name: 'Gaji Pokok',
-          type: 'Pemasukan',
-          words: [
-            'gaji', 'gajih', 'upah', 'salary', 'honor', 'gajian', 'payroll', 'thr', 'pesangon', 'slip gaji'
-          ]
-        },
-        {
-          name: 'Freelance & Proyek',
-          type: 'Pemasukan',
-          words: [
-            'freelance', 'proyek', 'project', 'desain', 'klien', 'jasa', 'coding', 'website',
-            'fee', 'komisi', 'bayaran klien', 'royalty', 'tips', 'tip'
-          ]
-        },
-        {
-          name: 'Bisnis & Usaha',
-          type: 'Pemasukan',
-          words: [
-            'bisnis', 'usaha', 'dagang', 'toko', 'warung', 'omset', 'omzet', 'jualan', 'laba',
-            'untung', 'profit', 'pendapatan', 'closingan', 'hasil jualan', 'orderan masuk',
-            'arisan cair', 'arisan', 'cashback', 'refund', 'dividen', 'bunga bank',
-            'jual', 'menjual', 'terjual', 'penjualan', 'laku', 'laris'
-          ]
-        }
-      ];
-
-      // Prioritas 1: Kategori yang sesuai tipe intent
-      let found = false;
-      for (const item of catMap) {
-        if (item.type === type && item.words.some(w => text.includes(w))) {
-          cat = item.name;
-          found = true;
-          break;
-        }
-      }
-      // Prioritas 2: Cek lintas tipe (kata benda spesifik override tipe)
-      if (!found) {
-        for (const item of catMap) {
-          if (item.words.some(w => text.includes(w))) {
-            cat = item.name;
-            if (item.type === 'Pemasukan' && intentScore >= 0) type = 'Pemasukan';
-            break;
-          }
-        }
-      }
-
-      // ── 4. EKSTRAKSI CATATAN BERSIH ──
+      // ── 3. EKSTRAKSI CATATAN BERSIH ──
       let note = text
         .replace(/(\d[\d.,]*)\s*(ribu|rb|k|juta|jt|ratus|puluh|belas)?/gi, ' ')
         .replace(/\b(rp|rupiah|idr)\b/gi, ' ');
@@ -1751,10 +1528,10 @@
         note = note.replace(new RegExp('(^|\\s)' + w + '($|\\s)', 'gi'), ' ');
       });
       note = note.trim().replace(/\s+/g, ' ');
-      if (note.length < 2) note = cat;
+      if (note.length < 2) note = type;
       else note = note.charAt(0).toUpperCase() + note.slice(1);
 
-      return { type, category: cat, amount: Math.round(amount), note, confidence, intentScore };
+      return { type, amount: Math.round(amount), note, confidence, intentScore };
     }
 
     // ── EKSTRAKTOR ANGKA VERBAL INDONESIA v4 ──
@@ -1868,19 +1645,7 @@
       return 0;
     }
 
-    function getCategoryIcon(cat) {
-      if (cat.includes('Makan')) return '🍔';
-      if (cat.includes('Transport') || cat.includes('Bensin')) return '🚗';
-      if (cat.includes('Belanja')) return '🛍️';
-      if (cat.includes('Tagihan') || cat.includes('Listrik')) return '⚡';
-      if (cat.includes('Hiburan')) return '🎮';
-      if (cat.includes('Kesehatan')) return '💊';
-      if (cat.includes('Sedekah')) return '🤲';
-      if (cat.includes('Gaji')) return '💼';
-      if (cat.includes('Freelance')) return '💻';
-      if (cat.includes('Bisnis')) return '📈';
-      return '📦';
-    }
+
 
     function addTransaction(tx) {
       state.transactions.unshift(tx);
@@ -1895,9 +1660,38 @@
     // ================= CLOUD SYNC =================
     let _isFetching = false;
     let _autoRefreshTimer = null;
+    // Counter aktif operasi — dot hanya mati saat semua selesai
+    let _syncCount = 0;
+    let _dotOffTimer = null;
+    const _DOT_MIN_MS = 600; // minimum tampil 'Menyimpan' agar tidak berkedip
+
+    function _syncStart() {
+      _syncCount++;
+      if (_dotOffTimer) { clearTimeout(_dotOffTimer); _dotOffTimer = null; }
+      const d = document.getElementById('cloudDot');
+      const s = document.getElementById('cloudStatus');
+      d.classList.add('sync');
+      s.textContent = 'Menyimpan...';
+    }
+
+    function _syncEnd() {
+      _syncCount = Math.max(0, _syncCount - 1);
+      if (_syncCount === 0) {
+        // Tunda pemadaman dot minimal _DOT_MIN_MS agar tidak berkedip
+        _dotOffTimer = setTimeout(() => {
+          if (_syncCount === 0) {
+            const d = document.getElementById('cloudDot');
+            const s = document.getElementById('cloudStatus');
+            d.classList.remove('sync');
+            s.textContent = 'Tersambung';
+          }
+          _dotOffTimer = null;
+        }, _DOT_MIN_MS);
+      }
+    }
 
     async function postCloud(payload) {
-      updateDot(true);
+      _syncStart();
       try {
         const res = await fetch(state.apiUrl, {
           method: 'POST',
@@ -1908,13 +1702,13 @@
         const json = await res.json();
         if (json.status === 'success') {
           // Re-fetch cloud after write to sync with other devices
+          // Tidak perlu syncStart lagi — fetchCloud akan pakai counter yang sama
           await fetchCloud();
-        } else {
-          updateDot(false);
         }
       } catch (e) {
-        updateDot(false);
         showToast('⚠️ Gagal sinkron, cek koneksi');
+      } finally {
+        _syncEnd();
       }
     }
 
@@ -1927,7 +1721,7 @@
     async function fetchCloud() {
       if (_isFetching) return;
       _isFetching = true;
-      updateDot(true);
+      _syncStart();
       try {
         const res = await fetch(`${state.apiUrl}?action=get_init_data&year=${state.year}&month=${state.month}&_t=${Date.now()}`);
         const data = await res.json();
@@ -1943,21 +1737,21 @@
           }
           // Kalau sama persis, tidak ada aksi (hemat resource)
         }
-        updateDot(false);
       } catch (e) {
-        updateDot(false);
+        // Silent fail — dot akan mati via _syncEnd
       } finally {
         _isFetching = false;
+        _syncEnd();
       }
     }
 
     function startAutoRefresh() {
       if (_autoRefreshTimer) clearInterval(_autoRefreshTimer);
       if (!state.apiUrl) return;
-      // Polling setiap 15 detik — cek perubahan data dari HP lain
+      // Polling setiap 30 detik — lebih hemat, tetap responsif
       _autoRefreshTimer = setInterval(() => {
         if (state.apiUrl) fetchCloud();
-      }, 15000);
+      }, 30000);
     }
 
     async function testCloud() {
@@ -1970,16 +1764,9 @@
       } catch (e) { alert('Gagal koneksi: ' + e.message); }
     }
 
+    // Legacy compat — dipanggil dari tempat lain jika ada
     function updateDot(isSyncing) {
-      const d = document.getElementById('cloudDot');
-      const s = document.getElementById('cloudStatus');
-      if (isSyncing) {
-        d.classList.add('sync');
-        s.textContent = 'Menyimpan...';
-      } else {
-        d.classList.remove('sync');
-        s.textContent = 'Tersambung';
-      }
+      if (isSyncing) _syncStart(); else _syncEnd();
     }
 
     function showToast(msg) {
