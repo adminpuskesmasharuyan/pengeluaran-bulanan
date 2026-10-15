@@ -479,14 +479,37 @@
 
     /* Shake animation for validation error */
     @keyframes shakeInput {
-      0%, 100% { transform: translateX(0); }
-      15%       { transform: translateX(-8px); }
-      30%       { transform: translateX(7px); }
-      45%       { transform: translateX(-6px); }
-      60%       { transform: translateX(5px); }
-      75%       { transform: translateX(-4px); }
-      90%       { transform: translateX(3px); }
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      15% {
+        transform: translateX(-8px);
+      }
+
+      30% {
+        transform: translateX(7px);
+      }
+
+      45% {
+        transform: translateX(-6px);
+      }
+
+      60% {
+        transform: translateX(5px);
+      }
+
+      75% {
+        transform: translateX(-4px);
+      }
+
+      90% {
+        transform: translateX(3px);
+      }
     }
+
     .shake {
       animation: shakeInput 0.45s ease;
       border-color: var(--red) !important;
@@ -594,8 +617,10 @@
       height: 5px;
       border-radius: 3px;
       background: var(--text-dim);
-      margin: -8px auto 6px auto; /* area sentuh lebih besar dengan negative margin */
-      padding: 8px 20px;          /* invisible touch padding */
+      margin: -8px auto 6px auto;
+      /* area sentuh lebih besar dengan negative margin */
+      padding: 8px 20px;
+      /* invisible touch padding */
       box-sizing: content-box;
       opacity: 0.4;
       cursor: grab;
@@ -603,7 +628,11 @@
       transition: opacity 0.2s;
       background-clip: content-box;
     }
-    .handle:active { opacity: 0.7; cursor: grabbing; }
+
+    .handle:active {
+      opacity: 0.7;
+      cursor: grabbing;
+    }
 
     .sheet-title {
       font-size: 17px;
@@ -649,12 +678,12 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
     }
 
-    input:checked + .slider {
+    input:checked+.slider {
       background-color: var(--green);
       border-color: var(--green);
     }
 
-    input:checked + .slider:before {
+    input:checked+.slider:before {
       transform: translateX(20px);
     }
 
@@ -682,8 +711,13 @@
     }
 
     @keyframes siriBreath {
-      0%   { transform: scale(0.96); }
-      100% { transform: scale(1.08); }
+      0% {
+        transform: scale(0.96);
+      }
+
+      100% {
+        transform: scale(1.08);
+      }
     }
 
     .siri-circle:active {
@@ -869,6 +903,7 @@
       -moz-appearance: textfield;
       appearance: textfield;
     }
+
     input[type="number"].clean-input::-webkit-outer-spin-button,
     input[type="number"].clean-input::-webkit-inner-spin-button {
       -webkit-appearance: none;
@@ -931,8 +966,18 @@
       <div class="balance-label">Total Saldo Bulan Ini</div>
       <div class="balance-val" id="netBalance">Rp 0</div>
       <div class="balance-stats">
-        <span class="stat-in"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:3px;"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>Masuk: <strong id="incomeVal">Rp 0</strong></span>
-        <span class="stat-out"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:3px;"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>Keluar: <strong id="expenseVal">Rp 0</strong></span>
+        <span class="stat-in"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"
+            style="display:inline-block; vertical-align:-1px; margin-right:3px;">
+            <line x1="7" y1="17" x2="17" y2="7" />
+            <polyline points="7 7 17 7 17 17" />
+          </svg>Masuk: <strong id="incomeVal">Rp 0</strong></span>
+        <span class="stat-out"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"
+            style="display:inline-block; vertical-align:-1px; margin-right:3px;">
+            <line x1="17" y1="7" x2="7" y2="17" />
+            <polyline points="17 17 7 17 7 7" />
+          </svg>Keluar: <strong id="expenseVal">Rp 0</strong></span>
       </div>
     </div>
 
@@ -953,8 +998,9 @@
   <nav class="bottom-bar">
     <button class="nav-btn" id="navAnalysisBtn">
       <span class="nav-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 20V10M12 20V4M6 20v-6"/>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 20V10M12 20V4M6 20v-6" />
         </svg>
       </span>
       <span>Analisis</span>
@@ -962,29 +1008,33 @@
 
     <button class="nav-btn" id="navManualBtn">
       <span class="nav-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
         </svg>
       </span>
       <span>Manual</span>
     </button>
 
     <!-- INPUT UTAMA: SUARA (TENGAH BAWAH) -->
-    <button class="center-voice-btn" id="navCenterVoiceBtn" title="Bicara untuk Catat Transaksi" aria-label="Bicara untuk Catat Transaksi">
-      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
-        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-        <line x1="12" y1="19" x2="12" y2="22"/>
-        <line x1="8" y1="22" x2="16" y2="22"/>
+    <button class="center-voice-btn" id="navCenterVoiceBtn" title="Bicara untuk Catat Transaksi"
+      aria-label="Bicara untuk Catat Transaksi">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.3"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+        <line x1="12" y1="19" x2="12" y2="22" />
+        <line x1="8" y1="22" x2="16" y2="22" />
       </svg>
     </button>
 
     <button class="nav-btn" id="navThemeBtn">
       <span class="nav-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" />
         </svg>
       </span>
       <span>Tema</span>
@@ -992,9 +1042,11 @@
 
     <button class="nav-btn" id="navSettingsBtn">
       <span class="nav-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
         </svg>
       </span>
       <span>Setting</span>
@@ -1010,11 +1062,12 @@
       </div>
 
       <div class="siri-circle" id="siriOrb">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
-          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-          <line x1="12" y1="19" x2="12" y2="22"/>
-          <line x1="8" y1="22" x2="16" y2="22"/>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+          <line x1="12" y1="19" x2="12" y2="22" />
+          <line x1="8" y1="22" x2="16" y2="22" />
         </svg>
       </div>
 
@@ -1031,8 +1084,12 @@
         <div class="parsed-item" id="parsedTypeItem" style="cursor: pointer;" title="Ketuk untuk ganti tipe">
           <div class="parsed-label" style="display: flex; justify-content: space-between;">
             <span>Tipe</span>
-            <span style="font-size: 11px; color: var(--text-muted); display: inline-flex; align-items: center; gap: 4px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span
+              style="font-size: 11px; color: var(--text-muted); display: inline-flex; align-items: center; gap: 4px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+              </svg>
               Ganti
             </span>
           </div>
@@ -1042,31 +1099,49 @@
           <div class="parsed-label" style="display: flex; justify-content: space-between;">
             <span>Nominal (Rp)</span>
             <span style="font-size: 11px; color: var(--blue); display: inline-flex; align-items: center; gap: 4px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+              </svg>
               Edit
             </span>
           </div>
-          <input type="text" inputmode="numeric" id="parsedAmount" class="parsed-input" style="color: var(--blue);" placeholder="0">
+          <input type="text" inputmode="numeric" id="parsedAmount" class="parsed-input" style="color: var(--blue);"
+            placeholder="0">
         </div>
         <div class="parsed-item" style="grid-column: span 2; cursor: text;" id="itemParsedNote">
           <div class="parsed-label" style="display: flex; justify-content: space-between;">
             <span>Catatan</span>
             <span style="font-size: 11px; color: var(--blue); display: inline-flex; align-items: center; gap: 4px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+              </svg>
               Edit
             </span>
           </div>
-          <textarea id="parsedNote" class="parsed-input" rows="2" placeholder="Keterangan transaksi" style="resize: vertical; min-height: 52px; line-height: 1.4;"></textarea>
+          <textarea id="parsedNote" class="parsed-input" rows="2" placeholder="Keterangan transaksi"
+            style="resize: vertical; min-height: 52px; line-height: 1.4;"></textarea>
         </div>
       </div>
 
       <button class="btn-submit" id="saveVoiceBtn" style="display: none; background: var(--green);">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"
+          stroke-linecap="round" stroke-linejoin="round"
+          style="display:inline-block; vertical-align:-2px; margin-right:6px;">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
         Simpan Sekarang
       </button>
       <button class="btn-submit" id="retryVoiceBtn"
         style="display: none; background: var(--card-subtle); color: var(--text); margin-top: 8px;">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"
+          stroke-linecap="round" stroke-linejoin="round"
+          style="display:inline-block; vertical-align:-2px; margin-right:6px;">
+          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+        </svg>
         Coba Bicara Lagi
       </button>
     </div>
@@ -1084,11 +1159,21 @@
       <div style="display: flex; gap: 8px; margin-bottom: 16px;">
         <button class="btn-submit" id="btnTypeExpense"
           style="background: var(--red); flex: 1; height: 46px; padding: 0; font-size: 14px; border-radius: 14px;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:5px;"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>Pengeluaran
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"
+            stroke-linecap="round" stroke-linejoin="round"
+            style="display:inline-block; vertical-align:-2px; margin-right:5px;">
+            <line x1="17" y1="7" x2="7" y2="17" />
+            <polyline points="17 17 7 17 7 7" />
+          </svg>Pengeluaran
         </button>
         <button class="btn-submit" id="btnTypeIncome"
           style="background: var(--card-subtle); color: var(--text-muted); flex: 1; height: 46px; padding: 0; font-size: 14px; border-radius: 14px;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:5px;"><line x1="7" y1="17" x2="7" y2="17"/><polyline points="7 7 17 7 17 17"/></svg>Pemasukan
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"
+            stroke-linecap="round" stroke-linejoin="round"
+            style="display:inline-block; vertical-align:-2px; margin-right:5px;">
+            <line x1="7" y1="17" x2="7" y2="17" />
+            <polyline points="7 7 17 7 17 17" />
+          </svg>Pemasukan
         </button>
       </div>
 
@@ -1096,9 +1181,10 @@
       <div class="form-group" style="margin-bottom: 14px;">
         <label class="form-label">Nominal (Rp)</label>
         <div style="position: relative; display: flex; align-items: center;">
-          <span style="position: absolute; left: 14px; font-weight: 700; color: var(--text-muted); font-size: 15px; pointer-events: none; z-index:1;">Rp</span>
-          <input type="text" inputmode="numeric" class="clean-input" id="inputAmount"
-            placeholder="0" style="padding-left: 42px; font-size: 18px; font-weight: 700;">
+          <span
+            style="position: absolute; left: 14px; font-weight: 700; color: var(--text-muted); font-size: 15px; pointer-events: none; z-index:1;">Rp</span>
+          <input type="text" inputmode="numeric" class="clean-input" id="inputAmount" placeholder="0"
+            style="padding-left: 42px; font-size: 18px; font-weight: 700;">
         </div>
       </div>
 
@@ -1115,8 +1201,8 @@
         <input type="date" class="clean-input" id="inputDate" style="font-size: 14px;">
       </div>
 
-      <button class="btn-submit" id="saveManualBtn"
-        style="margin-top: 4px; height: 50px; font-size: 16px;">Simpan Transaksi</button>
+      <button class="btn-submit" id="saveManualBtn" style="margin-top: 4px; height: 50px; font-size: 16px;">Simpan
+        Transaksi</button>
     </div>
   </div>
 
@@ -1156,8 +1242,13 @@
       <div
         style="background: var(--card-subtle); border: 0.5px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
         <div>
-          <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--text);">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div
+            style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--text);">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
             Simpan Otomatis 3 Detik
           </div>
           <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px; line-height: 1.4;">
@@ -1186,16 +1277,19 @@
   <div class="modal" id="deleteConfirmModal">
     <div class="sheet" style="text-align: center; max-width: 400px;">
       <div class="handle"></div>
-      <div style="width: 58px; height: 58px; border-radius: 50%; background: rgba(255, 69, 58, 0.12); color: var(--red); display: flex; align-items: center; justify-content: center; margin: 8px auto 14px auto;">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 6h18"/>
-          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-          <line x1="10" y1="11" x2="10" y2="17"/>
-          <line x1="14" y1="11" x2="14" y2="17"/>
+      <div
+        style="width: 58px; height: 58px; border-radius: 50%; background: rgba(255, 69, 58, 0.12); color: var(--red); display: flex; align-items: center; justify-content: center; margin: 8px auto 14px auto;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18" />
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+          <line x1="10" y1="11" x2="10" y2="17" />
+          <line x1="14" y1="11" x2="14" y2="17" />
         </svg>
       </div>
       <div class="sheet-title" style="margin-bottom: 6px; font-size: 18px;">Hapus Transaksi?</div>
-      <div id="deleteConfirmDesc" style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; padding: 0 10px;">
+      <div id="deleteConfirmDesc"
+        style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; padding: 0 10px;">
         Transaksi ini akan dihapus permanen.
       </div>
 
@@ -1360,7 +1454,7 @@
         const cursorPosition = inputEl.selectionStart;
         const oldLength = rawVal.length;
         const num = parseThousand(rawVal);
-        
+
         if (num <= 0 && !/\d/.test(rawVal)) {
           inputEl.value = '';
           if (onValChange) onValChange(0);
@@ -1374,7 +1468,7 @@
         try {
           const newPos = Math.max(0, cursorPosition + (newLength - oldLength));
           inputEl.setSelectionRange(newPos, newPos);
-        } catch (e) {}
+        } catch (e) { }
 
         if (onValChange) onValChange(num);
       });
@@ -1382,7 +1476,7 @@
 
     // Audio Chime Feedback (Apple Style)
     function playChime() {
-      voiceCooldownUntil = Date.now() + 1000;
+      if (typeof voiceState !== 'undefined' && voiceState !== 'idle') return;
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (!AudioCtx) return;
@@ -1752,7 +1846,7 @@
           } else {
             // Format: Senin, 14 Oktober 2026
             const dObj = new Date(d + 'T00:00:00');
-            const dayNames = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+            const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
             dateLabel = `${dayNames[dObj.getDay()]}, ${dObj.getDate()} ${MONTHS[dObj.getMonth()]} ${dObj.getFullYear()}`;
           }
           box.innerHTML = `<div class="group-date">${dateLabel}</div>`;
@@ -1762,7 +1856,7 @@
             const iconSvg = isExp
               ? `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/></svg>`
               : `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="7" y2="17"/><polyline points="7 7 17 7 17 17"/></svg>`;
-            
+
             const swipeRow = document.createElement('div');
             swipeRow.className = 'tx-swipe-row';
             swipeRow.dataset.id = t.id;
@@ -2065,9 +2159,7 @@
 
     // ── UPDATE VOICE RESULT UI ──
     function updateVoiceResult(parsed) {
-      // Matikan mikrofon seketika hasil suara valid terdeteksi
-      stopVoice();
-
+      // Penghentian mic diurus oleh endSessionGracefully() di pemanggil
       state.detectedVoice = parsed;
       clearAutoSaveCountdown();
       const pg = document.getElementById('parsedGrid');
@@ -2200,18 +2292,58 @@
     });
     window.addEventListener('pagehide', () => stopVoice());
 
-    // ================= VOICE RECOGNITION — SIMPLE & iOS-SAFE =================
-    // Prinsip: 1 sesi = 1 instance baru. Tidak ada reuse, tidak ada retry loop.
-    // recognition selalu null di luar sesi aktif.
+    // ================= VOICE ENGINE — STATE MACHINE (BERBASIS EVENT) =================
+    // Aturan (pola standar produksi untuk Web Speech API):
+    //  1. Hanya SATU sesi aktif. Status: idle → starting → listening → stopping → idle
+    //  2. Sesi baru dimulai HANYA saat status idle, yaitu setelah onend sesi lama. Bukan berdasar timer.
+    //  3. start() dipanggil langsung di dalam event klik (user gesture) saat status idle.
+    //  4. Sesi lama dihentikan dengan stop() (graceful). Handler onend TETAP terpasang
+    //     supaya status bisa kembali idle. Handler tidak pernah di-null-kan.
+    //  5. Watchdog memaksa reset bila browser tidak pernah mengirim onstart/onend.
+    //  6. Tambahkan ?debug=1 di URL untuk menampilkan log event di bawah modal suara.
     let recognition = null;
-    let voiceStartTimer = null;
-    let voiceCooldownUntil = 0;   // waktu paling awal mic boleh dipakai lagi
+    let voiceState = 'idle';
+    let voiceSeq = 0;
+    let voicePendingStart = false;
+    let voiceWatchdog = null;
+    const VOICE_DEBUG = new URLSearchParams(location.search).has('debug');
+
+    function vlog(msg) {
+      if (!VOICE_DEBUG) return;
+      let el = document.getElementById('voiceDebug');
+      if (!el) {
+        el = document.createElement('pre');
+        el.id = 'voiceDebug';
+        el.style.cssText = 'font-size:10px;line-height:1.4;color:var(--text-muted);background:var(--card-subtle);border-radius:10px;padding:8px;margin-top:10px;max-height:110px;overflow:auto;white-space:pre-wrap;';
+        document.querySelector('#voiceModal .sheet').appendChild(el);
+      }
+      el.textContent += new Date().toLocaleTimeString('id-ID') + ' ' + msg + '\n';
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function setVoiceState(next) {
+      vlog('state ' + voiceState + ' -> ' + next);
+      voiceState = next;
+    }
+
+    function clearVoiceWatchdog() {
+      if (voiceWatchdog) { clearTimeout(voiceWatchdog); voiceWatchdog = null; }
+    }
+
+    function armVoiceWatchdog(ms, onTimeout) {
+      clearVoiceWatchdog();
+      voiceWatchdog = setTimeout(() => { voiceWatchdog = null; onTimeout(); }, ms);
+    }
+
+    function setOrbListening(on) {
+      const orb = document.getElementById('siriOrb');
+      if (orb) orb.classList.toggle('listening', !!on);
+    }
 
     function initVoice() {
       const orb = document.getElementById('siriOrb');
       if (orb) orb.onclick = () => {
-        if (recognition) {
-          // Mic sedang aktif → hentikan
+        if (voiceState === 'listening' || voiceState === 'starting') {
           stopVoice();
           const vStatus = document.getElementById('voiceStatus');
           if (vStatus) {
@@ -2261,24 +2393,45 @@
     function showVoiceError(msg) {
       const el = document.getElementById('voiceStatus');
       if (el) { el.textContent = msg; el.style.color = 'var(--red)'; }
-      const orb = document.getElementById('siriOrb');
-      if (orb) orb.classList.remove('listening');
+      setOrbListening(false);
     }
 
-    // Hentikan mic secara bersih — selalu aman dipanggil berkali-kali
+    function showRetryBtn() {
+      const rb = document.getElementById('retryVoiceBtn');
+      if (rb) rb.style.display = 'block';
+    }
+
+    // Minta sesi berhenti secara graceful. onend yang akan mengembalikan status ke idle.
+    function endSessionGracefully(rec) {
+      if (recognition !== rec || voiceState === 'stopping') return;
+      setVoiceState('stopping');
+      setOrbListening(false);
+      try { rec.stop(); } catch (_) { try { rec.abort(); } catch (__) { } }
+      armVoiceWatchdog(1500, () => { vlog('onend tidak datang -> paksa reset'); forceVoiceReset(); });
+    }
+
+    // Jalan darurat: browser tidak pernah mengirim onend/onstart. Buang instance, kembali idle.
+    function forceVoiceReset() {
+      clearVoiceWatchdog();
+      const r = recognition;
+      recognition = null;
+      if (r) { r._closed = true; try { r.abort(); } catch (_) { } }
+      setVoiceState('idle');
+      setOrbListening(false);
+      if (voicePendingStart) {
+        voicePendingStart = false;
+        beginVoiceSession();
+      }
+    }
+
+    // Hentikan mic. Aman dipanggil kapan saja dan berkali-kali.
     function stopVoice() {
       clearAutoSaveCountdown();
-      if (voiceStartTimer) { clearTimeout(voiceStartTimer); voiceStartTimer = null; }
-      if (recognition) {
-        const r = recognition;
-        recognition = null;          // null DULU sebelum abort agar onend tidak memicu ulang
-        r.onstart = r.onspeechstart = r.onspeechend = null;
-        r.onresult = r.onerror = r.onend = null;
-        try { r.abort(); } catch (_) { }
-        voiceCooldownUntil = Date.now() + 700;   // beri waktu mic dilepas oleh OS
-      }
-      const orb = document.getElementById('siriOrb');
-      if (orb) orb.classList.remove('listening');
+      voicePendingStart = false;
+      setOrbListening(false);
+      if (!recognition) return;
+      recognition._closed = true;          // UI sesi ini tidak boleh diubah lagi
+      endSessionGracefully(recognition);
     }
 
     function startVoice() {
@@ -2289,17 +2442,24 @@
         return;
       }
 
-      // Pastikan sesi lama benar-benar mati dulu sebelum membuat yang baru
-      stopVoice();
-
-      // Mic belum lepas sepenuhnya → tunggu, lalu coba lagi otomatis
-      const wait = voiceCooldownUntil - Date.now();
-      if (wait > 0) {
-        const vs = document.getElementById('voiceStatus');
-        if (vs) { vs.textContent = 'Menyiapkan mikrofon...'; vs.style.color = 'var(--text-muted)'; }
-        voiceStartTimer = setTimeout(() => { voiceStartTimer = null; startVoice(); }, wait);
+      if (voiceState === 'idle') {
+        beginVoiceSession();               // dipanggil langsung dari klik (user gesture)
         return;
       }
+      if (voiceState === 'stopping') {
+        // Sesi lama belum benar-benar selesai. Mulai otomatis begitu onend datang.
+        voicePendingStart = true;
+        const vs = document.getElementById('voiceStatus');
+        if (vs) { vs.textContent = 'Menyiapkan mikrofon...'; vs.style.color = 'var(--text-muted)'; }
+        vlog('startVoice ditunda (stopping)');
+        return;
+      }
+      vlog('startVoice diabaikan, status ' + voiceState);
+    }
+
+    function beginVoiceSession() {
+      const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!Speech) return;
 
       // Reset UI
       state.detectedVoice = null;
@@ -2310,6 +2470,7 @@
       const vsEl = document.getElementById('voiceStatus');
       const amtEl = document.getElementById('parsedAmount');
       const noteEl = document.getElementById('parsedNote');
+      clearAutoSaveCountdown();
       if (pgEl) pgEl.style.display = 'none';
       if (sbEl) sbEl.style.display = 'none';
       if (rbEl) rbEl.style.display = 'none';
@@ -2318,37 +2479,55 @@
       if (txEl) txEl.textContent = '"Contoh: Beli bensin pertalite 50.000"';
       if (vsEl) { vsEl.textContent = 'Mendengarkan...'; vsEl.style.color = 'var(--green)'; }
 
-      // Buat instance BARU — fresh setiap sesi, tidak pernah reuse
       const rec = new Speech();
       rec.lang = 'id-ID';
-      rec.continuous = false;       // iOS hanya andal dengan continuous=false
+      rec.continuous = false;
       rec.interimResults = true;
       rec.maxAlternatives = 1;
+      rec._id = ++voiceSeq;
+      rec._closed = false;   // true = UI sesi ini diabaikan (modal ditutup / dibatalkan)
+      rec._done = false;     // true = hasil final sudah ditampilkan
+      rec._error = null;
 
-      // Simpan referensi. recognition !== null berarti mic aktif.
       recognition = rec;
+      setVoiceState('starting');
+      vlog('sesi #' + rec._id + ' start()');
+
+      // Bila 15 detik tidak ada onstart (mis. izin tidak pernah dijawab), anggap macet.
+      armVoiceWatchdog(15000, () => {
+        vlog('onstart tidak datang -> paksa reset');
+        forceVoiceReset();
+        showVoiceError('Mikrofon tidak merespons. Ketuk bola untuk coba lagi.');
+        showRetryBtn();
+      });
 
       rec.onstart = () => {
         if (recognition !== rec) return;
-        const orb = document.getElementById('siriOrb');
-        if (orb) orb.classList.add('listening');
-        if (window.navigator && window.navigator.vibrate) navigator.vibrate(15);
+        clearVoiceWatchdog();
+        vlog('onstart #' + rec._id);
+        if (rec._closed) {            // dibatalkan sebelum sempat mulai
+          endSessionGracefully(rec);
+          return;
+        }
+        setVoiceState('listening');
+        setOrbListening(true);
+        if (navigator.vibrate) navigator.vibrate(15);
       };
 
       rec.onspeechstart = () => {
-        if (recognition !== rec) return;
+        if (recognition !== rec || rec._closed) return;
         const s = document.getElementById('voiceStatus');
         if (s) { s.textContent = 'Mendengar suara Anda...'; s.style.color = 'var(--green)'; }
       };
 
       rec.onspeechend = () => {
-        if (recognition !== rec) return;
+        if (recognition !== rec || rec._closed) return;
         const s = document.getElementById('voiceStatus');
         if (s) { s.textContent = 'Memproses...'; s.style.color = 'var(--blue)'; }
       };
 
       rec.onresult = (e) => {
-        if (recognition !== rec) return;
+        if (recognition !== rec || rec._closed || rec._done) return;
         let finalText = '';
         let interimText = '';
         for (let i = 0; i < e.results.length; i++) {
@@ -2360,18 +2539,19 @@
         }
         const display = (finalText + interimText).trim();
         const txBox = document.getElementById('transcriptBox');
-        if (display && txBox) txBox.textContent = `"${display}"`;
+        if (display && txBox) txBox.textContent = '"' + display + '"';
+        vlog('onresult final=' + !!finalText.trim());
 
-        // Jika ada hasil final dan nominal terdeteksi → selesai, matikan mic
         if (finalText.trim()) {
           const parsed = parseSpeech(finalText.trim());
           if (parsed.amount > 0) {
+            rec._done = true;
             updateVoiceResult(parsed);
+            endSessionGracefully(rec);   // stop() lalu tunggu onend, TANPA abort()
             return;
           }
         }
 
-        // Preview interim real-time
         if (interimText.trim()) {
           const lp = parseSpeech(interimText.trim());
           if (lp.amount > 0) {
@@ -2390,10 +2570,9 @@
 
       rec.onerror = (e) => {
         if (recognition !== rec) return;
-        // null dulu baru update UI
-        recognition = null;
-        const orb = document.getElementById('siriOrb');
-        if (orb) orb.classList.remove('listening');
+        vlog('onerror ' + e.error);
+        if (rec._closed || e.error === 'aborted') return;
+        rec._error = e.error;
         clearAutoSaveCountdown();
 
         if (e.error === 'not-allowed') {
@@ -2402,58 +2581,56 @@
           showVoiceError('Dikte belum aktif. Buka Pengaturan > Umum > Keyboard > aktifkan Dikte.');
         } else if (e.error === 'audio-capture') {
           showVoiceError('Mikrofon tidak tersedia atau digunakan aplikasi lain.');
+          showRetryBtn();
         } else if (e.error === 'no-speech') {
           showVoiceError('Tidak terdengar suara. Ketuk bola lagi untuk bicara.');
-          const rb = document.getElementById('retryVoiceBtn');
-          if (rb) rb.style.display = 'block';
+          showRetryBtn();
         } else if (e.error === 'network') {
           showVoiceError('Perlu koneksi internet untuk pengenalan suara.');
-        } else if (e.error !== 'aborted') {
+          showRetryBtn();
+        } else {
           showVoiceError('Error: ' + e.error + '. Ketuk bola untuk coba lagi.');
-          const rb = document.getElementById('retryVoiceBtn');
-          if (rb) rb.style.display = 'block';
+          showRetryBtn();
         }
+        // Sebagian browser tidak mengirim onend setelah error → pastikan status tetap kembali idle
+        armVoiceWatchdog(1500, () => { vlog('onend tidak datang setelah error -> paksa reset'); forceVoiceReset(); });
       };
 
       rec.onend = () => {
-        // Hanya proses jika ini masih sesi aktif (bukan sesi yang sudah di-abort)
-        const isCurrentSession = (recognition === rec);
-        if (isCurrentSession) recognition = null;   // mic mati
+        if (recognition !== rec) return;      // instance lama yang sudah dibuang
+        vlog('onend #' + rec._id);
+        clearVoiceWatchdog();
+        recognition = null;
+        setVoiceState('idle');                // mic benar-benar bebas
+        setOrbListening(false);
 
-        const orb = document.getElementById('siriOrb');
-        if (orb) orb.classList.remove('listening');
-
-        if (!isCurrentSession) return; // sesi ini sudah dibatalkan, hentikan
-
-        // Jika interim sudah punya data tapi browser tutup tanpa isFinal → finalize manual
-        if (state.detectedVoice && state.detectedVoice.amount > 0) {
-          const sb = document.getElementById('saveVoiceBtn');
-          if (!sb || sb.style.display !== 'block') {
-            updateVoiceResult(state.detectedVoice);
-            return;
-          }
-        } else {
-          clearAutoSaveCountdown();
-          const vs = document.getElementById('voiceStatus');
-          if (vs && !vs.textContent.includes('Izin') && !vs.textContent.includes('Dikte')
-              && !vs.textContent.includes('tidak tersedia') && !vs.textContent.includes('internet')) {
-            vs.textContent = 'Ketuk bola untuk bicara lagi';
-            vs.style.color = 'var(--text-muted)';
-          }
-          const rb = document.getElementById('retryVoiceBtn');
-          if (rb) rb.style.display = 'block';
+        if (voicePendingStart) {              // ada permintaan start yang menunggu
+          voicePendingStart = false;
+          beginVoiceSession();
+          return;
         }
+        if (rec._closed || rec._done || rec._error) return;
+
+        // Browser menutup tanpa isFinal tetapi interim sudah punya nominal → finalize manual
+        if (state.detectedVoice && state.detectedVoice.amount > 0) {
+          updateVoiceResult(state.detectedVoice);
+          return;
+        }
+        clearAutoSaveCountdown();
+        const vs = document.getElementById('voiceStatus');
+        if (vs) { vs.textContent = 'Ketuk bola untuk bicara lagi'; vs.style.color = 'var(--text-muted)'; }
+        showRetryBtn();
       };
 
-      // Jalankan — tidak ada retry loop, iOS tidak memerlukannya jika instance selalu baru
       try {
         rec.start();
       } catch (err) {
-        console.warn('rec.start() error:', err.message);
+        vlog('start() error: ' + err.message);
+        clearVoiceWatchdog();
         recognition = null;
+        setVoiceState('idle');
         showVoiceError('Gagal memulai mikrofon. Ketuk bola untuk coba lagi.');
-        const rb = document.getElementById('retryVoiceBtn');
-        if (rb) rb.style.display = 'block';
+        showRetryBtn();
       }
     }
 
@@ -2480,7 +2657,7 @@
         jenis: rawType,
         jumlah: amt,
         catatan: note
-      });
+      }, { silent: true });
       closeAllModals();
     }
 
@@ -2611,18 +2788,18 @@
     function parseIndonesianWords(str) {
       let s = str.toLowerCase().trim();
       s = s.replace(/duapuluh/g, 'dua puluh')
-           .replace(/tigapuluh/g, 'tiga puluh')
-           .replace(/empatpuluh/g, 'empat puluh')
-           .replace(/limapuluh/g, 'lima puluh')
-           .replace(/enampuluh/g, 'enam puluh')
-           .replace(/tujuhpuluh/g, 'tujuh puluh')
-           .replace(/delapanpuluh/g, 'delapan puluh')
-           .replace(/sembilanpuluh/g, 'sembilan puluh')
-           .replace(/sepuluhribu/g, 'sepuluh ribu')
-           .replace(/seratusribu/g, 'seratus ribu')
-           .replace(/limaratus/g, 'lima ratus')
-           .replace(/duaratus/g, 'dua ratus')
-           .replace(/tigaratus/g, 'tiga ratus');
+        .replace(/tigapuluh/g, 'tiga puluh')
+        .replace(/empatpuluh/g, 'empat puluh')
+        .replace(/limapuluh/g, 'lima puluh')
+        .replace(/enampuluh/g, 'enam puluh')
+        .replace(/tujuhpuluh/g, 'tujuh puluh')
+        .replace(/delapanpuluh/g, 'delapan puluh')
+        .replace(/sembilanpuluh/g, 'sembilan puluh')
+        .replace(/sepuluhribu/g, 'sepuluh ribu')
+        .replace(/seratusribu/g, 'seratus ribu')
+        .replace(/limaratus/g, 'lima ratus')
+        .replace(/duaratus/g, 'dua ratus')
+        .replace(/tigaratus/g, 'tiga ratus');
 
       function parseChunk(chunkStr) {
         const tokens = chunkStr.trim().split(/\s+/).filter(Boolean);
@@ -2786,12 +2963,12 @@
 
 
 
-    function addTransaction(tx) {
+    function addTransaction(tx, opts = {}) {
       if (!tx.createdAt) tx.createdAt = new Date().toISOString();
       state.transactions.unshift(tx);
       save();
       render();
-      playChime();
+      if (!opts.silent) playChime();   // transaksi suara: tanpa chime agar audio session iOS tidak bentrok dengan mic
       if (window.navigator && window.navigator.vibrate) window.navigator.vibrate([15, 30, 20]);
       showToast(`+Rp ${formatIDR(tx.jumlah)} Tersimpan`);
       if (state.apiUrl) postCloud({ action: 'add_transaction', ...tx });
