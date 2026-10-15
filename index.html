@@ -1160,6 +1160,49 @@
       }
     });
 
+    // ── RESUME DARI BACKGROUND (minimize, lock screen, tab switch) ──
+    // Skenario: App dibuka hari ini, di-minimize, besok dibuka lagi
+    // → otomatis perbarui tanggal di field input dan tampilan bulan
+    (function initVisibilityRefresh() {
+      let lastActiveDate = today();
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState !== 'visible') return;
+
+        const nowDate = today();
+        if (nowDate === lastActiveDate) return; // Hari masih sama, tidak perlu apa-apa
+
+        lastActiveDate = nowDate;
+
+        // 1. Perbarui bulan/tahun tampilan jika sudah berganti bulan
+        const nowMonth = new Date().getMonth() + 1;
+        const nowYear = new Date().getFullYear();
+        if (nowMonth !== state.month || nowYear !== state.year) {
+          state.month = nowMonth;
+          state.year = nowYear;
+          render();
+          showToast(`📅 Berganti bulan: ${MONTHS[nowMonth - 1]} ${nowYear}`);
+        } else {
+          // Bulan sama tapi hari berganti → re-render label tanggal grup
+          render();
+        }
+
+        // 2. Perbarui field tanggal di modal Manual jika sedang terbuka
+        const manualModal = document.getElementById('manualModal');
+        if (manualModal && manualModal.classList.contains('active')) {
+          const dateInput = document.getElementById('inputDate');
+          // Hanya update jika field masih berisi tanggal kemarin (tidak diubah user)
+          if (dateInput && !editingTxId) {
+            dateInput.value = nowDate;
+            showToast('📅 Tanggal diperbarui ke hari ini');
+          }
+        }
+
+        // 3. Fetch ulang data cloud saat resume (mungkin ada transaksi dari perangkat lain)
+        if (state.apiUrl) fetchCloud();
+      });
+    })();
+
     function loadData() {
       const cached = localStorage.getItem(STORAGE_KEY);
       if (cached) {
@@ -1182,8 +1225,14 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.transactions));
     }
 
+    // Selalu gunakan waktu LOKAL (bukan UTC dari toISOString)
+    // Penting: toISOString() di UTC+8 bisa kembalikan tanggal kemarin jika jam 00:00-07:59 pagi
     function today() {
-      return new Date().toISOString().split('T')[0];
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
     }
 
     function formatIDR(num) {
